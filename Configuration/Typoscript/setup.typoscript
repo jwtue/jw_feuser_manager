@@ -1,0 +1,64 @@
+plugin.tx_jwfeusermanager {
+	view {
+		templateRootPaths {
+			0 = EXT:jw_feuser_manager/Resources/Private/Templates/
+			1 = {$plugin.tx_jwfeusermanager.view.templateRootPath}
+		}
+
+		partialRootPaths  {
+			0 = EXT:jw_feuser_manager/Resources/Private/Partials/
+			1 = {$plugin.tx_jwfeusermanager.view.partialRootPath}
+		}
+
+		layoutRootPaths  {
+			0 = EXT:jw_feuser_manager/Resources/Private/Layouts/
+			1 = {$plugin.tx_jwfeusermanager.view.layoutRootPath}
+		}
+	}
+	settings {
+		orderBy = lastName,firstName
+		fields = last_name,first_name,email
+		uid = {field:uid}
+	}
+}
+
+page.includeCSS.tx_jwfeusermanager = EXT:jw_feuser_manager/Resources/Public/Css/jw_feuser_manager.css
+
+#tt_content.list.20 {
+#	jwfrontendusermanager_listofusers < lib.contentElement
+#	jwfrontendusermanager_edituser < lib.contentElement
+#    jwfrontendusermanager_edituser.dataProcessing.20 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
+#    jwfrontendusermanager_edituser.dataProcessing.20 {
+#		table = tx_jwfeusermanager_editorfield
+#		orderBy = sorting
+#		as = fields
+#	}
+#}
+
+# ==============================================
+# Persistence object mapping configuration
+# ==============================================
+config.tx_extbase.persistence.classes {
+	JwTue\FeUserManager\Domain\Model\FrontendUser {
+		mapping {
+			tableName = fe_users
+		}
+	}
+	JwTue\FeUserManager\Domain\Model\FrontendUserGroup {
+		mapping {
+			tableName = fe_groups
+		}
+	}
+	JwTue\FeUserManager\Domain\Model\EditorField {
+		mapping {
+			tableName = tx_jwfeusermanager_editorfield
+			recordType = \JwTue\FeUserManager\Domain\Model\EditorField
+		}
+	}
+}
+#plugin.tx_jwfeusermanager {
+#	persistence {
+#		classes {
+#		}
+#	}
+#}

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-06-18T12:03:24Z"
+          product-name="jw_feuser_manager">
+        <header/>
+        <body>
+		
+		
+		
+			<trans-unit id="fe_users.image" xml:space="preserve">
+				<source>Image:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.mobilephone" xml:space="preserve">
+				<source>Mobile phone:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.phone_business" xml:space="preserve">
+				<source>Phone (business):</source>
+			</trans-unit>
+			<trans-unit id="fe_users.date_of_birth" xml:space="preserve">
+				<source>Date of birth:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.div.jwfrontendusermanager" xml:space="preserve">
+				<source>JW Frontend User Manager</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_newsletter_subscribed" xml:space="preserve">
+				<source>Newsletter subscription:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_lastupdated" xml:space="preserve">
+				<source>Last updated personal data:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_1" xml:space="preserve">
+				<source>Additional text 1:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_2" xml:space="preserve">
+				<source>Additional text 2:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_3" xml:space="preserve">
+				<source>Additional text 3:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_4" xml:space="preserve">
+				<source>Additional text 4:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_5" xml:space="preserve">
+				<source>Additional text 5:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_1" xml:space="preserve">
+				<source>Additional option 1:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_2" xml:space="preserve">
+				<source>Additional option 2:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_3" xml:space="preserve">
+				<source>Additional option 3:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_4" xml:space="preserve">
+				<source>Additional option 4:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_5" xml:space="preserve">
+				<source>Additional option 5:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_1" xml:space="preserve">
+				<source>Additional bitfield 1:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_2" xml:space="preserve">
+				<source>Additional bitfield 2:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_3" xml:space="preserve">
+				<source>Additional bitfield 3:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_4" xml:space="preserve">
+				<source>Additional bitfield 4:</source>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_5" xml:space="preserve">
+				<source>Additional bitfield 5:</source>
+			</trans-unit>
+			
+			
+			
+			
+			<trans-unit id="tt_content.list_type_listofusers" xml:space="preserve">
+				<source>JW Frontend user list</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_edituser" xml:space="preserve">
+				<source>JW Frontend create/edit user</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_listofusers_description" xml:space="preserve">
+				<source>Shows a list of all frontend users with selected details and optional filters</source>
+			</trans-unit>
+			
+			
+			
+						
+			<trans-unit id="listofusers_flexform.settings" xml:space="preserve">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.editPage" xml:space="preserve">
+				<source>Page for editing (can be left empty)</source>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.settings.fields" xml:space="preserve">
+				<source>Form fields</source>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.settings.groups" xml:space="preserve">
+				<source>Group selection</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction" xml:space="preserve">
+				<source>Group mode</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.all" xml:space="preserve">
+				<source>Don't care, show all</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.or" xml:space="preserve">
+				<source>Show items with selected groups (OR)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.and" xml:space="preserve">
+				<source>Show items with selected groups (AND)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.notand" xml:space="preserve">
+				<source>Do NOT show items with selected groups (AND)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.notor" xml:space="preserve">
+				<source>Do NOT show items with selected groups (OR)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupFiltering" xml:space="preserve">
+				<source>Show filter by groups</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupFiltering.groups" xml:space="preserve">
+				<source>Selectable groups to filter by</source>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.download" xml:space="preserve">
+				<source>Download</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.csv" xml:space="preserve">
+				<source>Show download as CSV</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.csvFields" xml:space="preserve">
+				<source>Columns to use in CSV file</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdf" xml:space="preserve">
+				<source>Show download as PDF</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfFields" xml:space="preserve">
+				<source>Columns to use in PDF file</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.filename" xml:space="preserve">
+				<source>File name for downloads (without extension)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfTitle" xml:space="preserve">
+				<source>Title to use in PDF file</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfTitle.useGroupTitle" xml:space="preserve">
+				<source>If group filter is enabled: show group name below title</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfLogo" xml:space="preserve">
+				<source>Logo to use PDF file</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfLogo.useGroupLogo" xml:space="preserve">
+				<source>If group filter is enabled: use group logo (if availabe) instead of above logo</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation" xml:space="preserve">
+				<source>Orientation of the PDF file</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation.portrait" xml:space="preserve">
+				<source>Portrait</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation.landscape" xml:space="preserve">
+				<source>Landscape</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfFontSize" xml:space="preserve">
+				<source>Font size for PDF file</source>
+			</trans-unit>            
+			<trans-unit id="listofusers_flexform.additional_fields" xml:space="preserve">
+				<source>Additional fields</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text1_title" xml:space="preserve">
+				<source>Column title for additional text 1</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text2_title" xml:space="preserve">
+				<source>Column title for additional text 2</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text3_title" xml:space="preserve">
+				<source>Column title for additional text 3</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text4_title" xml:space="preserve">
+				<source>Column title for additional text 4</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text5_title" xml:space="preserve">
+				<source>Column title for additional text 5</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean1_title" xml:space="preserve">
+				<source>Column title for additional boolean 1</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean2_title" xml:space="preserve">
+				<source>Column title for additional boolean 2</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean3_title" xml:space="preserve">
+				<source>Column title for additional boolean 3</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean4_title" xml:space="preserve">
+				<source>Column title for additional boolean 4</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean5_title" xml:space="preserve">
+				<source>Column title for additional boolean 5</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield1_title" xml:space="preserve">
+				<source>Column title for additional bitfield 1</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield2_title" xml:space="preserve">
+				<source>Column title for additional bitfield 2</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield3_title" xml:space="preserve">
+				<source>Column title for additional bitfield 3</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield4_title" xml:space="preserve">
+				<source>Column title for additional bitfield 4</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield5_title" xml:space="preserve">
+				<source>Column title for additional bitfield 5</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield1_entries" xml:space="preserve">
+				<source>Entries for additional bitfield 1 (one line per entry)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield2_entries" xml:space="preserve">
+				<source>Entries for additional bitfield 2 (one line per entry)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield3_entries" xml:space="preserve">
+				<source>Entries for additional bitfield 3 (one line per entry)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield4_entries" xml:space="preserve">
+				<source>Entries for additional bitfield 4 (one line per entry)</source>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield5_entries" xml:space="preserve">
+				<source>Entries for additional bitfield 5 (one line per entry)</source>
+			</trans-unit>
+			
+			
+			
+			<trans-unit id="edituser_flexform.settings" xml:space="preserve">
+				<source>Settings</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode" xml:space="preserve">
+				<source>Form mode</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.edit_self" xml:space="preserve">
+				<source>Edit existing user (each user can only edit his own data)</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.edit_by_id" xml:space="preserve">
+				<source>Edit existing user (selection by user parameter in URL)</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.create" xml:space="preserve">
+				<source>Create new user</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.fields" xml:space="preserve">
+				<source>Columns to edit</source>
+			</trans-unit>		
+			<trans-unit id="edituser_flexform.settings.setLastupdated" xml:space="preserve">
+				<source>Update personal data timestamp when submitted</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.uid" xml:space="preserve">
+				<source>This content element (ignore)</source>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.clearCachePages" xml:space="preserve">
+				<source>Pages to clear cache after saving</source>
+			</trans-unit>
+			
+			
+			
+			<trans-unit id="edituser_field_flexform" xml:space="preserve">
+				<source>Editor field</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.hidden" xml:space="preserve">
+				<source>Hidden</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type" xml:space="preserve">
+				<source>Type</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.db_field" xml:space="preserve">
+				<source>User data field</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.password" xml:space="preserve">
+				<source>Change password</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.image" xml:space="preserve">
+				<source>Change profile picture</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.additional_richtext" xml:space="preserve">
+				<source>Additional text</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.additional_entries" xml:space="preserve">
+				<source>User data field with selectable options</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.separator" xml:space="preserve">
+				<source>Separator</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.db_field_readonly" xml:space="preserve">
+				<source>User data field (readonly)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.delete_user" xml:space="preserve">
+				<source>Delete user</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.usergroups" xml:space="preserve">
+				<source>User groups</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.send_email" xml:space="preserve">
+				<source>Send email</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.content" xml:space="preserve">
+				<source>Content</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.selectoption_entries" xml:space="preserve">
+				<source>Entries for option/select (one line per entry)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.redirect_page" xml:space="preserve">
+				<source>Redirect to page</source>
+			</trans-unit>
+			<trans-unit id="tx_jwfeusermanager_editorfield.parent_ce" xml:space="preserve">
+				<source>Parent content element</source>
+			</trans-unit>
+			
+			<trans-unit id="edituser_field_flexform.db_field" xml:space="preserve">
+				<source>User data field</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.required" xml:space="preserve">
+				<source>Required field</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.password_generator" xml:space="preserve">
+				<source>Show random password button</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode" xml:space="preserve">
+				<source>Editing mode</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.text" xml:space="preserve">
+				<source>Text (single line)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.text_multiline" xml:space="preserve">
+				<source>Text (multi line)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.email" xml:space="preserve">
+				<source>Email address</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.boolean" xml:space="preserve">
+				<source>Checkbox</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.date" xml:space="preserve">
+				<source>Date</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.time" xml:space="preserve">
+				<source>Time</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.datetime" xml:space="preserve">
+				<source>Date and time</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.options" xml:space="preserve">
+				<source>Options</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.multiselect" xml:space="preserve">
+				<source>Multiple checkboxes</source>
+			</trans-unit>
+			
+			<trans-unit id="edituser_field_flexform.email_subject" xml:space="preserve">
+				<source>Email subject</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_recipient" xml:space="preserve">
+				<source>Email recipient (if empty, mail will be sent to user that is edited)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_content" xml:space="preserve">
+				<source>Email content (use parameters %firstname%, %lastname%, %username%, %password% to automatically insert user's data)</source>
+             </trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode" xml:space="preserve">
+				<source>Email mode</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.always" xml:space="preserve">
+				<source>Always send email (not visible in form)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.checkbox_default_yes" xml:space="preserve">
+				<source>Show checkbox for sending email (checked by default)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.checkbox_default_no" xml:space="preserve">
+				<source>Show checkbox for sending email (unchecked by default)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.bcc_checkbox_default_yes" xml:space="preserve">
+				<source>Show BCC field and checkbox for sending email (checked by default)</source>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.bcc_checkbox_default_no" xml:space="preserve">
+				<source>Show BCC field and checkbox for sending email (unchecked by default)</source>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

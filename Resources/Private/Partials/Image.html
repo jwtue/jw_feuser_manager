@@ -1,0 +1,19 @@
+<html data-namespace-typo3-fluid="true"
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+    xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+	
+<v:variable.set name="dimensions" value="{width: '75', height: '100'}" />
+
+<v:variable.set name="width" value="{dimensions.width}c" />
+<v:variable.set name="height" value="{dimensions.height}c" />
+
+<v:variable.set name="dblWidth" value="{dimensions.width -> v:math.product(b: 2)}c" />
+<v:variable.set name="dblHeight" value="{dimensions.height -> v:math.product(b: 2)}c" />
+
+<f:for each="{fullValue}" as="file" iteration="iterator">
+	<f:if condition="{iterator.isFirst}">
+		<a href="{f:uri.image(src: file.uid, treatIdAsReference: 1, width: fluidSettings.media.popup.width, height: fluidSettings.media.popup.height)}" title="{name}" data-rel="lightbox:frame" rel="lightbox">
+			<img class="image-embed-item" style="max-height: {dimensions.height}px; max-width: {dimensions.width}px;" src="{f:uri.image(src: file.uid, treatIdAsReference: 1, width: width, height: height)}" alt="{file.alternative}" title="{file.title}" srcset="{f:uri.image(src: file.uid, treatIdAsReference: 1, width: width, height: height)} 1x,{f:uri.image(src: file.uid, treatIdAsReference: 1, width: dblWidth, height: dblHeight)} 2x" />
+		</a>
+	</f:if>
+</f:for>

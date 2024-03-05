@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-06-18T12:03:24Z"
+          product-name="jw_feuser_manager">
+        <header/>
+        <body>
+			<trans-unit id="listofusers_pdf.effective" xml:space="preserve">
+				<source>Effective:</source>
+			</trans-unit>
+			<trans-unit id="listofusers_pdf.effective.format" xml:space="preserve">
+				<source>m/d/Y</source>
+			</trans-unit>	
+			<trans-unit id="edituser.save" xml:space="preserve">
+				<source>Save</source>
+			</trans-unit>	
+			<trans-unit id="edituser.confirm" xml:space="preserve">
+				<source>Confirm %s</source>
+			</trans-unit>		
+        </body>
+    </file>
+</xliff>

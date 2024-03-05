@@ -1,0 +1,33 @@
+{
+  "name": "jwtue/jw_feuser_manager",
+  "type": "typo3-cms-extension",
+  "description": "Frontend user management from the frontend",
+  "homepage": "https://github.com/jwtue/jw_feuser_manager",
+  "license": "MIT",
+  "keywords": [
+    "TYPO3 CMS",
+    "watermark",
+    "viewhelper"
+  ],
+  "support": {
+    "issues": "https://github.com/jwtue/jw_feuser_manager/issues"
+  },
+  "require": {
+    "typo3/cms-core": "^12.4",
+		"typo3/cms-felogin": "^12.4.0",
+		"fluidtypo3/vhs": "^7.0",
+		"tecnickcom/tcpdf": "^6.6",
+    "jeroendesloovere/vcard": "^1.7",
+    "php": ">=8.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "JwTue\\FeUserManager\\": "Classes"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "jw_feuser_manager"
+    }
+  }
+}

@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-06-18T12:03:24Z"
+          product-name="jw_feuser_manager" target-language="de">
+        <header/>
+        <body>
+		
+		
+		
+			<trans-unit id="fe_users.image">
+				<source>Image:</source>
+                <target>Bild:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.mobilephone">
+				<source>Mobile phone:</source>
+                <target>Mobiltelefon:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.phone_business">
+				<source>Phone (business):</source>
+                <target>Telefon (geschäftlich):</target>
+			</trans-unit>
+			<trans-unit id="fe_users.date_of_birth">
+				<source>Date of birth:</source>
+                <target>Geburtsdatum:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.div.jwfrontendusermanager">
+				<source>JW Frontend User Manager</source>
+				<target>JW Frontend User Manager</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_newsletter_subscribed">
+				<source>Newsletter subscription:</source>
+                <target>Newsletter abonniert:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_lastupdated" xml:space="preserve">
+				<source>Last updated personal data:</source>
+                <target>Persönliche Daten zuletzt geändert:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_1" xml:space="preserve">
+				<source>Additional text 1:</source>
+                <target>Zusatztext 1:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_2" xml:space="preserve">
+				<source>Additional text 2:</source>
+                <target>Zusatztext 2:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_3" xml:space="preserve">
+				<source>Additional text 3:</source>
+                <target>Zusatztext 3:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_4" xml:space="preserve">
+				<source>Additional text 4:</source>
+                <target>Zusatztext 4:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_text_5" xml:space="preserve">
+				<source>Additional text 5:</source>
+                <target>Zusatztext 5:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_1" xml:space="preserve">
+				<source>Additional option 1:</source>
+                <target>Zusatzauswahl 1:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_2" xml:space="preserve">
+				<source>Additional option 2:</source>
+                <target>Zusatzauswahl 2:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_3" xml:space="preserve">
+				<source>Additional option 3:</source>
+                <target>Zusatzauswahl 3:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_4" xml:space="preserve">
+				<source>Additional option 4:</source>
+                <target>Zusatzauswahl 4:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_boolean_5" xml:space="preserve">
+				<source>Additional option 5:</source>
+                <target>Zusatzauswahl 5:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_1" xml:space="preserve">
+				<source>Additional bitfield 1:</source>
+                <target>Zusatzbitfeld 1:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_2" xml:space="preserve">
+				<source>Additional bitfield 2:</source>
+                <target>Zusatzbitfeld 2:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_3" xml:space="preserve">
+				<source>Additional bitfield 3:</source>
+                <target>Zusatzbitfeld 3:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_4" xml:space="preserve">
+				<source>Additional bitfield 4:</source>
+                <target>Zusatzbitfeld 4:</target>
+			</trans-unit>
+			<trans-unit id="fe_users.tx_jwfeusermanager_additional_bitfield_5" xml:space="preserve">
+				<source>Additional bitfield 5:</source>
+                <target>Zusatzbitfeld 5:</target>
+			</trans-unit>
+			
+			
+			
+			
+			
+			<trans-unit id="tt_content.list_type_listofusers">
+				<source>JW Frontend user list</source>
+                <target>JW Frontend-Benutzerliste</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_edituser">
+				<source>JW Frontend create/edit user</source>
+                <target>JW Frontend-Benutzer anlegen/bearbeiten</target>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_listofusers_description">
+				<source>Shows a list of all frontend users with selected details and optional filters</source>
+                <target>Zeigt eine Liste alle Frontend-Benutzer mit ausgewählten Eigenschaften und optionalen Filtern</target>
+			</trans-unit>
+			
+			
+			
+			
+			
+			<trans-unit id="listofusers_flexform.settings" >
+				<source>Settings</source>
+                <target>Einstellungen</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode">
+				<source>Form mode</source>
+                <target>Formularmodus</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.edit_self">
+				<source>Edit existing user (each user can only edit his own data)</source>
+                <target>Bestehenden Nutzer bearbeiten (jeder Nutzer kann nur seine eigenen Daten bearbeiten)</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.edit_by_id">
+				<source>Edit existing user (selection by user parameter in URL)</source>
+                <target>Bestehenden Nutzer bearbeiten (Auswahl durch user-Parameter in URL)</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.mode.create">
+				<source>Create new user</source>
+                <target>Neuen Benutzer anlegen</target>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.settings.fields" >
+				<source>Columns for list</source>
+                <target>Spalten für Liste</target>
+			</trans-unit>			
+			<trans-unit id="listofusers_flexform.settings.editPage" >
+				<source>Page for editing (can be left empty)</source>
+                <target>Seite für Bearbeitung (kann leer bleiben)</target>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.settings.groups">
+				<source>Group selection</source>
+                <target>Gruppenauswahl</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction">
+				<source>Group mode</source>
+                <target>Gruppenmodus</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.all">
+				<source>Don't care, show all</source>
+                <target>Ignorieren, zeige alle</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.or">
+				<source>Show items with selected groups (OR)</source>
+                <target>Zeige Items mit ausgewählter Gruppe (ODER)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.and">
+				<source>Show items with selected groups (AND)</source>
+                <target>Zeige Items mit ausgewählter Gruppe (UND)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.notand">
+				<source>Do NOT show items with selected groups (AND)</source>
+                <target>Zeige KEINE Items mit ausgewählter Gruppe (UND)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupConjunction.notor">
+				<source>Do NOT show items with selected groups (OR)</source>
+                <target>Zeige KEINE Items mit ausgewählter Gruppe (ODER)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupFiltering">
+				<source>Show filter by groups</source>
+                <target>Zeige Gruppenfilter</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.settings.groupFiltering.groups">
+				<source>Selectable groups to filter by</source>
+                <target>Wählbare Gruppen für Filter</target>
+			</trans-unit>
+			
+			<trans-unit id="listofusers_flexform.download">
+				<source>Download</source>
+                <target>Download</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.csv">
+				<source>Show download as CSV</source>
+                <target>Zeige Download als CSV</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.csvFields">
+				<source>Columns to use in CSV file</source>
+                <target>Spalten für CSV-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdf">
+				<source>Show download as PDF</source>
+                <target>Zeige Download als PDF</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfFields">
+				<source>Columns to use in PDF file</source>
+                <target>Spalten für PDF-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.filename">
+				<source>File name for downloads (without extension)</source>
+                <target>Dateiname für Downloads (ohne Dateiendung)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfTitle">
+				<source>Title to use in PDF file</source>
+                <target>Titel für die PDF-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfTitle.useGroupTitle">
+				<source>If group filter is enabled: show group name below title</source>
+                <target>Wenn Gruppenfilter gewählt: zeige Namen der Gruppe unter dem Titel</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfLogo">
+				<source>Logo to use in PDF file</source>
+                <target>Logo für die PDF-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfLogo.useGroupLogo">
+				<source>If group filter is enabled: use group logo instead of generic logo if availabe</source>
+                <target>Wenn Gruppenfilter gewählt: verwende Logo der Gruppe (wenn vorhanden) statt obigem Logo</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation">
+				<source>Orientation of the PDF file</source>
+                <target>Ausrichtung der PDF-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation.portrait">
+				<source>Portrait</source>
+                <target>Hochformat</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfOrientation.landscape">
+				<source>Landscape</source>
+                <target>Querformat</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.download.pdfFontSize">
+				<source>Font size for PDF file</source>
+                <target>Schriftgröße für PDF-Datei</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields">
+				<source>Additional fields</source>
+                <target>Zusatzfelder</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text1_title">
+				<source>Column title for additional text 1</source>
+                <target>Spaltentitel für Zusatztext 1</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text2_title">
+				<source>Column title for additional text 2</source>
+                <target>Spaltentitel für Zusatztext 2</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text3_title">
+				<source>Column title for additional text 3</source>
+                <target>Spaltentitel für Zusatztext 3</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text4_title">
+				<source>Column title for additional text 4</source>
+                <target>Spaltentitel für Zusatztext 4</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.text5_title">
+				<source>Column title for additional text 5</source>
+                <target>Spaltentitel für Zusatztext 5</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean1_title">
+				<source>Column title for additional boolean 1</source>
+                <target>Spaltentitel für Zusatzbitfeld 1</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean2_title">
+				<source>Column title for additional boolean 2</source>
+                <target>Spaltentitel für Zusatzbitfeld 2</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean3_title">
+				<source>Column title for additional boolean 3</source>
+                <target>Spaltentitel für Zusatzbitfeld 3</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean4_title">
+				<source>Column title for additional boolean 4</source>
+                <target>Spaltentitel für Zusatzbitfeld 4</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.boolean5_title">
+				<source>Column title for additional boolean 5</source>
+                <target>Spaltentitel für Zusatzbitfeld 5</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield1_title">
+				<source>Column title for additional bitfield 1</source>
+                <target>Spaltentitel für Zusatzauswahl 1</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield2_title">
+				<source>Column title for additional bitfield 2</source>
+                <target>Spaltentitel für Zusatzauswahl 2</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield3_title">
+				<source>Column title for additional bitfield 3</source>
+                <target>Spaltentitel für Zusatzauswahl 3</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield4_title">
+				<source>Column title for additional bitfield 4</source>
+                <target>Spaltentitel für Zusatzauswahl 4</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield5_title">
+				<source>Column title for additional bitfield 5</source>
+                <target>Spaltentitel für Zusatzauswahl 5</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield1_entries">
+				<source>Entries for additional bitfield 1 (one line per entry)</source>
+                <target>Einträge für Zusatzauswahl 1 (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield2_entries">
+				<source>Entries for additional bitfield 2 (one line per entry)</source>
+                <target>Einträge für Zusatzauswahl 2 (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield3_entries">
+				<source>Entries for additional bitfield 3 (one line per entry)</source>
+                <target>Einträge für Zusatzauswahl 3 (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield4_entries">
+				<source>Entries for additional bitfield 4 (one line per entry)</source>
+                <target>Einträge für Zusatzauswahl 4 (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			<trans-unit id="listofusers_flexform.additional_fields.bitfield5_entries">
+				<source>Entries for additional bitfield 5 (one line per entry)</source>
+                <target>Einträge für Zusatzauswahl 5 (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			
+			
+			
+			
+			
+			<trans-unit id="edituser_flexform.settings">
+				<source>Settings</source>
+                <target>Einstellungen</target>
+			</trans-unit>			
+			<trans-unit id="edituser_flexform.settings.fields">
+				<source>Form fields</source>
+                <target>Formularfelder</target>
+			</trans-unit>		
+			<trans-unit id="edituser_flexform.settings.setLastupdated">
+				<source>Update personal data timestamp when submitted</source>
+				<target>Persönliche Daten auf aktualisiert setzen beim Speichern</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.uid">
+				<source>This content element (ignore)</source>
+				<target>Dieses Element (ignorieren)</target>
+			</trans-unit>
+			<trans-unit id="edituser_flexform.settings.clearCachePages">
+				<source>Pages to clear cache after saving</source>
+				<target>Seiten deren Cache nach dem Speichern geleert werden soll</target>
+			</trans-unit>
+			
+			
+			
+			<trans-unit id="edituser_field_flexform">
+				<source>Editor field</source>
+                <target>Editor-Feld</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.hidden">
+				<source>Hidden</source>
+                <target>Versteckt</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type">
+				<source>Type</source>
+                <target>Typ</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.db_field">
+				<source>User data field</source>
+                <target>Benutzerdaten-Feld</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.password">
+				<source>Change password</source>
+                <target>Passwort ändern</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.image">
+				<source>Change profile picture</source>
+                <target>Profilbild ändern</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.additional_richtext">
+				<source>Additional text</source>
+                <target>Zusätzlicher Text</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.additional_entries">
+				<source>User data field with selectable options</source>
+                <target>Benutzerdaten-Feld mit Auswahlmöglichkeiten</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.separator">
+				<source>Separator</source>
+                <target>Trennzeichen</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.db_field_readonly">
+				<source>User data field (readonly)</source>
+                <target>Benutzerdaten-Feld (nur lesen)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.delete_user">
+				<source>Delete user</source>
+                <target>Benutzer löschen</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.usergroups">
+				<source>User groups</source>
+                <target>Benutzergruppen</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.type.send_email">
+				<source>Send email</source>
+                <target>E-Mail versenden</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.content">
+				<source>Content</source>
+                <target>Inhalt</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.selectoption_entries">
+				<source>Entries for option/select (one line per entry)</source>
+                <target>Einträge für Optionsfelder/Mehrfachauswahl (eine Zeile pro Eintrag)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.redirect_page">
+				<source>Redirect to page</source>
+                <target>Weiterleitung zur Seite</target>
+			</trans-unit>
+			<trans-unit id="tx_jwfeusermanager_editorfield.parent_ce">
+				<source>Parent content element</source>
+                <target>Übergeordnetes Inhaltselement</target>
+			</trans-unit>
+			
+			<trans-unit id="edituser_field_flexform.db_field">
+				<source>User data field</source>
+                <target>Benutzerdaten-Feld</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.required">
+				<source>Required field</source>
+                <target>Erforderliches Feld</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.password_generator">
+				<source>Show random password button</source>
+                <target>Schaltfläche für zufälliges Passwort anzeigen</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode">
+				<source>Editing mode</source>
+                <target>Bearbeitungs-Modus</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.text">
+				<source>Text (single line)</source>
+                <target>Text (einzeilig)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.text_multiline">
+				<source>Text (multi line)</source>
+                <target>Text (mehrzeilig)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.email">
+				<source>Email address</source>
+                <target>E-Mail-Adresse</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.boolean">
+				<source>Checkbox</source>
+                <target>Checkbox</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.date">
+				<source>Date</source>
+                <target>Datum</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.time">
+				<source>Time</source>
+                <target>Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.datetime">
+				<source>Date and time</source>
+                <target>Datum und Uhrzeit</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.options">
+				<source>Options</source>
+                <target>Optionsfeld</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.db_mode.multiselect">
+				<source>Multiple checkboxes</source>
+                <target>Mehrfachauswahl</target>
+			</trans-unit>
+			
+			<trans-unit id="edituser_field_flexform.email_subject">
+				<source>Email subject</source>
+                <target>Betreff der E-Mail</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_recipient">
+				<source>Email recipient (if empty, mail will be sent to user that is edited)</source>
+                <target>E-Mail-Empfänger (leer lassen, um E-Mail an bearbeiteten Benutzer zu schicken)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_content">
+				<source>Email content (use parameters %firstname%, %lastname%, %username%, %password% to automatically insert user's data)</source>
+                <target>Inhalt der E-Mail (verwenden Sie die Parameter %firstname%, %lastname%, %username%, %password% um die Daten des Nutzers automatisch einzufügen)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode">
+				<source>Email mode</source>
+                <target>E-Mail-Modus</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.always">
+				<source>Always send email (not visible in form)</source>
+                <target>E-Mail immer versenden (keine Anzeige im Formular)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.checkbox_default_yes">
+				<source>Show checkbox for sending email (checked by default)</source>
+                <target>Schaltfläche für E-Mail-Versand anzeigen (vorausgewählt)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.checkbox_default_no">
+				<source>Show checkbox for sending email (unchecked by default)</source>
+                <target>Schaltfläche für E-Mail-Versand anzeigen (nicht vorausgewählt)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.bcc_checkbox_default_yes" xml:space="preserve">
+				<source>Show BCC field and checkbox for sending email (checked by default)</source>
+                <target>BCC-Feld und Schaltfläche für E-Mail-Versand anzeigen (vorausgewählt)</target>
+			</trans-unit>
+			<trans-unit id="edituser_field_flexform.email_mode.bcc_checkbox_default_no" xml:space="preserve">
+				<source>Show BCC field and checkbox for sending email (unchecked by default)</source>
+                <target>BCC-Feld und Schaltfläche für E-Mail-Versand anzeigen (nicht vorausgewählt)</target>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>

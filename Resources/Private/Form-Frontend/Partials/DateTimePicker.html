@@ -1,0 +1,20 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" xmlns:jw="http://typo3.org/ns/JwTue/FeUserManager/ViewHelpers" data-namespace-typo3-fluid="true">
+<formvh:renderRenderable renderable="{element}">
+	<div class="form-inline">
+		<f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
+			<jw:form.dateTimePicker
+				id="{element.uniqueIdentifier}"
+				property="{element.identifier}"
+				initialDate="{element.properties.initialDate}"
+				enableDatePicker="{element.properties.enableDatePicker}"
+				enableTimePicker="{element.properties.enableTimePicker}"
+				class="{element.properties.elementClassAttribute}"
+				errorClass="{element.properties.elementErrorClassAttribute}"
+				additionalAttributes="{formvh:translateElementProperty(element: element, property: 'fluidAdditionalAttributes')}"
+				previewMode="{element.rootForm.renderingOptions.previewMode}"
+			/>
+			
+		</f:render>
+	</div>
+</formvh:renderRenderable>
+</html>

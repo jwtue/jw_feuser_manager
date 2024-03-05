@@ -1,0 +1,19 @@
+<html data-namespace-typo3-fluid="true"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
+	  xmlns:jw="http://typo3.org/ns/JwTue/FeUserManager/ViewHelpers">
+
+<div class="jwintern-listofusers-detail">
+	<h2>{user.firstName} {user.lastName}</h2>
+	<f:for each="{user.image}" as="img">
+		<f:image src="{img.uid}" treatIdAsReference="1" width="200c" height="300c" />
+	</f:for>
+	<br />
+	
+	Telefon: <a href="tel:{user.mobilephone}"><jw:format.phone>{user.telephone}</jw:format.phone></a><br />
+	Mobil: <a href="tel:{user.mobilephone}"><jw:format.phone>{user.mobilephone}</jw:format.phone></a><br />
+	E-Mail: <f:link.email email="{user.email}">{user.email}</f:link.email><br />
+	Download: <f:link.page additionalParams="{user: user.uid, download: 'vcf'}">VCF</f:link.page></td>
+</div>
+
+</html>

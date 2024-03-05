@@ -1,0 +1,104 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					<settings.mode>
+						<TCEforms>
+							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.mode</label>
+							<config>
+							  <type>radio</type>
+							  <items type="array">
+								<numIndex index="0" type="array">
+								  <numIndex index="0">LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.mode.edit_self</numIndex>
+								  <numIndex index="1">0</numIndex>
+								</numIndex>
+								<numIndex index="1" type="array">
+								  <numIndex index="0">LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.mode.edit_by_id</numIndex>
+								  <numIndex index="1">2</numIndex>
+								</numIndex>
+								<numIndex index="2" type="array">
+								  <numIndex index="0">LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.mode.create</numIndex>
+								  <numIndex index="1">1</numIndex>
+								</numIndex>
+							  </items>
+							<default>0</default>
+							</config>
+						</TCEforms>
+					</settings.mode>
+					<settings.fields>
+						<TCEforms>
+							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.fields</label>
+							<config>
+								<type>inline</type>
+								<foreign_table>tx_jwfeusermanager_editorfield</foreign_table>
+								<foreign_sortby>sorting</foreign_sortby>
+								<foreign_field>parent_ce</foreign_field>
+								<minitems>0</minitems>
+								<maxitems>999</maxitems>
+								<appearance>
+									<collapseAll>1</collapseAll>
+									<expandSingle>1</expandSingle>
+									<levelLinksPosition>bottom</levelLinksPosition>
+									<useSortable>1</useSortable>
+									<showPossibleLocalizationRecords>1</showPossibleLocalizationRecords>
+									<showRemovedLocalizationRecords>1</showRemovedLocalizationRecords>
+									<showAllLocalizationLink>1</showAllLocalizationLink>
+									<showSynchronizationLink>1</showSynchronizationLink>
+									<enabledControls>
+										<info>false</info>
+										<dragdrop>true</dragdrop>
+										<sort>true</sort>
+									</enabledControls>
+								</appearance>
+							</config>
+						</TCEforms>
+					</settings.fields>
+					<settings.setLastupdated>
+						<TCEforms>
+							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.setLastupdated</label>
+							<config>
+								<type>check</type>
+								<default>1</default>
+							</config>
+						</TCEforms>
+					</settings.setLastupdated>
+					<settings.clearCachePages>
+						<TCEforms>
+							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.clearCachePages</label>
+							<config>
+								<type>group</type>
+								<internal_type>db</internal_type>
+								<allowed>pages</allowed>
+								<size>5</size>
+								<minitems>0</minitems>
+								<maxitems>99</maxitems>
+							</config>
+						</TCEforms>
+					</settings.clearCachePages>
+					<settings.uid>
+						<TCEforms>
+							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.uid</label>
+							<config>
+								<type>select</type>
+								<renderType>selectSingle</renderType>
+								<multiple>0</multiple>
+								<size>1</size>
+								<autoSizeMax>1</autoSizeMax>
+								<foreign_table>tt_content</foreign_table>
+								<foreign_table_where>tt_content.uid = ###THIS_UID###</foreign_table_where>
+							</config>
+						</TCEforms>
+					</settings.uid>
+				</el>
+			</ROOT>
+		</sDEF>
+	</sheets>
+</T3DataStructure>

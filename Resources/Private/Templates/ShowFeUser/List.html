@@ -1,0 +1,253 @@
+<html data-namespace-typo3-fluid="true"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+
+<div class="tx-jwfrontendusermanager-listofusers">
+	<f:if condition="{settings.groupFiltering}">
+		<div class="tx-jwfrontendusermanager-listofusers-list-filter">
+		Filter: <select size="1" onchange="document.location.href=this.value;">
+		<f:for each="{userGroups}" key="key" as="groupName" iteration="iterator">
+			<f:if condition="{filter} == {key}">
+				<f:then>
+					<option selected="selected" value="<f:format.htmlentities><f:uri.page additionalParams="{filter: key}" /></f:format.htmlentities>">{groupName}</option>
+				</f:then>
+				<f:else>
+					<option value="<f:format.htmlentities><f:uri.page additionalParams="{filter: key}" /></f:format.htmlentities>">{groupName}</option>
+				</f:else>
+			</f:if>
+		</f:for>
+		</select>
+		</div>
+	</f:if>
+	
+	<v:variable.set name="orderGroup">#</v:variable.set>
+	
+	<ul class="tx-jwfrontendusermanager-listofusers-list-index">
+		<li>Schnellwahl:</li>
+	<f:for each="{users}" as="user" iteration="iterator">		
+		<v:variable.set name="newOrderGroup"><v:format.replace substring="Ä" replacement="A"><v:format.replace substring="Ö" replacement="O"><v:format.replace substring="Ü" replacement="U"><f:format.case mode="upper"><v:format.substring start="0" length="1"><v:variable.get name="fullUsers.{iterator.index}.{settings.orderBy.0}" /></v:format.substring></f:format.case></v:format.replace></v:format.replace></v:format.replace></v:variable.set>
+		
+		<f:if condition="{orderGroup} != {newOrderGroup}">
+			<f:if condition="{filter}">
+				<f:then>
+					<li><f:link.page additionalParams="{filter: filter}" section="{newOrderGroup}">{newOrderGroup}</f:link.page></li>
+				</f:then>
+				<f:else>
+					<li><f:link.page section="{newOrderGroup}">{newOrderGroup}</f:link.page></li>
+				</f:else>
+			</f:if>
+			<v:variable.set name="orderGroup" value="{newOrderGroup}"/>
+		</f:if>
+	</f:for>
+	</ul>	
+	
+	<f:if condition="{settings.csvDownload} || {settings.pdfDownload}">
+		<div class="tx-jwfrontendusermanager-listofusers-list-download">
+		Liste exportieren als: 
+			<f:if condition="{settings.pdfDownload}">
+				<f:link.page additionalParams="{filter: filter, download: 'pdf'}">PDF</f:link.page>
+				| 
+			</f:if>
+			<f:if condition="{settings.csvDownload}">
+				<f:link.page additionalParams="{filter: filter, download: 'csv'}">CSV</f:link.page>
+				|
+			</f:if>
+			<script type="text/javascript">
+				window.onscroll = function () {
+					if ($("body").is(".noscroll")) {
+						window.scrollTo(0, 0);
+					}
+				};
+				function showEmailAddresses(sender) {
+					$(sender).parents(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").show().find("textarea").focus();
+					$("body").addClass("noscroll");
+					window.scrollTo(0, 0);
+					_paq.push(['trackEvent', 'Kontaktdaten', "E-Mail-Empfängerliste"]);
+				}
+				$(function () {
+					var url = '{f:uri.page(additionalParams: {filter: filter, download: 'email'}) -> f:format.htmlentitiesDecode()}';
+					$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten werden geladen...");
+					$.get(url).done(function (data) {
+							$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val(data);
+					}).fail(function (data) {
+						$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten konnten nicht geladen werden");
+					});
+					$(".emailRecipientPopup button.close").click(function () {
+						$(this).parents(".emailRecipientPopup").hide();
+						$("body").removeClass("noscroll");
+					});
+					$(".emailRecipientPopup button.copy").click(function () {
+						$(this).parents(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup textarea").focus();
+						try {
+							document.execCommand("copy");
+						} catch(e) {
+							console.log(e);
+						}
+					});
+					$(".emailRecipientPopup textarea").focus(function() {
+						var $this = $(this);
+						$this.select();
+
+						// Work around Chrome's little problem
+						$this.mouseup(function() {
+							// Prevent further mouseup intervention
+							$this.unbind("mouseup");
+							return false;
+						});
+					});
+					$(".emailRecipientPopup").click(function () {
+						$(this).hide();
+						$("body").removeClass("noscroll");
+					}).scroll(function(e) {
+						e.preventDefault();
+						return false;
+					}).children().click(function (e) {
+						e.preventDefault();
+						return false;
+					});
+				});
+			</script>
+			<a href="#" onclick="showEmailAddresses(this);return false;">E-Mail-Empfängerliste</a>
+			<div class="emailRecipientPopup" style="display: none;">
+				<div>
+					<h6>Adressen kopieren und in E-Mail-Client einfügen</h6>
+					<textarea spellcheck="false" readonly="readonly"></textarea>
+					<div>
+						<button class="copy">In Zwischenablage kopieren</button>
+						<button class="close">Schließen</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</f:if>
+	
+	<ul class="tx-jwfrontendusermanager-listofusers-list">
+	<li class="headline">
+	<f:for each="{columnTitles}" as="column" iteration="iterator">
+		<div>{column}</div>
+	</f:for>
+	</li>
+	
+	<v:variable.set name="orderGroup">#</v:variable.set>
+	
+	<f:for each="{users}" as="user" iteration="iterator">
+		<v:variable.set name="image"><v:variable.get name="fullUsers.{iterator.index}.image" /></v:variable.set>
+		
+		<v:variable.set name="newOrderGroup"><v:format.replace substring="Ä" replacement="A"><v:format.replace substring="Ö" replacement="O"><v:format.replace substring="Ü" replacement="U"><f:format.case mode="upper"><v:format.substring start="0" length="1"><v:variable.get name="fullUsers.{iterator.index}.{settings.orderBy.0}" /></v:format.substring></f:format.case></v:format.replace></v:format.replace></v:format.replace></v:variable.set>
+		
+		<f:if condition="{orderGroup} != {newOrderGroup}">
+			<li class="userClass"><a class="categoryAnchor" id="{newOrderGroup}" name="{newOrderGroup}"></a>{newOrderGroup}</li>
+			<v:variable.set name="orderGroup" value="{newOrderGroup}"/>
+		</f:if>
+		
+		<v:variable.set name="uid"><v:variable.get name="fullUsers.{iterator.index}.uid" /></v:variable.set>
+		<li class="user {f:if(condition: image, then: 'hasPhoto')}" data-uid="{uid}">
+			<div data-column="downloadVcf" title="Kontaktkarte herunterladen"><f:link.page title="Kontaktkarte herunterladen" additionalParams="{user: uid, download: 'vcf'}">Kontaktkarte herunterladen</f:link.page></div>
+			
+			<f:if condition="{settings.editPage}">
+				<div data-column="editUser" title="Kontakt bearbeiten"><f:link.page pageUid="{settings.editPage}" title="Kontakt bearbeiten" additionalParams="{user: uid}">Kontakt bearbeiten</f:link.page></div>
+			</f:if>
+		<f:for each="{columns}" as="column" iteration="iteratorInner">
+			<v:variable.set name="value"><v:variable.get name="user.{column}" /></v:variable.set>
+			<v:variable.set name="fullValue"><v:variable.get name="fullUsers.{iterator.index}.{column}" /></v:variable.set>
+			<v:variable.set name="name"><v:variable.get name="fullUsers.{iterator.index}.firstnameLastname" /></v:variable.set>
+			<v:variable.set name="imageCrop"><v:variable.get name="fullUsers.{iterator.index}.imageCrop" /></v:variable.set>
+			
+			<v:variable.set name="title"><v:variable.get name="columnTitles.{iteratorInner.index}" /></v:variable.set>
+			
+			<div title="{title}" data-column="{column}" <f:if condition="{value} || {fullValue}"><f:then /><f:else>data-empty</f:else></f:if>><f:spaceless>
+			<label><v:variable.get name="columnTitles.{iteratorInner.index}" />: </label>
+			<f:switch expression="{column}">
+				<f:case value="image">
+					<f:render partial="Image" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings, name: name}" />
+				</f:case>
+				<f:case value="imageFal">
+					<f:render partial="Image" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings, crop: imageCrop}" />
+				</f:case>
+				<f:case value="telephone">
+					<f:render partial="Phone" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="mobilephone">
+					<f:render partial="Phone" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="phoneBusiness">
+					<f:render partial="Phone" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="email">
+					<f:render partial="Email" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBoolean1">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBoolean2">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBoolean3">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBoolean4">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBoolean5">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerNewsletterSubscribed">
+					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="www">
+					<f:render partial="Uri" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="fullAddress">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontenduserAdditionalText1">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontenduserAdditionalText2">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontenduserAdditionalText3">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontenduserAdditionalText4">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontenduserAdditionalText5">
+					<f:render partial="Multiline" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="dateOfBirth">
+					<f:render partial="Date" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="lastlogin">
+					<f:render partial="DateTime" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerLastupdated">
+					<f:render partial="DateTime" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwFrontendusermanagerAdditionalBitfield1">
+					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBitfield2">
+					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBitfield3">
+					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBitfield4">
+					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:case value="txJwfrontendusermanagerAdditionalBitfield5">
+					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:case>
+				<f:defaultCase>
+					<f:render partial="Default" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
+				</f:defaultCase>
+			</f:switch>
+			</f:spaceless></div>
+		</f:for>
+		</li>
+	</f:for>
+	</ul>
+</div>
+
+</html>
