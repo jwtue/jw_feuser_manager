@@ -1,8 +1,9 @@
 <?php
-defined('TYPO3_MODE') || die();
+
+defined('TYPO3') or die;
 
 $boot = function () {
-	$extKey = "jw_frontendusermanager";
+	$extKey = "jw_feuser_manager";
     /* ===========================================================================
         Extbase-based plugin
     =========================================================================== */
@@ -36,10 +37,6 @@ $boot = function () {
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
         '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $extKey . '/Configuration/TsConfig/ModWizards.typoscript">'
     );
-	
-	//$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem']['jwfrontendusermanager_listofusers'] = \JwTue\FeUserManager\Hooks\PageLayoutView::class;
-	//$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['tt_content_drawItem']['jwfrontendusermanager_edituser'] = \JwTue\FeUserManager\Hooks\PageLayoutView::class;
-	
 	
 	/**
 	 * Register icons

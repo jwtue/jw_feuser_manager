@@ -1,5 +1,5 @@
 <?php
-defined('TYPO3_MODE') || die();
+ defined('TYPO3') or die;
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
@@ -31,33 +31,12 @@ $temporaryColumns = [
     ],
 	'image' => [
 		'label' => $languageFile . 'fe_users.image',
-		'config' => \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getFileFieldTCAConfig(
-			'image',
-			[
-				// custom configuration for displaying fields in the overlay/reference table
-				// to use the image overlay palette instead of the basic overlay palette
-				'overrideChildTca' => [
-					'types' => [
-						'0' => [
-							'showitem' => '
-								--palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-								--palette--;;filePalette'
-						],
-						\TYPO3\CMS\Core\Resource\File::FILETYPE_TEXT => [
-							'showitem' => '
-								--palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-								--palette--;;filePalette'
-						],
-						\TYPO3\CMS\Core\Resource\File::FILETYPE_IMAGE => array(
-							'showitem' => '
-							--palette--;LLL:EXT:lang/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,
-							--palette--;;filePalette'
-						),
-					],
-				],
-			],
-        $GLOBALS['TYPO3_CONF_VARS']['GFX']['imagefile_ext']
-		),
+		'config' => [
+            'type' => 'file',
+			'minitems' => 0,
+            'maxitems' => 1,
+            'allowed' => 'common-image-types'
+        ],
 	],
     'tx_jwfeusermanager_newsletter_subscribed' => [
         'exclude' => true,

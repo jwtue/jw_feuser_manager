@@ -27,6 +27,10 @@ use \TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator;
 use \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use \TYPO3\CMS\Form\Domain\Configuration\ConfigurationService;
 
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+
 /**
  * File controller.
  *
@@ -35,6 +39,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 {
 	private const DEFAULT_CROP = '{"default":{"cropArea":{"x":0,"y":0,"width":1,"height":1},"selectedRatio":"NaN","focusArea":null}}';
 	
+    private LanguageService $languageService;
+
     /**
      * User repository
      *
@@ -80,6 +86,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     protected $editorFieldRepository;
 	
+
+	public function __construct(private readonly LanguagServiceFactory $languageServiceFactory) {}
+	 
+	
     /**
      * @param EditorFieldRepository $editorFieldRepository
      *
@@ -98,7 +108,6 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	//protected $cacheInstance;
 
 	private $cacheService;
-	 
 	public function initializeAction() {
 	   //$this->cacheInstance = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache("myExtKey");
 		$cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
@@ -126,10 +135,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 * Allows the widget template root path to be overridden via the framework configuration,
 	 * e.g. plugin.tx_extension.view.templateRootPaths
 	 *
-	 * @param ViewInterface $view
+	 * @param $view
 	 * @return void
 	 */
-	protected function setViewConfiguration(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+	protected function setViewConfiguration($view)
 	{
 		// Template Path Override
 		$extbaseFrameworkConfiguration = $this->getTyposcriptConfiguration();
@@ -173,16 +182,16 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * Override this method to solve assign variables common for all actions
      * or prepare the view in another way before the action is called.
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view The view to be initialized
+     * @param $view The view to be initialized
      */
-     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+     protected function initializeView($view)
      {
 		$view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		
 		if (method_exists($this->configurationManager, "initializeObject")) {
 			$this->configurationManager->initializeObject();
 		}
-		$this->contentObj = $this->configurationManager->getContentObject();
+		$this->contentObj = $this->configurationManager->getContentObjectRenderer();
 		
 		$view->getRequest()->setControllerExtensionName($this->extensionName);
 		$view->getRequest()->setPluginName("EditUser");
@@ -197,7 +206,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$conf = $this->getFullTyposcriptConfiguration();
 		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
 		
-		$view->assign("contentObject", $this->configurationManager->getContentObject());
+		$view->assign("contentObject", $this->configurationManager->getContentObjectRenderer());
 	    $view->assign("settings", $this->settings);
 		$this->contentObj->data['uid'] = $this->settings['uid'];
 					
@@ -219,7 +228,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
     public function editAction($user = 0) {
 		/*
-		$user = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('user') ?? 0;
+		$user = $this->request->getQueryParams()['user'] ?? 0;
 		
 		if ($user == 0) {
 			$user = $GLOBALS['TSFE']->fe_user->user['uid'];
@@ -239,8 +248,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$user = null;
 				break;
 			case 2:
-				if (\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('user')) {
-					$user = $this->userRepository->findByUid(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('user'));
+				if ($this->request->getQueryParams()['user']) {
+					$user = $this->userRepository->findByUid($this->request->getQueryParams()['user']);
 					break;
 				}
 			case 0:
@@ -258,14 +267,11 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$columns = $this->editorFieldRepository->findForElement($GLOBALS['TSFE']->page['uid'], $this->contentObj->data['uid'])->toArray();
 		
 		//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($dump);
-					
-		if (empty($GLOBALS['LANG'])) {
-			$GLOBALS['LANG'] = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageService::class);
-			$GLOBALS['LANG']->init($GLOBALS['TSFE']->sys_language_isocode);
-		}
+				
+		$this->languageService = $this->getLanguageService($this->request);
 				
         $prototypeName = 'standard';
-        $configurationService = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationService::class);
+        $configurationService = $this->objectManager->get(ConfigurationService::class);
         $prototypeConfiguration = $configurationService->getPrototypeConfiguration($prototypeName);
 						
 		$prototypeConfiguration["formElementsDefinition"]["Html"] = $prototypeConfiguration["formElementsDefinition"]["Text"];
@@ -276,7 +282,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				
 		$conf = $this->getFullTyposcriptConfiguration();
 		
-		$form = GeneralUtility::makeInstance(ObjectManager::class)->get(FormDefinition::class, 'jwfrontendusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
+		$form = $this->objectManager->get(FormDefinition::class, 'jwfrontendusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
         $form->setRenderingOption('controllerAction', 'edit');
         if ($user != null) $form->setRenderingOption('additionalParams', array("user" => $user->getUid()));
 		$form->setRenderingOption('templateRootPaths ', $form->getRenderingOptions()['templateRootPaths']+
@@ -312,7 +318,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					} else if ($col->getDbMode() == EditorField::MODE_DB_EMAIL) {
 						$el = $page1->createElement("editorfield_".$col->getUid(), 'Text');
 						if ($user != null) $el->setDefaultValue($user->getFields()[$col->getUsableDbField()]);
-						$el->addValidator(GeneralUtility::makeInstance(ObjectManager::class)->get(EmailAddressValidator::class));
+						$el->addValidator($this->objectManager->get(EmailAddressValidator::class));
                         if (substr($title, -1) != ":") $title .= ":";
 					} else if ($col->getDbMode() == EditorField::MODE_DB_BOOLEAN) {
 						$el = $page1->createElement("editorfield_".$col->getUid(), 'Checkbox');
@@ -394,7 +400,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					}
 					$el->setLabel($title);
 					if ($col->getRequired()) {
-						$el->addValidator(GeneralUtility::makeInstance(ObjectManager::class)->get(NotEmptyValidator::class));
+						$el->addValidator($this->objectManager->get(NotEmptyValidator::class));
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					break;
@@ -403,9 +409,9 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$col->setDbField("password");
 					$title = $col->getTitle();
 					$el->setLabel($title.":");
-					$el->setProperty("confirmationLabel", str_replace("%s", $col->getTitle(), $GLOBALS['LANG']->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.confirm")).":");
+					$el->setProperty("confirmationLabel", str_replace("%s", $col->getTitle(), $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.confirm")).":");
 					if ($col->getRequired()) {
-						$el->addValidator(GeneralUtility::makeInstance(ObjectManager::class)->get(NotEmptyValidator::class));
+						$el->addValidator($this->objectManager->get(NotEmptyValidator::class));
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					if ($col->getPasswordGenerator()) {
@@ -525,14 +531,14 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						
 						$el = $page1->createElement("editorfield_".$col->getUid()."_bcc", "Text");
 						$el->setLabel("\u{00A0}");
-						$el->addValidator(GeneralUtility::makeInstance(ObjectManager::class)->get(EmailAddressValidator::class));
+						$el->addValidator($this->objectManager->get(EmailAddressValidator::class));
 					}
 					break;
 			}
-			//$el->addValidator(GeneralUtility::makeInstance(ObjectManager::class)->get(\TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator::class));
+			//$el->addValidator($this->objectManager->get(\TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator::class));
 		}
 		
-		$form->setRenderingOption("submitButtonLabel", $GLOBALS['LANG']->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.save"));
+		$form->setRenderingOption("submitButtonLabel", $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.save"));
 		
 		$userRepository = &$this->userRepository;
 		
@@ -693,8 +699,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 							$slot->postFileReplace($newfile->getOriginalFile(), null);
 						}
 						
-						$resourceFactory = \TYPO3\CMS\Core\Resource\ResourceFactory::getInstance();
-						$folder = $resourceFactory->getFolderObjectFromCombinedIdentifier($colsById[$key]->getImagePathProcessed());
+						$folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($colsById[$key]->getImagePathProcessed());
 						//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($folder);
 						
 						$filename = $colsById[$key]->getImageFilename() == 1 ? $user->getUsername() : $user->getUid();
@@ -818,11 +823,11 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			]);
 		}
 
-		foreach ($form->getRenderablesRecursively() as $renderable) {
+		/*foreach ($form->getRenderablesRecursively() as $renderable) {
 			if (method_exists($renderable, "onBuildingFinished")) {
 				$renderable->onBuildingFinished();
 			}
-		}
+		}*/
 		
 		$fr = $form->bind($this->request, $this->response);
 				
@@ -830,4 +835,13 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 		return "<div class=\"tx-jwfrontendusermanager-edituser\">".$fr->render()."</div>";
 	}
+
+    private function getLanguageService(
+        ServerRequestInterface $request,
+    ): LanguageService {
+        return $this->languageServiceFactory->createFromSiteLanguage(
+            $request->getAttribute('language')
+            ?? $request->getAttribute('site')->getDefaultLanguage(),
+        );
+    }
 }

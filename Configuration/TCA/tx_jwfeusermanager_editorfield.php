@@ -4,9 +4,7 @@
  *  | under GNU General Public License.
  */
 
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+ defined('TYPO3') or die;
 
 $ll = 'LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xml:';
 $extensionPath = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('jw_feuser_manager'));
@@ -33,6 +31,9 @@ $editorFieldTca = [
             'endtime' => 'endtime',
         ],
         'requestUpdate' => 'type',
+        'security' => [
+            'ignorePageTypeRestriction' => true,
+        ],
         'type' => 'type',
         'typeicon_column' => 'type',
         'typeicon_classes' => [

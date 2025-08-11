@@ -1,12 +1,19 @@
 <?php
 namespace JwTue\FeUserManager\Domain\Model;
 
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+
 /**
  * An extended frontend user with more attributes
  * @package JwTue\FeUserManager\Domain\Model
  */
-class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
+class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
+
+    private $user_table = "fe_user";
+    private $userid_column = "uid";
+
 	public $passwordBuffer = null;
 	
     /**
@@ -582,8 +589,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 			}
 		}
 		
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'fe_users', 'uid = ' . intval($this->uid) . '');
-		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+        $query = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->user_table);
+        $query->select("*")->from($this->user_table)->where($query->expr()->eq($this->userid_column, $query->createNamedParameter($this->uid, Connection::PARAM_INT)));
+		$row = $query->executeQuery()->fetchAssociative();
 		foreach ($row as $k => $v) {
 			$k = \TYPO3\CMS\Core\Utility\GeneralUtility::underscoredToLowerCamelCase($k);
 			if ($filter == null || in_array($k, $filter)) {
@@ -596,10 +604,10 @@ class FrontendUser extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUser
 
 	public static function getFieldNames() {
 		$output = array();
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('`COLUMN_NAME`', '`INFORMATION_SCHEMA`.`COLUMNS`', "`TABLE_NAME`='fe_users'");
+		/*$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('`COLUMN_NAME`', '`INFORMATION_SCHEMA`.`COLUMNS`', "`TABLE_NAME`='fe_users'");
 		while ($row = $GLOBALS['TYPO3_DB']->sql_fetch_row($res)) {
 			$output[] = $row[0];
-		}
+		}*/
 		return $output;
 	}
 }

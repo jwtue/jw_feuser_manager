@@ -1,7 +1,7 @@
 <?php
 namespace JwTue\FeUserManager\Domain\Model;
 
-class FrontendUserGroup extends \TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
+class FrontendUserGroup extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 
     /**

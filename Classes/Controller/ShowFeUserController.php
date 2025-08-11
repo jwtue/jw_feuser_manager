@@ -17,6 +17,12 @@ namespace JwTue\FeUserManager\Controller;
 use JwTue\FeUserManager\Domain\Repository\FrontendUserRepository;
 use JwTue\FeUserManager\Domain\Repository\FrontendUserGroupRepository;
 use JwTue\FeUserManager\Utility\Helper;
+use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Extbase\Http\ForwardResponse;
+
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 
 /**
  * File controller.
@@ -24,6 +30,8 @@ use JwTue\FeUserManager\Utility\Helper;
  */
 class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
+    private LanguageService $languageService;
+
     /**
      * User repository
      *
@@ -85,10 +93,10 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 * Allows the widget template root path to be overridden via the framework configuration,
 	 * e.g. plugin.tx_extension.view.templateRootPaths
 	 *
-	 * @param ViewInterface $view
+	 * @param $view
 	 * @return void
 	 */
-	protected function setViewConfiguration(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+	protected function setViewConfiguration($view)
 	{
 		// Template Path Override
 		$extbaseFrameworkConfiguration = $this->getTyposcriptConfiguration();
@@ -132,9 +140,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * Override this method to solve assign variables common for all actions
      * or prepare the view in another way before the action is called.
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view The view to be initialized
+     * @param $view The view to be initialized
      */
-     protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+     protected function initializeView($view)
      {
 		$view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		$view->getRequest()->setControllerExtensionName($this->request->getControllerExtensionName());
@@ -150,7 +158,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$conf = $this->getFullTyposcriptConfiguration();
 		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
 		
-		$view->assign("contentObject", $this->configurationManager->getContentObject());
+		$view->assign("contentObject", $this->configurationManager->getContentObjectRenderer());
 	    $this->view->assign("settings", $this->settings);
 					
 		$this->view = $view;
@@ -163,15 +171,17 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	 * @param string $download The format to create a download, or null for default list
      * @return void|string
      */
-    public function listAction($filter = 0, $download = null) {
+    public function listAction($filter = 0, $download = null) : ResponseInterface {
 		 
 		//print_r($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']);
 		//die();
 		
-		if (intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GET('user'))>0) $this->forward('detail');
+		if (intval($this->request->getQueryParams()['user'])>0) {
+			return new ForwardResponse("detail");
+		}
 		
-		$filter = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('filter') ?? 0;
-		$download = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('download') ?? null;
+		$filter = $this->request->getQueryParams()['filter'] ?? 0;
+		$download = $this->request->getQueryParams()['download'] ?? null;
 		
 		$this->view->getRequest()->setControllerActionName("list");
 		$this->view->setTemplate("List");
@@ -185,11 +195,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$csvColumnTitles = array();
 		$pdfColumnTitles = array();
 				
-		if (empty($GLOBALS['LANG'])) {
-			$GLOBALS['LANG'] = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Localization\LanguageService::class);
-			$defaultLanguage = $this->request->getAttribute('site')->getDefaultLanguage();
-			$GLOBALS['LANG']->init($defaultLanguage->getTwoLetterIsoCode());
-		}
+		$this->languageService = $this->getLanguageService($this->request);
 		
 		$h = new \JwTue\FeUserManager\Utility\Helper();
 		$colconfig = $h->getFieldNamesArray();
@@ -414,10 +420,6 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		} else if ($download == "pdf") {
 						
 			$skip = array();
-			$tcpdf_folder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(
-				\TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->request->getControllerExtensionName())
-				) . 'Resources/Private/Library/tcpdf/';
-			require_once($tcpdf_folder.'tcpdf.php');
 			
 			$columnwidth = array();			
 			$skip = array();
@@ -575,8 +577,8 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			$pdf->Ln();
 			$pdf->Ln();
-			$pdf->Cell(0, 7, $GLOBALS['LANG']->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:listofusers_pdf.effective")." ".
-			date($GLOBALS['LANG']->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:listofusers_pdf.effective.format")), "", 0, "R");
+			$pdf->Cell(0, 7, $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:listofusers_pdf.effective")." ".
+			date($this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:listofusers_pdf.effective.format")), "", 0, "R");
 						
 			$pdf->Output($filename.'.pdf', "I");	
 						
@@ -617,9 +619,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
 	public function detailAction($user = 0) {
 		
-		$user = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('user') ?? 0;
+		$user = $this->request->getQueryParams()['user'] ?? 0;
 		
-		$download = \TYPO3\CMS\Core\Utility\GeneralUtility::_GET('download') ?? null;
+		$download = $this->request->getQueryParams()['download'] ?? null;
 		
 		$this->view->getRequest()->setControllerActionName("detail");
 		$this->view->setTemplate("ShowFeUserDetail");
@@ -723,4 +725,13 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		return $this->view->render();
 	}
+
+    private function getLanguageService(
+        ServerRequestInterface $request,
+    ): LanguageService {
+        return $this->languageServiceFactory->createFromSiteLanguage(
+            $request->getAttribute('language')
+            ?? $request->getAttribute('site')->getDefaultLanguage(),
+        );
+    }
 }

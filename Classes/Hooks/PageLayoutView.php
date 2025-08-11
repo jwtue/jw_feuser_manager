@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace JwTue\FeUserManager\Hooks;
 
 use \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHookInterface;
@@ -16,7 +16,7 @@ class PageLayoutView implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHo
      * @param array $row Record row of tt_content
      * @return void
      */
-    public function preProcess(\TYPO3\CMS\Backend\View\PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
+ /*   public function preProcess(\TYPO3\CMS\Backend\View\PageLayoutView &$parentObject, &$drawItem, &$headerContent, &$itemContent, array &$row) {
 
         $flexform = $row['pi_flexform'];
 				
@@ -31,7 +31,8 @@ class PageLayoutView implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHo
 			/*ob_start();
 			print_r($row);
 			$itemContent = ob_get_clean();*/
-		}
+/*		}
 		return;
 	}
 }
+*/
