@@ -33,11 +33,11 @@
     'jwfrontendusermanager'
 );*/
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['jwfrontendusermanager_listofusers'] = 'layout, select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['jwfrontendusermanager_listofusers'] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['jwfeusermanager_listofusers'] = 'layout, select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['jwfeusermanager_listofusers'] = 'pi_flexform';
 
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['jwfrontendusermanager_edituser'] = 'layout, select_key';
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['jwfrontendusermanager_edituser'] = 'pi_flexform';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist']['jwfeusermanager_edituser'] = 'layout, select_key';
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist']['jwfeusermanager_edituser'] = 'pi_flexform';
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
     'jwfrontendusermanager_listofusers',
