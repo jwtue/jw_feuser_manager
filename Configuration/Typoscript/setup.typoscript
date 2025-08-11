@@ -24,16 +24,16 @@ plugin.tx_jwfeusermanager {
 
 page.includeCSS.tx_jwfeusermanager = EXT:jw_feuser_manager/Resources/Public/Css/jw_feuser_manager.css
 
-#tt_content.list.20 {
-#	jwfeusermanager_listofusers < lib.contentElement
-#	jwfeusermanager_edituser < lib.contentElement
-#    jwfeusermanager_edituser.dataProcessing.20 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
-#    jwfeusermanager_edituser.dataProcessing.20 {
-#		table = tx_jwfeusermanager_editorfield
-#		orderBy = sorting
-#		as = fields
-#	}
-#}
+tt_content.list.20 {
+	jwfeusermanager_listofusers < lib.contentElement
+	jwfeusermanager_edituser < lib.contentElement
+    jwfeusermanager_edituser.dataProcessing.20 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
+    jwfeusermanager_edituser.dataProcessing.20 {
+		table = tx_jwfeusermanager_editorfield
+		orderBy = sorting
+		as = fields
+	}
+}
 
 # ==============================================
 # Persistence object mapping configuration
