@@ -17,13 +17,13 @@ data-namespace-typo3-fluid="true">
             <v:variable.set name="imgSrc"><f:uri.image src="{imageUid}" width="{width}" /></v:variable.set>
             <v:variable.set name="imgSrcDbl"><f:uri.image src="{imageUid}" width="{dblWidth}" /></v:variable.set>
             
-            <img id="jwfrontendusermanager-edituser-{ceUid}-editorfield_{colUid}_image" src="{imgSrc}" srcset="{imgSrc} 1x,{imgSrcDbl} 2x" />
+            <img id="jwfeusermanager-edituser-{ceUid}-editorfield_{colUid}_image" src="{imgSrc}" srcset="{imgSrc} 1x,{imgSrcDbl} 2x" />
             
             <script type="text/javascript">
                 let ceUid = {ceUid};
                 let colUid = {colUid};
                 window.onload = function () <f:format.raw>{</f:format.raw>
-                    let image = document.getElementById("jwfrontendusermanager-edituser-"+ceUid+"-editorfield_"+colUid+"_image");
+                    let image = document.getElementById("jwfeusermanager-edituser-"+ceUid+"-editorfield_"+colUid+"_image");
                     var cropper = new Cropper(image, <f:format.raw>{</f:format.raw>
                         aspectRatio: 4/3,
                         zoomable: false,
@@ -32,7 +32,7 @@ data-namespace-typo3-fluid="true">
                         viewMode: 2,
                         autoCrop: false,
                         ready: function () <f:format.raw>{</f:format.raw>
-                            var crop = JSON.parse(document.getElementById('jwfrontendusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value);
+                            var crop = JSON.parse(document.getElementById('jwfeusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value);
                             this.cropper.crop();
                             var newcrop = <f:format.raw>{</f:format.raw>
                                 left: crop.default.cropArea.x * this.cropper.getCanvasData().width + this.cropper.getCanvasData().left,
@@ -41,10 +41,10 @@ data-namespace-typo3-fluid="true">
                                 height: crop.default.cropArea.height * this.cropper.getCanvasData().height
                             };
                             this.cropper.setCropBoxData(newcrop);
-                            //crop = document.getElementById('jwfrontendusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value;
+                            //crop = document.getElementById('jwfeusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value;
                         },
                         crop: function(e) <f:format.raw>{</f:format.raw>
-                                document.getElementById('jwfrontendusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value = JSON.stringify({
+                                document.getElementById('jwfeusermanager-edituser-'+ceUid+'-editorfield_'+colUid+'_crop').value = JSON.stringify({
                                     default: <f:format.raw>{</f:format.raw>
                                         cropArea: <f:format.raw>{</f:format.raw>
                                             x: (this.cropper.getCropBoxData().left - this.cropper.getCanvasData().left) / this.cropper.getCanvasData().width,

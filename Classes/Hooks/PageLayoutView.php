@@ -20,11 +20,11 @@ class PageLayoutView implements \TYPO3\CMS\Backend\View\PageLayoutViewDrawItemHo
 
         $flexform = $row['pi_flexform'];
 				
-		if ($row['list_type'] == 'jwfrontendusermanager_listofusers') {
+		if ($row['list_type'] == 'jwfeusermanager_listofusers') {
 		//	$drawItem = FALSE;
 		//	$headerContent = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate("tt_content.list_type_listofusers", "jw_feuser_manager");
 			return;
-		} else if ($row['list_type'] == 'jwfrontendusermanager_edituser') {
+		} else if ($row['list_type'] == 'jwfeusermanager_edituser') {
 		//	$drawItem = FALSE;
 		//	$headerContent = \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate("tt_content.list_type_edituser", "jw_feuser_manager");
 			$itemContent = "test";

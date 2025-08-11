@@ -399,14 +399,14 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						$value = $u[$c];
 						if (strpos($value, ",") !== false || strpos($value, " ") !== false) {
 							$value = "\"".str_replace("\"", "\"\"", $value)."\"";
-						} else if ($c == "txJwfrontendusermanagerLastupdated" || $c == "lastlogin") {
+						} else if ($c == "txjwfeusermanagerLastupdated" || $c == "lastlogin") {
 							$value = date("c", $value);
 						} else if ($c == "dateOfBirth") {
 							$value = substr(date("c", $value), 0, 10);
 						} else if ($c == "mobilephone" || $c == "phone" || $c == "phoneBusiness") {
 							$value = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($value, true);
-						} else if (substr($c, 0, strlen("txJwfrontendusermanagerAdditionalBitfield")) == "txJwfrontendusermanagerAdditionalBitfield") {
-                            $number = substr($c, strlen("txJwfrontendusermanagerAdditionalBitfield"));
+						} else if (substr($c, 0, strlen("txjwfeusermanagerAdditionalBitfield")) == "txjwfeusermanagerAdditionalBitfield") {
+                            $number = substr($c, strlen("txjwfeusermanagerAdditionalBitfield"));
                             $entrynames = explode("\n", $this->settings['additional_bitfield'.$number.'_entries']);
                             $entrynames = array_filter($entrynames, function($i) use ($value) { return (($value >> ($i+1)) & 1) != 0;}, ARRAY_FILTER_USE_KEY);
                             $value = "\"".implode(",", $entrynames)."\"";
@@ -596,12 +596,12 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		} else {
 			foreach ($extendedUsers as $k => $uu) {
                 for ($number = 1; $number <= 5; $number++) {
-                    if (!empty($this->settings['additional_bitfield'.$number.'_entries']) && array_key_exists("txJwfrontendusermanagerAdditionalBitfield".$number, $uu)) {
+                    if (!empty($this->settings['additional_bitfield'.$number.'_entries']) && array_key_exists("txjwfeusermanagerAdditionalBitfield".$number, $uu)) {
                         $entrynames = explode("\n", $this->settings['additional_bitfield'.$number.'_entries']);
                         $entrynames = array_filter($entrynames, 
-							function($i) use ($uu, $number) { return (($uu["txJwfrontendusermanagerAdditionalBitfield".$number] >> ($i+1)) & 1) != 0;},
+							function($i) use ($uu, $number) { return (($uu["txjwfeusermanagerAdditionalBitfield".$number] >> ($i+1)) & 1) != 0;},
 							ARRAY_FILTER_USE_KEY);
-                        $extendedUsers[$k]["txJwfrontendusermanagerAdditionalBitfield".$number] = array_values($entrynames);
+                        $extendedUsers[$k]["txjwfeusermanagerAdditionalBitfield".$number] = array_values($entrynames);
                     }
                 }
             }        

@@ -23,7 +23,7 @@
 				<source>Date of birth:</source>
                 <target>Geburtsdatum:</target>
 			</trans-unit>
-			<trans-unit id="fe_users.div.jwfrontendusermanager">
+			<trans-unit id="fe_users.div.jwfeusermanager">
 				<source>JW Frontend User Manager</source>
 				<target>JW Frontend User Manager</target>
 			</trans-unit>

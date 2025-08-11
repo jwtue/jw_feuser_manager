@@ -198,7 +198,7 @@ ExtensionManagementUtility::addToAllTCAtypes('fe_users', 'mobilephone', '', 'aft
 ExtensionManagementUtility::addToAllTCAtypes('fe_users', 'phone_business', '', 'after:telephone');
 ExtensionManagementUtility::addToAllTCAtypes(
     'fe_users',
-    '--div--;LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:fe_users.div.jwfrontendusermanager,
+    '--div--;LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:fe_users.div.jwfeusermanager,
     tx_jwfeusermanager_newsletter_subscribed,
     tx_jwfeusermanager_lastupdated,
     tx_jwfeusermanager_additional_text_1,

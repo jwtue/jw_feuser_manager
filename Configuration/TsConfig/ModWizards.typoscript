@@ -4,13 +4,13 @@ mod.wizards {
       plugins {
         show = *
         elements {
-          jwfrontendusermanager_listofusers {
+          jwfeusermanager_listofusers {
             iconIdentifier = extension-jw_feuser_manager-listofusers
             title = LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_listofusers
             description = LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_listofusers_description
 			tt_content_defValues {
               CType = list
-			  list_type = jwfrontendusermanager_listofusers
+			  list_type = jwfeusermanager_listofusers
             }
           }
         }
@@ -24,13 +24,13 @@ mod.wizards {
       plugins {
         show = *
         elements {
-          jwfrontendusermanager_edituser {
+          jwfeusermanager_edituser {
             iconIdentifier = extension-jw_feuser_manager-edituser
             title = LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_edituser
             description = LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_edituser_description
 			tt_content_defValues {
               CType = list
-			  list_type = jwfrontendusermanager_edituser
+			  list_type = jwfeusermanager_edituser
             }
           }
         }

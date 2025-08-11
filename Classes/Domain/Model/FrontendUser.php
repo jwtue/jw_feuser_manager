@@ -52,82 +52,82 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * @var int
      */	
-	protected $txJwfrontendusermanagerLastupdated;
+	protected $txjwfeusermanagerLastupdated;
     
     /**
      * @var string
      */
-	protected $txJwfrontendusermanagerAdditionalText1;
+	protected $txjwfeusermanagerAdditionalText1;
     
     /**
      * @var string
      */
-	protected $txJwfrontendusermanagerAdditionalText2;
+	protected $txjwfeusermanagerAdditionalText2;
     
     /**
      * @var string
      */
-	protected $txJwfrontendusermanagerAdditionalText3;
+	protected $txjwfeusermanagerAdditionalText3;
     
     /**
      * @var string
      */
-	protected $txJwfrontendusermanagerAdditionalText4;
+	protected $txjwfeusermanagerAdditionalText4;
     
     /**
      * @var string
      */
-	protected $txJwfrontendusermanagerAdditionalText5;
+	protected $txjwfeusermanagerAdditionalText5;
     
     /**
      * @var boolean
      */
-	protected $txJwfrontendusermanagerAdditionalBoolean1;
+	protected $txjwfeusermanagerAdditionalBoolean1;
     
     /**
      * @var boolean
      */
-	protected $txJwfrontendusermanagerAdditionalBoolean2;
+	protected $txjwfeusermanagerAdditionalBoolean2;
     
     /**
      * @var boolean
      */
-	protected $txJwfrontendusermanagerAdditionalBoolean3;
+	protected $txjwfeusermanagerAdditionalBoolean3;
     
     /**
      * @var boolean
      */
-	protected $txJwfrontendusermanagerAdditionalBoolean4;
+	protected $txjwfeusermanagerAdditionalBoolean4;
     
     /**
      * @var boolean
      */
-	protected $txJwfrontendusermanagerAdditionalBoolean5;
+	protected $txjwfeusermanagerAdditionalBoolean5;
     
     /**
      * @var int
      */
-	protected $txJwfrontendusermanagerAdditionalBitfield1;
+	protected $txjwfeusermanagerAdditionalBitfield1;
     
     /**
      * @var int
      */
-	protected $txJwfrontendusermanagerAdditionalBitfield2;
+	protected $txjwfeusermanagerAdditionalBitfield2;
     
     /**
      * @var int
      */
-	protected $txJwfrontendusermanagerAdditionalBitfield3;
+	protected $txjwfeusermanagerAdditionalBitfield3;
     
     /**
      * @var int
      */
-	protected $txJwfrontendusermanagerAdditionalBitfield4;
+	protected $txjwfeusermanagerAdditionalBitfield4;
     
     /**
      * @var int
      */
-	protected $txJwfrontendusermanagerAdditionalBitfield5;
+	protected $txjwfeusermanagerAdditionalBitfield5;
 	
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
@@ -228,20 +228,20 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerLastupdated()
+    public function getTxjwfeusermanagerLastupdated()
     {
-        return $this->txJwfrontendusermanagerLastupdated;
+        return $this->txjwfeusermanagerLastupdated;
     }
 
     /**
      * Setter for lastupdated
      *
-     * @param int $txJwfrontendusermanagerLastupdated
+     * @param int $txjwfeusermanagerLastupdated
      * @return void
      */
-    public function setTxJwfrontendusermanagerLastupdated($txJwfrontendusermanagerLastupdated)
+    public function setTxjwfeusermanagerLastupdated($txjwfeusermanagerLastupdated)
     {
-        $this->txJwfrontendusermanagerLastupdated = $txJwfrontendusermanagerLastupdated;
+        $this->txjwfeusermanagerLastupdated = $txjwfeusermanagerLastupdated;
     }
 	
     /**
@@ -270,9 +270,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getTxJwfrontendusermanagerAdditionalText1()
+    public function getTxjwfeusermanagerAdditionalText1()
     {
-        return $this->txJwfrontendusermanagerAdditionalText1;
+        return $this->txjwfeusermanagerAdditionalText1;
     }
 
     /**
@@ -281,9 +281,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $text
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalText1($text)
+    public function setTxjwfeusermanagerAdditionalText1($text)
     {
-        $this->txJwfrontendusermanagerAdditionalText1 = $text;
+        $this->txjwfeusermanagerAdditionalText1 = $text;
     }
 	
     /**
@@ -291,9 +291,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getTxJwfrontendusermanagerAdditionalText2()
+    public function getTxjwfeusermanagerAdditionalText2()
     {
-        return $this->txJwfrontendusermanagerAdditionalText2;
+        return $this->txjwfeusermanagerAdditionalText2;
     }
 
     /**
@@ -302,9 +302,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $text
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalText2($text)
+    public function setTxjwfeusermanagerAdditionalText2($text)
     {
-        $this->txJwfrontendusermanagerAdditionalText2 = $text;
+        $this->txjwfeusermanagerAdditionalText2 = $text;
     }
 	
     /**
@@ -312,9 +312,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getTxJwfrontendusermanagerAdditionalText3()
+    public function getTxjwfeusermanagerAdditionalText3()
     {
-        return $this->txJwfrontendusermanagerAdditionalText3;
+        return $this->txjwfeusermanagerAdditionalText3;
     }
 
     /**
@@ -323,9 +323,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $text
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalText3($text)
+    public function setTxjwfeusermanagerAdditionalText3($text)
     {
-        $this->txJwfrontendusermanagerAdditionalText3 = $text;
+        $this->txjwfeusermanagerAdditionalText3 = $text;
     }
 	
     /**
@@ -333,9 +333,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getTxJwfrontendusermanagerAdditionalText4()
+    public function getTxjwfeusermanagerAdditionalText4()
     {
-        return $this->txJwfrontendusermanagerAdditionalText4;
+        return $this->txjwfeusermanagerAdditionalText4;
     }
 
     /**
@@ -344,9 +344,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $text
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalText4($text)
+    public function setTxjwfeusermanagerAdditionalText4($text)
     {
-        $this->txJwfrontendusermanagerAdditionalText4 = $text;
+        $this->txjwfeusermanagerAdditionalText4 = $text;
     }
 	
     /**
@@ -354,9 +354,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return string
      */
-    public function getTxJwfrontendusermanagerAdditionalText5()
+    public function getTxjwfeusermanagerAdditionalText5()
     {
-        return $this->txJwfrontendusermanagerAdditionalText5;
+        return $this->txjwfeusermanagerAdditionalText5;
     }
 
     /**
@@ -365,9 +365,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param string $text
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalText5($text)
+    public function setTxjwfeusermanagerAdditionalText5($text)
     {
-        $this->txJwfrontendusermanagerAdditionalText5 = $text;
+        $this->txjwfeusermanagerAdditionalText5 = $text;
     }
 	
     /**
@@ -375,9 +375,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return boolean
      */
-    public function getTxJwfrontendusermanagerAdditionalBoolean1()
+    public function getTxjwfeusermanagerAdditionalBoolean1()
     {
-        return $this->txJwfrontendusermanagerAdditionalBoolean1;
+        return $this->txjwfeusermanagerAdditionalBoolean1;
     }
 
     /**
@@ -386,9 +386,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBoolean1($value)
+    public function setTxjwfeusermanagerAdditionalBoolean1($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBoolean1 = $value;
+        $this->txjwfeusermanagerAdditionalBoolean1 = $value;
     }
 	
     /**
@@ -396,9 +396,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return boolean
      */
-    public function getTxJwfrontendusermanagerAdditionalBoolean2()
+    public function getTxjwfeusermanagerAdditionalBoolean2()
     {
-        return $this->txJwfrontendusermanagerAdditionalBoolean2;
+        return $this->txjwfeusermanagerAdditionalBoolean2;
     }
 
     /**
@@ -407,9 +407,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBoolean2($value)
+    public function setTxjwfeusermanagerAdditionalBoolean2($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBoolean2 = $value;
+        $this->txjwfeusermanagerAdditionalBoolean2 = $value;
     }
 	
     /**
@@ -417,9 +417,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return boolean
      */
-    public function getTxJwfrontendusermanagerAdditionalBoolean3()
+    public function getTxjwfeusermanagerAdditionalBoolean3()
     {
-        return $this->txJwfrontendusermanagerAdditionalBoolean3;
+        return $this->txjwfeusermanagerAdditionalBoolean3;
     }
 
     /**
@@ -428,9 +428,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBoolean3($value)
+    public function setTxjwfeusermanagerAdditionalBoolean3($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBoolean3 = $value;
+        $this->txjwfeusermanagerAdditionalBoolean3 = $value;
     }
 	
     /**
@@ -438,9 +438,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return boolean
      */
-    public function getTxJwfrontendusermanagerAdditionalBoolean4()
+    public function getTxjwfeusermanagerAdditionalBoolean4()
     {
-        return $this->txJwfrontendusermanagerAdditionalBoolean4;
+        return $this->txjwfeusermanagerAdditionalBoolean4;
     }
 
     /**
@@ -449,9 +449,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBoolean4($value)
+    public function setTxjwfeusermanagerAdditionalBoolean4($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBoolean4 = $value;
+        $this->txjwfeusermanagerAdditionalBoolean4 = $value;
     }
 	
     /**
@@ -459,9 +459,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return boolean
      */
-    public function getTxJwfrontendusermanagerAdditionalBoolean5()
+    public function getTxjwfeusermanagerAdditionalBoolean5()
     {
-        return $this->txJwfrontendusermanagerAdditionalBoolean5;
+        return $this->txjwfeusermanagerAdditionalBoolean5;
     }
 
     /**
@@ -470,9 +470,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param boolean $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBoolean5($value)
+    public function setTxjwfeusermanagerAdditionalBoolean5($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBoolean5 = $value;
+        $this->txjwfeusermanagerAdditionalBoolean5 = $value;
     }
 	
     /**
@@ -480,9 +480,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerAdditionalBitfield1()
+    public function getTxjwfeusermanagerAdditionalBitfield1()
     {
-        return $this->txJwfrontendusermanagerAdditionalBitfield1;
+        return $this->txjwfeusermanagerAdditionalBitfield1;
     }
 
     /**
@@ -491,9 +491,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBitfield1($value)
+    public function setTxjwfeusermanagerAdditionalBitfield1($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBitfield1 = $value;
+        $this->txjwfeusermanagerAdditionalBitfield1 = $value;
     }
 	
     /**
@@ -501,9 +501,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerAdditionalBitfield2()
+    public function getTxjwfeusermanagerAdditionalBitfield2()
     {
-        return $this->txJwfrontendusermanagerAdditionalBitfield2;
+        return $this->txjwfeusermanagerAdditionalBitfield2;
     }
 
     /**
@@ -512,9 +512,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBitfield2($value)
+    public function setTxjwfeusermanagerAdditionalBitfield2($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBitfield2 = $value;
+        $this->txjwfeusermanagerAdditionalBitfield2 = $value;
     }
 	
     /**
@@ -522,9 +522,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerAdditionalBitfield3()
+    public function getTxjwfeusermanagerAdditionalBitfield3()
     {
-        return $this->txJwfrontendusermanagerAdditionalBitfield3;
+        return $this->txjwfeusermanagerAdditionalBitfield3;
     }
 
     /**
@@ -533,9 +533,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBitfield3($value)
+    public function setTxjwfeusermanagerAdditionalBitfield3($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBitfield3 = $value;
+        $this->txjwfeusermanagerAdditionalBitfield3 = $value;
     }
 	
     /**
@@ -543,9 +543,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerAdditionalBitfield4()
+    public function getTxjwfeusermanagerAdditionalBitfield4()
     {
-        return $this->txJwfrontendusermanagerAdditionalBitfield4;
+        return $this->txjwfeusermanagerAdditionalBitfield4;
     }
 
     /**
@@ -554,9 +554,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBitfield4($value)
+    public function setTxjwfeusermanagerAdditionalBitfield4($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBitfield4 = $value;
+        $this->txjwfeusermanagerAdditionalBitfield4 = $value;
     }
 	
     /**
@@ -564,9 +564,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      *
      * @return int
      */
-    public function getTxJwfrontendusermanagerAdditionalBitfield5()
+    public function getTxjwfeusermanagerAdditionalBitfield5()
     {
-        return $this->txJwfrontendusermanagerAdditionalBitfield5;
+        return $this->txjwfeusermanagerAdditionalBitfield5;
     }
 
     /**
@@ -575,9 +575,9 @@ class FrontendUser extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      * @param int $value
      * @return void
      */
-    public function setTxJwfrontendusermanagerAdditionalBitfield5($value)
+    public function setTxjwfeusermanagerAdditionalBitfield5($value)
     {
-        $this->txJwfrontendusermanagerAdditionalBitfield5 = $value;
+        $this->txjwfeusermanagerAdditionalBitfield5 = $value;
     }
 	
 	public function getFields($filter = null)

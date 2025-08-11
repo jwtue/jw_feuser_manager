@@ -2,9 +2,9 @@
 	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
 
-<div class="tx-jwfrontendusermanager-listofusers">
+<div class="tx-jwfeusermanager-listofusers">
 	<f:if condition="{settings.groupFiltering}">
-		<div class="tx-jwfrontendusermanager-listofusers-list-filter">
+		<div class="tx-jwfeusermanager-listofusers-list-filter">
 		Filter: <select size="1" onchange="document.location.href=this.value;">
 		<f:for each="{userGroups}" key="key" as="groupName" iteration="iterator">
 			<f:if condition="{filter} == {key}">
@@ -22,7 +22,7 @@
 	
 	<v:variable.set name="orderGroup">#</v:variable.set>
 	
-	<ul class="tx-jwfrontendusermanager-listofusers-list-index">
+	<ul class="tx-jwfeusermanager-listofusers-list-index">
 		<li>Schnellwahl:</li>
 	<f:for each="{users}" as="user" iteration="iterator">		
 		<v:variable.set name="newOrderGroup"><v:format.replace substring="Ä" replacement="A"><v:format.replace substring="Ö" replacement="O"><v:format.replace substring="Ü" replacement="U"><f:format.case mode="upper"><v:format.substring start="0" length="1"><v:variable.get name="fullUsers.{iterator.index}.{settings.orderBy.0}" /></v:format.substring></f:format.case></v:format.replace></v:format.replace></v:format.replace></v:variable.set>
@@ -42,7 +42,7 @@
 	</ul>	
 	
 	<f:if condition="{settings.csvDownload} || {settings.pdfDownload}">
-		<div class="tx-jwfrontendusermanager-listofusers-list-download">
+		<div class="tx-jwfeusermanager-listofusers-list-download">
 		Liste exportieren als: 
 			<f:if condition="{settings.pdfDownload}">
 				<f:link.page additionalParams="{filter: filter, download: 'pdf'}">PDF</f:link.page>
@@ -59,25 +59,25 @@
 					}
 				};
 				function showEmailAddresses(sender) {
-					$(sender).parents(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").show().find("textarea").focus();
+					$(sender).parents(".tx-jwfeusermanager-listofusers-list-download").find(".emailRecipientPopup").show().find("textarea").focus();
 					$("body").addClass("noscroll");
 					window.scrollTo(0, 0);
 					_paq.push(['trackEvent', 'Kontaktdaten', "E-Mail-Empfängerliste"]);
 				}
 				$(function () {
 					var url = '{f:uri.page(additionalParams: {filter: filter, download: 'email'}) -> f:format.htmlentitiesDecode()}';
-					$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten werden geladen...");
+					$(".tx-jwfeusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten werden geladen...");
 					$.get(url).done(function (data) {
-							$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val(data);
+							$(".tx-jwfeusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val(data);
 					}).fail(function (data) {
-						$(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten konnten nicht geladen werden");
+						$(".tx-jwfeusermanager-listofusers-list-download").find(".emailRecipientPopup").find("textarea").val("Daten konnten nicht geladen werden");
 					});
 					$(".emailRecipientPopup button.close").click(function () {
 						$(this).parents(".emailRecipientPopup").hide();
 						$("body").removeClass("noscroll");
 					});
 					$(".emailRecipientPopup button.copy").click(function () {
-						$(this).parents(".tx-jwfrontendusermanager-listofusers-list-download").find(".emailRecipientPopup textarea").focus();
+						$(this).parents(".tx-jwfeusermanager-listofusers-list-download").find(".emailRecipientPopup textarea").focus();
 						try {
 							document.execCommand("copy");
 						} catch(e) {
@@ -121,7 +121,7 @@
 		</div>
 	</f:if>
 	
-	<ul class="tx-jwfrontendusermanager-listofusers-list">
+	<ul class="tx-jwfeusermanager-listofusers-list">
 	<li class="headline">
 	<f:for each="{columnTitles}" as="column" iteration="iterator">
 		<div>{column}</div>
@@ -176,22 +176,22 @@
 				<f:case value="email">
 					<f:render partial="Email" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBoolean1">
+				<f:case value="txjwfeusermanagerAdditionalBoolean1">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBoolean2">
+				<f:case value="txjwfeusermanagerAdditionalBoolean2">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBoolean3">
+				<f:case value="txjwfeusermanagerAdditionalBoolean3">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBoolean4">
+				<f:case value="txjwfeusermanagerAdditionalBoolean4">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBoolean5">
+				<f:case value="txjwfeusermanagerAdditionalBoolean5">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerNewsletterSubscribed">
+				<f:case value="txjwfeusermanagerNewsletterSubscribed">
 					<f:render partial="Boolean" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
 				<f:case value="www">
@@ -221,22 +221,22 @@
 				<f:case value="lastlogin">
 					<f:render partial="DateTime" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerLastupdated">
+				<f:case value="txjwfeusermanagerLastupdated">
 					<f:render partial="DateTime" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwFrontendusermanagerAdditionalBitfield1">
+				<f:case value="txjwfeusermanagerAdditionalBitfield1">
 					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBitfield2">
+				<f:case value="txjwfeusermanagerAdditionalBitfield2">
 					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBitfield3">
+				<f:case value="txjwfeusermanagerAdditionalBitfield3">
 					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBitfield4">
+				<f:case value="txjwfeusermanagerAdditionalBitfield4">
 					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
-				<f:case value="txJwfrontendusermanagerAdditionalBitfield5">
+				<f:case value="txjwfeusermanagerAdditionalBitfield5">
 					<f:render partial="Choice" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings}" />
 				</f:case>
 				<f:defaultCase>

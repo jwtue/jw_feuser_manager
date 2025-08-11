@@ -1,11 +1,11 @@
-.tx-jwfrontendusermanager-edituser form {
+.tx-jwfeusermanager-edituser form {
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
-}.tx-jwfrontendusermanager-edituser form > .form-group {
+}.tx-jwfeusermanager-edituser form > .form-group {
 	clear: both;
 }
-.tx-jwfrontendusermanager-edituser .error.help-block {
+.tx-jwfeusermanager-edituser .error.help-block {
 	color: red;
     display: block;
     margin-bottom: 0.5rem;
@@ -13,83 +13,83 @@
     margin-top: -1rem;
 }
 
-.tx-jwfrontendusermanager-edituser label {
+.tx-jwfeusermanager-edituser label {
 	width: 160px;
 	margin-right: 10px;
 	float: left;
 	display: block;
 }
-.tx-jwfrontendusermanager-edituser .input.checkbox label,
-.tx-jwfrontendusermanager-edituser .input .radio label {
+.tx-jwfeusermanager-edituser .input.checkbox label,
+.tx-jwfeusermanager-edituser .input .radio label {
 	float: none;
 	width: auto;
 }
-.tx-jwfrontendusermanager-edituser .input.checkbox,
-.tx-jwfrontendusermanager-edituser .input .radio,
-.tx-jwfrontendusermanager-edituser button[type=submit],
-.tx-jwfrontendusermanager-edituser .error.help-block {
+.tx-jwfeusermanager-edituser .input.checkbox,
+.tx-jwfeusermanager-edituser .input .radio,
+.tx-jwfeusermanager-edituser button[type=submit],
+.tx-jwfeusermanager-edituser .error.help-block {
 	width: auto;
 	margin-left: 170px;
    /* height: 2.4375rem;*/
 }
-.tx-jwfrontendusermanager-edituser input[type=text],
-.tx-jwfrontendusermanager-edituser input[type=password],
-.tx-jwfrontendusermanager-edituser input[type=email],
-.tx-jwfrontendusermanager-edituser input[type=search],
-.tx-jwfrontendusermanager-edituser input[type=file],
-.tx-jwfrontendusermanager-edituser input[type=date],
-.tx-jwfrontendusermanager-edituser input[type=time],
-.tx-jwfrontendusermanager-edituser input[type=datetime-local],
-.tx-jwfrontendusermanager-edituser select,
-.tx-jwfrontendusermanager-edituser textarea,
-.tx-jwfrontendusermanager-edituser .error.help-block {
+.tx-jwfeusermanager-edituser input[type=text],
+.tx-jwfeusermanager-edituser input[type=password],
+.tx-jwfeusermanager-edituser input[type=email],
+.tx-jwfeusermanager-edituser input[type=search],
+.tx-jwfeusermanager-edituser input[type=file],
+.tx-jwfeusermanager-edituser input[type=date],
+.tx-jwfeusermanager-edituser input[type=time],
+.tx-jwfeusermanager-edituser input[type=datetime-local],
+.tx-jwfeusermanager-edituser select,
+.tx-jwfeusermanager-edituser textarea,
+.tx-jwfeusermanager-edituser .error.help-block {
 	width: 320px;
 }
-.tx-jwfrontendusermanager-edituser .input-inner {	
+.tx-jwfeusermanager-edituser .input-inner {	
     padding: 0.5rem;
     margin: 0 0 1rem;
 }
 
-.tx-jwfrontendusermanager-edituser .input.checkbox .inputs-list input[type=checkbox] {
+.tx-jwfeusermanager-edituser .input.checkbox .inputs-list input[type=checkbox] {
 	margin-bottom: 0;
 }
-.tx-jwfrontendusermanager-edituser .input.checkbox .inputs-list .form-check:last-child {
+.tx-jwfeusermanager-edituser .input.checkbox .inputs-list .form-check:last-child {
 	margin-bottom: 1rem;
 }
-.tx-jwfrontendusermanager-edituser .input-inner button {
+.tx-jwfeusermanager-edituser .input-inner button {
 	margin-left: 0;
 }
-.tx-jwfrontendusermanager-edituser .input.imagecrop {
+.tx-jwfeusermanager-edituser .input.imagecrop {
 	width: calc(100% - 180px);
     display: inline-block;
 }
-.tx-jwfrontendusermanager-edituser .input.imagecrop > img {
+.tx-jwfeusermanager-edituser .input.imagecrop > img {
 	max-width: 100%;
 }
 @media screen and (max-width: 620px) {
-	.tx-jwfrontendusermanager-edituser .input {
+	.tx-jwfeusermanager-edituser .input {
 		clear: both;
 	}
-	.tx-jwfrontendusermanager-edituser .input.checkbox,
-	.tx-jwfrontendusermanager-edituser button[type=submit],
-	.tx-jwfrontendusermanager-edituser .error.help-block {
+	.tx-jwfeusermanager-edituser .input.checkbox,
+	.tx-jwfeusermanager-edituser button[type=submit],
+	.tx-jwfeusermanager-edituser .error.help-block {
 		width: auto;
 		margin-left: 0;
 	}
-	.tx-jwfrontendusermanager-edituser input[type=text],
-	.tx-jwfrontendusermanager-edituser input[type=password],
-	.tx-jwfrontendusermanager-edituser input[type=email],
-	.tx-jwfrontendusermanager-edituser input[type=file],
-	.tx-jwfrontendusermanager-edituser input[type=search],
-	.tx-jwfrontendusermanager-edituser input[type=date],
-	.tx-jwfrontendusermanager-edituser input[type=time],
-	.tx-jwfrontendusermanager-edituser input[type=datetime-local],
-	.tx-jwfrontendusermanager-edituser select,
-	.tx-jwfrontendusermanager-edituser textarea,
-	.tx-jwfrontendusermanager-edituser .error.help-block {
+	.tx-jwfeusermanager-edituser input[type=text],
+	.tx-jwfeusermanager-edituser input[type=password],
+	.tx-jwfeusermanager-edituser input[type=email],
+	.tx-jwfeusermanager-edituser input[type=file],
+	.tx-jwfeusermanager-edituser input[type=search],
+	.tx-jwfeusermanager-edituser input[type=date],
+	.tx-jwfeusermanager-edituser input[type=time],
+	.tx-jwfeusermanager-edituser input[type=datetime-local],
+	.tx-jwfeusermanager-edituser select,
+	.tx-jwfeusermanager-edituser textarea,
+	.tx-jwfeusermanager-edituser .error.help-block {
 		width: 100%;
 	}
-	.tx-jwfrontendusermanager-edituser .input.imagecrop {
+	.tx-jwfeusermanager-edituser .input.imagecrop {
 		width: 100%;
 	}
 }

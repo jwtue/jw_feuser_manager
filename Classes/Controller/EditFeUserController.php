@@ -282,7 +282,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				
 		$conf = $this->getFullTyposcriptConfiguration();
 		
-		$form = $this->objectManager->get(FormDefinition::class, 'jwfrontendusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
+		$form = $this->objectManager->get(FormDefinition::class, 'jwfeusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
         $form->setRenderingOption('controllerAction', 'edit');
         if ($user != null) $form->setRenderingOption('additionalParams', array("user" => $user->getUid()));
 		$form->setRenderingOption('templateRootPaths ', $form->getRenderingOptions()['templateRootPaths']+
@@ -331,7 +331,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 							$el->setProperty("initialDate", $user->getFields()[$col->getUsableDbField()]);
 						}
 						$ell = $page1->createElement("editorfield_".$col->getUid()."_editable", 'Fluid');
-						$ell->setProperty("content", '<script type="text/javascript">document.getElementById(\'jwfrontendusermanager-edituser-'.$this->contentObj->data['uid'].'-editorfield_'.$col->getUid().'\').readOnly = false;</script>');
+						$ell->setProperty("content", '<script type="text/javascript">document.getElementById(\'jwfeusermanager-edituser-'.$this->contentObj->data['uid'].'-editorfield_'.$col->getUid().'\').readOnly = false;</script>');
                         if (substr($title, -1) != ":") $title .= ":";
 					} else if ($col->getDbMode() == EditorField::MODE_DB_TIME) {
 						$el = $page1->createElement("editorfield_".$col->getUid(), 'DateTimePicker');
@@ -417,7 +417,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					if ($col->getPasswordGenerator()) {
 						$el = $page1->createElement("editorfield_".$col->getUid()."_randompw", 'LabeledFluid');
 						$el->setLabel("Zufallspasswort:");
-						$el->setProperty("content", "<button onclick=\"var pw = '';var possible = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnopqrstuvwxyz123456789';for (var i = 0; i < 8; i++) {pw += possible.charAt(Math.floor(Math.random() * possible.length)); }document.getElementById('jwfrontendusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').value=pw;document.getElementById('jwfrontendusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').value=pw;document.getElementById('jwfrontendusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').type='text';document.getElementById('jwfrontendusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').type='text';return false;\">Erzeugen</button>");
+						$el->setProperty("content", "<button onclick=\"var pw = '';var possible = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnopqrstuvwxyz123456789';for (var i = 0; i < 8; i++) {pw += possible.charAt(Math.floor(Math.random() * possible.length)); }document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').value=pw;document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').value=pw;document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').type='text';document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').type='text';return false;\">Erzeugen</button>");
 					}
 					break;
 				case EditorField::TYPE_IMAGE:
@@ -770,7 +770,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				}
 			}
 			if ($this->settings['setLastupdated']) {
-				$user->setTxJwfrontendusermanagerLastupdated(time());
+				$user->setTxjwfeusermanagerLastupdated(time());
 			}
 			if ($this->settings['mode'] == 1) {
 				$this->userRepository->add($user);
@@ -795,7 +795,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$persistenceManager->persistAll();*/
 			 
 			
-			//print_r($user->getTxJwfrontendusermanagerLastupdated());
+			//print_r($user->getTxjwfeusermanagerLastupdated());
 			//die();
 			/*try {
 				$this->userRepository->update($user);
@@ -833,7 +833,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				
 		//$this->view->assign("form", $form);
 
-		return "<div class=\"tx-jwfrontendusermanager-edituser\">".$fr->render()."</div>";
+		return "<div class=\"tx-jwfeusermanager-edituser\">".$fr->render()."</div>";
 	}
 
     private function getLanguageService(
