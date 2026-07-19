@@ -120,6 +120,30 @@ Für abweichende Templates die Konstanten `plugin.tx_jwfeusermanager.view.*RootP
 > Content-Object ohnehin verfügbar. Bei bestehenden Inhaltselementen bleibt der Wert
 > ungenutzt im FlexForm-XML stehen; ein Migrationsschritt ist nicht nötig.
 
+### Eigene Formular-Elementtypen
+
+Das Bearbeiten-Plugin baut sein Formular programmatisch auf und nutzt dabei sechs
+Elementtypen, die EXT:form nicht mitbringt:
+
+| Typ | Zweck |
+|---|---|
+| `ImageCrop` | Bildvorschau mit Zuschnitt (cropper.js) |
+| `DateTimePicker` | Datumsfeld |
+| `LabeledStaticText` | statischer Text mit Label |
+| `LabeledFluid` / `Fluid` | freies Fluid mit bzw. ohne Label |
+| `Html` | roher HTML-Block (Trennlinien, Passwort-Generator) |
+
+Registriert werden sie in `Configuration/Yaml/FormSetup.yaml`; die Fluid-Partials liegen
+unter `Resources/Private/Form-Frontend/Partials/`. Eingebunden wird die YAML über
+`plugin.tx_form.settings.yamlConfigurations` im statischen TypoScript der Extension.
+
+> **Warum das wichtig ist:** Im Standard-Prototyp von EXT:form gilt
+> `skipUnknownElements: true`. Fehlt die Registrierung, wirft TYPO3 **keinen Fehler** —
+> die Elemente werden durch ein leeres Element ersetzt und rendern schlicht nichts. Genau
+> so verschwanden nach dem v12-Port Bildvorschau, Zuschnitt und Datumswähler, ohne dass
+> irgendwo etwas protokolliert wurde. Wer die statische TypoScript-Einbindung vergisst,
+> bekommt dasselbe Bild.
+
 ### Formularfelder (Plugin „Benutzer bearbeiten")
 
 Welche Felder das Bearbeiten-Formular enthält, wird **nicht** im FlexForm gepflegt, sondern
@@ -239,21 +263,10 @@ Beim Testen zu beachten: Die Standardkonfiguration von `image_autoresize` hat ei
   Model `EditorField` mappt weder `parent_ce` noch `sorting` als Eigenschaft, eine reguläre
   Extbase-Query kann darauf also weder filtern noch sortieren. Eine Umstellung setzt voraus,
   dass beide Felder zuvor im Model ergänzt werden.
-- **Sechs eigene Formular-Elementtypen sind nirgends registriert.** Der Controller erzeugt
-  `ImageCrop`, `LabeledStaticText`, `LabeledFluid`, `DateTimePicker`, `Fluid` und `Html`.
-  EXT:form kennt keinen davon, und die Extension bringt **keine Form-YAML** mit. Weil im
-  Standard-Prototyp `skipUnknownElements: true` gilt, wirft das **keinen Fehler** — die
-  Elemente werden durch ein leeres Element ersetzt und rendern schlicht nichts.
-
-  Praktisch heißt das: **kein Bild-Zuschnitt, kein Datumswähler, keine Trennlinien und
-  kein Passwort-Generator-Knopf.** Der Rest des Formulars funktioniert.
-
-  Die Registrierung muss also außerhalb der Extension liegen — vermutlich als
-  `plugin.tx_form.settings.yamlConfigurations` im TypoScript der einbindenden
-  Installation. In der v11-Fassung ist sie weder in der Extension noch in `fileadmin` zu
-  finden; sie steht dort vermutlich in der Datenbank. **Vor einem Umzug muss diese
-  Konfiguration gesichert werden**, sonst gehen die genannten Elemente verloren. Besser
-  wäre, die YAML in die Extension zu holen.
+- **Der Passwort-Generator-Knopf hängt an `lib.parseFunc_RTE`.** Das `Html`-Element rendert
+  seinen Inhalt über `f:format.html()`. Ist parseFunc knapp konfiguriert, wird
+  `<button onclick="…">` dabei entfernt. In einer nackten Installation fehlt der Knopf
+  deshalb; mit der parseFunc-Konfiguration eines vollständigen Sitepackages erscheint er.
 - **Die Property-Namen der Zusatzfelder sind heikel.** `txJwfeusermanager*` (großes J) muss
   so bleiben: Der Setter-Aufruf im Speicher-Finisher, die Feldnamen-Vergleiche im
   `ShowFeUserController` und die `<f:case>`-Werte in `List.html` leiten sich alle über

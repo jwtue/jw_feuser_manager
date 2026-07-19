@@ -23,6 +23,11 @@ plugin.tx_jwfeusermanager {
 
 page.includeCSS.tx_jwfeusermanager = EXT:jw_feuser_manager/Resources/Public/Css/jw_feuser_manager.css
 
+# Registriert die eigenen Formular-Elementtypen (ImageCrop, DateTimePicker, ...).
+# Ohne diese Zeile ersetzt EXT:form sie stillschweigend durch leere Elemente —
+# siehe Kommentar in der YAML-Datei.
+plugin.tx_form.settings.yamlConfigurations.1740000000 = EXT:jw_feuser_manager/Configuration/Yaml/FormSetup.yaml
+
 # Hinweis: tt_content.list.20.jwfeusermanager_{listofusers,edituser} wird von
 # ExtensionUtility::configurePlugin() automatisch als EXTBASEPLUGIN registriert.
 #

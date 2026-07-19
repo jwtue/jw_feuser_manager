@@ -1,0 +1,78 @@
+# Registrierung der eigenen Formular-Elementtypen dieser Extension.
+#
+# Der EditFeUserController erzeugt sechs Elementtypen, die EXT:form nicht kennt:
+# ImageCrop, DateTimePicker, LabeledStaticText, LabeledFluid, Fluid und Html.
+# Die zugehoerigen Fluid-Partials liegen seit jeher unter
+# Resources/Private/Form-Frontend/Partials/ — was fehlte, war diese Registrierung.
+#
+# Ohne sie greift im Standard-Prototyp "skipUnknownElements: true": Die Elemente
+# werden stillschweigend durch ein leeres UnknownFormElement ersetzt und rendern
+# nichts — ohne Fehlermeldung. Sichtbar war das als fehlende Bildvorschau samt
+# Zuschnitt, fehlender Datumswaehler und fehlende Trennlinien.
+#
+# Eingebunden wird die Datei ueber plugin.tx_form.settings.yamlConfigurations
+# in Configuration/Typoscript/setup.typoscript.
+
+prototypes:
+  standard:
+    formElementsDefinition:
+
+      # Basis-Rendering: eigenes Partial-Verzeichnis zusaetzlich zu dem von EXT:form
+      Form:
+        renderingOptions:
+          partialRootPaths:
+            100: 'EXT:jw_feuser_manager/Resources/Private/Form-Frontend/Partials/'
+
+      # Bildvorschau mit Zuschnitt (cropper.js). Erwartet die Eigenschaften
+      # imageUid, ceUid und colUid, die der Controller setzt.
+      ImageCrop:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: ImageCrop
+        properties:
+          imageUid: ''
+          ceUid: ''
+          colUid: ''
+          containerClassAttribute: 'input imagecrop'
+
+      # Datumsfeld
+      DateTimePicker:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: DateTimePicker
+        properties:
+          containerClassAttribute: input
+
+      # Statischer Text mit Label
+      LabeledStaticText:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: LabeledStaticText
+        properties:
+          text: ''
+          containerClassAttribute: input
+
+      # Freies Fluid mit Label
+      LabeledFluid:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: LabeledFluid
+        properties:
+          content: ''
+          containerClassAttribute: input
+
+      # Freies Fluid ohne Label
+      Fluid:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: Fluid
+        properties:
+          content: ''
+
+      # Roher HTML-Block (Trennlinien, Passwort-Generator-Knopf)
+      Html:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: Html
+        properties:
+          content: ''
