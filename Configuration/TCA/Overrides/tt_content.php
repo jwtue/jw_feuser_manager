@@ -2,13 +2,13 @@
  defined('TYPO3') or die;
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'JwTue.FeUserManager',
+    'JwFeUserManager',
     'ListOfUsers',
     'LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_listofusers',
     'EXT:jw_feuser_manager/Resources/Public/Icons/ContentElements/ListOfUsers.png'
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'JwTue.FeUserManager',
+    'JwFeUserManager',
     'EditUser',
     'LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:tt_content.list_type_edituser',
     'EXT:jw_feuser_manager/Resources/Public/Icons/ContentElements/ListOfUsers.png'

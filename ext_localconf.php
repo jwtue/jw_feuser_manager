@@ -8,7 +8,7 @@ $boot = function () {
         Extbase-based plugin
     =========================================================================== */
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JwTue.FeUserManager',
+        'JwFeUserManager',
         'ListOfUsers',
         // cacheable actions
         [
@@ -19,7 +19,7 @@ $boot = function () {
 		]
     );
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
-        'JwTue.FeUserManager',
+        'JwFeUserManager',
         'EditUser',
         // cacheable actions
         [

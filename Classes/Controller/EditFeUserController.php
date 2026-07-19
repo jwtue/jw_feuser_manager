@@ -49,7 +49,6 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * User repository
      *
      * @var \JwTue\FeUserManager\Domain\Repository\FrontendUserRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $userRepository;
 
@@ -57,7 +56,6 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * User group repository
      *
      * @var \JwTue\FeUserManager\Domain\Repository\FrontendUserGroupRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $userGroupRepository;
 
@@ -86,7 +84,6 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * Editor field repository
      *
      * @var \JwTue\FeUserManager\Domain\Repository\EditorFieldRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $editorFieldRepository;
 	
@@ -145,14 +142,13 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      {
 		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		
-		if (method_exists($this->configurationManager, "initializeObject")) {
-			$this->configurationManager->initializeObject();
-		}
-		$this->contentObj = $this->configurationManager->getContentObjectRenderer();
+		// ConfigurationManager::getContentObjectRenderer() gibt es in TYPO3 v12 nicht mehr;
+		// getContentObject() ist ab 12.4 deprecated. Der aktuelle ContentObjectRenderer
+		// kommt jetzt aus dem Request-Attribut "currentContentObject".
+		$this->contentObj = $this->request->getAttribute("currentContentObject");
 		
-		$view->getRequest()->setControllerExtensionName($this->request->getControllerExtensionName());
-		$view->getRequest()->setPluginName("EditUser");
-		$view->getRequest()->setControllerName("EditUser");
+		$view->setRequest($this->request);
+		$view->getRenderingContext()->setControllerName("EditUser");
 		$view->setFormat('html');
 		
 		$this->setViewConfiguration($view);
@@ -163,7 +159,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$conf = $this->getFullTyposcriptConfiguration();
 		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
 		
-		$view->assign("contentObject", $this->configurationManager->getContentObjectRenderer());
+		$view->assign("contentObject", $this->contentObj);
 	    $view->assign("settings", $this->settings);
 					
 		$pageRender = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
@@ -204,8 +200,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$user = null;
 				break;
 			case 2:
-				if ($this->request->getQueryParams()['user']) {
-					$user = $this->userRepository->findByUid($this->request->getQueryParams()['user']);
+				if ($this->request->getQueryParams()['user'] ?? null) {
+					$user = $this->userRepository->findByUid($this->request->getQueryParams()['user'] ?? 0);
 					break;
 				}
 			case 0:
@@ -217,7 +213,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$user = null;
 		}*/
 		
-		$this->view->getRequest()->setControllerActionName("edit");
+		$this->view->getRenderingContext()->setControllerAction("edit");
 		$this->view->setTemplate("EditUserEdit");
 		
 		$columns = $this->editorFieldRepository->findForElement($GLOBALS['TSFE']->page['uid'], $this->contentObj->data['uid'])->toArray();
@@ -715,7 +711,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				}
 			}
 			if ($this->settings['setLastupdated']) {
-				$user->setTxjwfeusermanagerLastupdated(time());
+				$user->setTxJwfeusermanagerLastupdated(time());
 			}
 			if ($this->settings['mode'] == 1) {
 				$this->userRepository->add($user);
@@ -740,7 +736,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$persistenceManager->persistAll();*/
 			 
 			
-			//print_r($user->getTxjwfeusermanagerLastupdated());
+			//print_r($user->getTxJwfeusermanagerLastupdated());
 			//die();
 			/*try {
 				$this->userRepository->update($user);
@@ -778,7 +774,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				
 		//$this->view->assign("form", $form);
 
-		return "<div class=\"tx-jwfeusermanager-edituser\">".$fr->render()."</div>";
+		return $this->htmlResponse("<div class=\"tx-jwfeusermanager-edituser\">".$fr->render()."</div>");
 	}
 
     private function getLanguageService(

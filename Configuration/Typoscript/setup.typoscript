@@ -23,16 +23,15 @@ plugin.tx_jwfeusermanager {
 
 page.includeCSS.tx_jwfeusermanager = EXT:jw_feuser_manager/Resources/Public/Css/jw_feuser_manager.css
 
-tt_content.list.20 {
-	jwfeusermanager_listofusers < lib.contentElement
-	jwfeusermanager_edituser < lib.contentElement
-    jwfeusermanager_edituser.dataProcessing.20 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
-    jwfeusermanager_edituser.dataProcessing.20 {
-		table = tx_jwfeusermanager_editorfield
-		orderBy = sorting
-		as = fields
-	}
-}
+# Hinweis: tt_content.list.20.jwfeusermanager_{listofusers,edituser} wird von
+# ExtensionUtility::configurePlugin() automatisch als EXTBASEPLUGIN registriert.
+#
+# Hier stand zuvor ein "< lib.contentElement" auf beide Signaturen, das dieses
+# EXTBASEPLUGIN durch ein FLUIDTEMPLATE ohne templateName ersetzt hat — die Plugins
+# liefen dadurch nicht (Fehler: "Tried resolving a template file for controller action
+# Default->Default"). Ebenso entfernt: ein dataProcessing auf jwfeusermanager_edituser,
+# das bei einem EXTBASEPLUGIN ohne Wirkung ist. Die Editor-Felder holt sich der
+# Controller ohnehin selbst über das EditorFieldRepository.
 
 # ==============================================
 # Persistence object mapping configuration

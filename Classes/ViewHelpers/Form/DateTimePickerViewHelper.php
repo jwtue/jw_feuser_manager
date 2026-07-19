@@ -32,7 +32,7 @@ class DateTimePickerViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\Abstrac
      *
      * @api
      */
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         parent::initializeArguments();
         $this->registerTagAttribute('size', 'int', 'The size of the input field');

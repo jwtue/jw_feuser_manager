@@ -18,6 +18,7 @@ use JwTue\FeUserManager\Domain\Repository\FrontendUserRepository;
 use JwTue\FeUserManager\Domain\Repository\FrontendUserGroupRepository;
 use JwTue\FeUserManager\Utility\Helper;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,7 +38,6 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * User repository
      *
      * @var \JwTue\FeUserManager\Domain\Repository\FrontendUserRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $userRepository;
 
@@ -45,7 +45,6 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * User group repository
      *
      * @var \JwTue\FeUserManager\Domain\Repository\FrontendUserGroupRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $userGroupRepository;
 
@@ -69,8 +68,16 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     {
         $this->userGroupRepository = $userGroupRepository;
     }
-		
-	
+
+	/**
+	 * getLanguageService() greift auf die LanguageServiceFactory zu. Sie wurde bisher
+	 * nirgends injiziert — in EditFeUserController gibt es den Konstruktor dafuer, in
+	 * diesem Controller fehlte er.
+	 */
+	public function __construct(
+		private readonly LanguageServiceFactory $languageServiceFactory,
+	) {}
+
 	use ViewConfigurationTrait;
 
     /**
@@ -82,10 +89,14 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
      protected function initializeView($view)
      {
+		// In TYPO3 v12 hat die StandaloneView keinen Extbase-Request mehr:
+		// setRequest() erwartet einen PSR-7-ServerRequest, und getRequest() liefert
+		// vor dem Setzen null. Controller- und Action-Name werden deshalb direkt am
+		// RenderingContext gesetzt — davon haengt die Aufloesung von setTemplate()
+		// auf Resources/Private/Templates/ShowFeUser/<Name>.html ab.
 		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-		$view->getRequest()->setControllerExtensionName($this->request->getControllerExtensionName());
-		$view->getRequest()->setPluginName("ListOfUsers");
-		$view->getRequest()->setControllerName("ShowFeUser");
+		$view->setRequest($this->request);
+		$view->getRenderingContext()->setControllerName("ShowFeUser");
 		$view->setFormat('html');
 		
 		$this->setViewConfiguration($view);
@@ -96,7 +107,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$conf = $this->getFullTyposcriptConfiguration();
 		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
 		
-		$view->assign("contentObject", $this->configurationManager->getContentObjectRenderer());
+		$view->assign("contentObject", $this->request->getAttribute("currentContentObject"));
 	    $this->view->assign("settings", $this->settings);
 					
 		$this->view = $view;
@@ -114,14 +125,14 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		//print_r($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['realurl']);
 		//die();
 		
-		if (intval($this->request->getQueryParams()['user'])>0) {
+		if (intval($this->request->getQueryParams()['user'] ?? 0) > 0) {
 			return new ForwardResponse("detail");
 		}
 		
 		$filter = $this->request->getQueryParams()['filter'] ?? 0;
 		$download = $this->request->getQueryParams()['download'] ?? null;
 		
-		$this->view->getRequest()->setControllerActionName("list");
+		$this->view->getRenderingContext()->setControllerAction("list");
 		$this->view->setTemplate("List");
 
 		$columns = explode(",", $this->settings['fields']);
@@ -337,14 +348,14 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						$value = $u[$c];
 						if (strpos($value, ",") !== false || strpos($value, " ") !== false) {
 							$value = "\"".str_replace("\"", "\"\"", $value)."\"";
-						} else if ($c == "txjwfeusermanagerLastupdated" || $c == "lastlogin") {
+						} else if ($c == "txJwfeusermanagerLastupdated" || $c == "lastlogin") {
 							$value = date("c", $value);
 						} else if ($c == "dateOfBirth") {
 							$value = substr(date("c", $value), 0, 10);
 						} else if ($c == "mobilephone" || $c == "phone" || $c == "phoneBusiness") {
 							$value = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($value, true);
-						} else if (substr($c, 0, strlen("txjwfeusermanagerAdditionalBitfield")) == "txjwfeusermanagerAdditionalBitfield") {
-                            $number = substr($c, strlen("txjwfeusermanagerAdditionalBitfield"));
+						} else if (substr($c, 0, strlen("txJwfeusermanagerAdditionalBitfield")) == "txJwfeusermanagerAdditionalBitfield") {
+                            $number = substr($c, strlen("txJwfeusermanagerAdditionalBitfield"));
                             $entrynames = explode("\n", $this->settings['additional_bitfield'.$number.'_entries']);
                             $entrynames = array_filter($entrynames, function($i) use ($value) { return (($value >> ($i+1)) & 1) != 0;}, ARRAY_FILTER_USE_KEY);
                             $value = "\"".implode(",", $entrynames)."\"";
@@ -534,19 +545,19 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		} else {
 			foreach ($extendedUsers as $k => $uu) {
                 for ($number = 1; $number <= 5; $number++) {
-                    if (!empty($this->settings['additional_bitfield'.$number.'_entries']) && array_key_exists("txjwfeusermanagerAdditionalBitfield".$number, $uu)) {
+                    if (!empty($this->settings['additional_bitfield'.$number.'_entries']) && array_key_exists("txJwfeusermanagerAdditionalBitfield".$number, $uu)) {
                         $entrynames = explode("\n", $this->settings['additional_bitfield'.$number.'_entries']);
                         $entrynames = array_filter($entrynames, 
-							function($i) use ($uu, $number) { return (($uu["txjwfeusermanagerAdditionalBitfield".$number] >> ($i+1)) & 1) != 0;},
+							function($i) use ($uu, $number) { return (($uu["txJwfeusermanagerAdditionalBitfield".$number] >> ($i+1)) & 1) != 0;},
 							ARRAY_FILTER_USE_KEY);
-                        $extendedUsers[$k]["txjwfeusermanagerAdditionalBitfield".$number] = array_values($entrynames);
+                        $extendedUsers[$k]["txJwfeusermanagerAdditionalBitfield".$number] = array_values($entrynames);
                     }
                 }
             }        
         }
         $this->view->assign("users", $extendedUsers);
 
-		return $this->view->render();
+		return $this->htmlResponse($this->view->render());
 	}
 	
     /**
@@ -561,7 +572,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$download = $this->request->getQueryParams()['download'] ?? null;
 		
-		$this->view->getRequest()->setControllerActionName("detail");
+		$this->view->getRenderingContext()->setControllerAction("detail");
 		$this->view->setTemplate("ShowFeUserDetail");
 		
 		$usr = $this->userRepository->findByUid($user);
@@ -579,9 +590,11 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		if ($download == "vcf") {
 			
-			$vcf_folder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath(
-				\TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($this->request->getControllerExtensionName())
-				) . 'Resources/Private/Library/vcard/';
+			// Extension-Key hier bewusst als Literal: Er laesst sich nicht aus dem
+			// Extension-Namen ableiten. camelCaseToLowerCaseUnderscored('JwFeUserManager')
+			// ergibt "jw_fe_user_manager", der tatsaechliche Key ist "jw_feuser_manager".
+			$vcf_folder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('jw_feuser_manager')
+				. 'Resources/Private/Library/vcard/';
 			require_once($vcf_folder.'vCard.class.php');
 			
 			$vcard = new \vCard();
@@ -661,7 +674,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			die();
 		}
 		
-		return $this->view->render();
+		return $this->htmlResponse($this->view->render());
 	}
 
     private function getLanguageService(
