@@ -213,6 +213,21 @@ Beim Ändern der Extension mindestens durchspielen:
 6. `tx_jwfeusermanager_lastupdated` wird gesetzt, wenn `settings.setLastupdated` aktiv ist
 7. Dublettenprüfung blockiert einen bereits vergebenen Benutzernamen — **auch wenn der
    bestehende Benutzer deaktiviert ist**
+8. Bildupload: Datei landet im konfigurierten Ordner, `sys_file_reference` wird angelegt
+9. Benutzer löschen: Datensatz auf `deleted=1`, Referenz und Datei entfernt, Weiterleitung
+   auf die konfigurierte Seite
+
+### Zusammenspiel mit `causal/image_autoresize`
+
+Ist die Extension installiert, verkleinert sie hochgeladene Bilder **automatisch über
+FAL-Events** — die Extension muss dafür nichts tun. Der frühere manuelle Aufruf von
+`Slots\FileUpload` ist gegenstandslos: Diese Signal/Slot-API existiert seit v12 nicht mehr,
+der Aufruf ist defensiv gekapselt und wird übersprungen.
+
+Beim Testen zu beachten: Die Standardkonfiguration von `image_autoresize` hat einen
+**Schwellwert von 400 KB** und Grenzen von 1920 × 1080. Kleinere Bilder bleiben unverändert
+— das ist kein Fehler. Ein 4000 × 3000 großes Bild mit 12 MB wurde im Test korrekt auf
+1440 × 1080 und 353 KB reduziert.
 
 ### Bekannte offene Punkte
 
@@ -224,8 +239,21 @@ Beim Ändern der Extension mindestens durchspielen:
   Model `EditorField` mappt weder `parent_ce` noch `sorting` als Eigenschaft, eine reguläre
   Extbase-Query kann darauf also weder filtern noch sortieren. Eine Umstellung setzt voraus,
   dass beide Felder zuvor im Model ergänzt werden.
-- **Bildupload mit Zuschnitt und der Löschen-Pfad sind ungetestet.** Der Bildupload setzt
-  `causal/image_autoresize` voraus, das beim Test nicht installiert war.
+- **Sechs eigene Formular-Elementtypen sind nirgends registriert.** Der Controller erzeugt
+  `ImageCrop`, `LabeledStaticText`, `LabeledFluid`, `DateTimePicker`, `Fluid` und `Html`.
+  EXT:form kennt keinen davon, und die Extension bringt **keine Form-YAML** mit. Weil im
+  Standard-Prototyp `skipUnknownElements: true` gilt, wirft das **keinen Fehler** — die
+  Elemente werden durch ein leeres Element ersetzt und rendern schlicht nichts.
+
+  Praktisch heißt das: **kein Bild-Zuschnitt, kein Datumswähler, keine Trennlinien und
+  kein Passwort-Generator-Knopf.** Der Rest des Formulars funktioniert.
+
+  Die Registrierung muss also außerhalb der Extension liegen — vermutlich als
+  `plugin.tx_form.settings.yamlConfigurations` im TypoScript der einbindenden
+  Installation. In der v11-Fassung ist sie weder in der Extension noch in `fileadmin` zu
+  finden; sie steht dort vermutlich in der Datenbank. **Vor einem Umzug muss diese
+  Konfiguration gesichert werden**, sonst gehen die genannten Elemente verloren. Besser
+  wäre, die YAML in die Extension zu holen.
 - **Die Property-Namen der Zusatzfelder sind heikel.** `txJwfeusermanager*` (großes J) muss
   so bleiben: Der Setter-Aufruf im Speicher-Finisher, die Feldnamen-Vergleiche im
   `ShowFeUserController` und die `<f:case>`-Werte in `List.html` leiten sich alle über

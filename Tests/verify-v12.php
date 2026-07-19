@@ -155,6 +155,10 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($extRoot .
 }
 $missing = [];
 foreach ($sources as $path => $code) {
+    // Kommentare entfernen: Klassennamen in Doc-Blocks sind Prosa, keine Aufrufe
+    $code = preg_replace('#/\*.*?\*/#s', '', $code);
+    $code = preg_replace('#//[^\n]*#', '', $code);
+
     // vollqualifizierte Klassenreferenzen der Form \Foo\Bar\Baz::
     preg_match_all('/\\\\((?:[A-Z][A-Za-z0-9_]*\\\\)+[A-Z][A-Za-z0-9_]*)::/', $code, $m);
     foreach (array_unique($m[1]) as $cls) {

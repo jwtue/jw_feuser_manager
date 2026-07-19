@@ -206,7 +206,11 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				}
 			case 0:
 			default:
-				$user = $this->userRepository->findByUid($GLOBALS['TSFE']->fe_user->user['uid']);
+				// Ohne angemeldeten Frontend-Benutzer ist ->user null. Ungeprueft ergab das
+				// eine PHP-Warnung ("array offset on value of type null"), die je nach
+				// errorHandlerErrors-Einstellung als Exception hochschlaegt.
+				$currentUserUid = $GLOBALS['TSFE']->fe_user->user['uid'] ?? 0;
+				$user = $currentUserUid ? $this->userRepository->findByUid($currentUserUid) : null;
 		}
 		/*
 		if ($this->settings['mode'] == 1) {
@@ -702,7 +706,9 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						
 						$refIndex->updateRefIndexTable("sys_file", $finalFile->getUid());
 						$refIndex->updateRefIndexTable("fe_users", $user->getUid());
-						$refIndex->updateRefIndexTable("sys_file_reference", $imgRef->getUid());
+						// Der Reference-Index der sys_file_reference-Zeile wird erst nach
+						// persistAll() aktualisiert (siehe unten): Die Zeile existiert hier
+						// noch nicht, $imgRef->getUid() liefe in ein "Undefined array key uid".
 						
 						//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($queryBuilder->getSQL());
                         
@@ -723,7 +729,29 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
 			$persistenceManager = $this->persistenceManager;
 			$persistenceManager->persistAll();
-			
+
+			// Reference-Index der Bild-Verknuepfungen nachziehen. Das geht erst jetzt:
+			// Extbase legt die sys_file_reference-Zeilen beim Persistieren an, vorher
+			// gibt es keine UID. Die UIDs werden deshalb aus der Datenbank gelesen.
+			if ($user !== null && $user->getUid()) {
+				$refConn = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+					->getConnectionForTable('sys_file_reference');
+				$refQb = $refConn->createQueryBuilder();
+				$refRows = $refQb->select('uid')
+					->from('sys_file_reference')
+					->where(
+						$refQb->expr()->eq('uid_foreign', $refQb->createNamedParameter($user->getUid(), \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
+						$refQb->expr()->eq('tablenames', $refQb->createNamedParameter('fe_users')),
+						$refQb->expr()->eq('fieldname', $refQb->createNamedParameter('image'))
+					)
+					->executeQuery()
+					->fetchAllAssociative();
+				foreach ($refRows as $refRow) {
+					$refIndex->updateRefIndexTable('sys_file_reference', (int)$refRow['uid']);
+				}
+				$refIndex->updateRefIndexTable('fe_users', $user->getUid());
+			}
+
 			$clearPages = array_filter(explode(",", $this->settings['clearCachePages']));
 
 			foreach ($clearPages as $page) {
@@ -764,17 +792,44 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			]);
 		}
 
-		/*foreach ($form->getRenderablesRecursively() as $renderable) {
-			if (method_exists($renderable, "onBuildingFinished")) {
-				$renderable->onBuildingFinished();
-			}
-		}*/
-		
+		// Das Formular wird hier programmatisch zusammengebaut, nicht ueber die
+		// ArrayFormFactory. Deren triggerFormBuildingFinished() laeuft dadurch nicht — und
+		// damit auch nicht der afterBuildingFinished-Hook von EXT:form.
+		//
+		// Genau dieser Hook haengt an Datei-Upload-Feldern den
+		// UploadedFileReferenceConverter ein. Ohne ihn erreicht der rohe $_FILES-Array den
+		// PropertyMapper und der Upload scheitert mit
+		// "It is not allowed to map property 'name'".
+		//
+		// Deshalb wird der Hook hier nachgezogen, analog zu
+		// AbstractFormFactory::triggerFormBuildingFinished().
+		$this->triggerFormBuildingFinished($form);
+
 		$fr = $form->bind($this->request);
 				
 		//$this->view->assign("form", $form);
 
 		return $this->htmlResponse("<div class=\"tx-jwfeusermanager-edituser\">".$fr->render()."</div>");
+	}
+
+	/**
+	 * Ruft den afterBuildingFinished-Hook von EXT:form fuer alle Elemente des Formulars auf.
+	 *
+	 * Nachbau von TYPO3\CMS\Form\Domain\Factory\AbstractFormFactory::triggerFormBuildingFinished(),
+	 * die hier nicht greift, weil das Formular nicht ueber eine FormFactory entsteht.
+	 */
+	protected function triggerFormBuildingFinished(FormDefinition $form): void
+	{
+		$hooks = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/form']['afterBuildingFinished'] ?? [];
+
+		foreach ($form->getRenderablesRecursively() as $renderable) {
+			foreach ($hooks as $className) {
+				$hookObj = GeneralUtility::makeInstance($className);
+				if (method_exists($hookObj, 'afterBuildingFinished')) {
+					$hookObj->afterBuildingFinished($renderable);
+				}
+			}
+		}
 	}
 
     private function getLanguageService(
