@@ -510,6 +510,10 @@
 				<source>Show BCC field and checkbox for sending email (unchecked by default)</source>
                 <target>BCC-Feld und Schaltfläche für E-Mail-Versand anzeigen (nicht vorausgewählt)</target>
 			</trans-unit>
+			<trans-unit id="flexform.composedFields" xml:space="preserve">
+				<source>___ Composed fields ___</source>
+				<target>___ Zusammengesetzte Felder ___</target>
+			</trans-unit>
         </body>
     </file>
 </xliff>

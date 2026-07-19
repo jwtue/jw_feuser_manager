@@ -65,7 +65,10 @@ class Helper
 		$city = $languageService->sL($GLOBALS['TCA']['fe_users']['columns']["city"]['label']);
 		if (substr($city, -1) == ":") $city = substr($city, 0, -1);
 		
-		$fieldList[] = array("___ Zusammengesetzte Felder ___", "");
+		$fieldList[] = array(
+			$languageService->sL('LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:flexform.composedFields'),
+			""
+		);
 		$fieldList[] = array($firstname." ".$lastname, "firstname_lastname");
 		$fieldList[] = array($lastname.", ".$firstname, "lastname_firstname");
 		$fieldList[] = array($address.", ".$zip." ".$city, "full_address");

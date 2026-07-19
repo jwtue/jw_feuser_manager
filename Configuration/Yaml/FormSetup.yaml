@@ -1,7 +1,8 @@
 # Registrierung der eigenen Formular-Elementtypen dieser Extension.
 #
-# Der EditFeUserController erzeugt sechs Elementtypen, die EXT:form nicht kennt:
-# ImageCrop, DateTimePicker, LabeledStaticText, LabeledFluid, Fluid und Html.
+# Der EditFeUserController erzeugt Elementtypen, die EXT:form nicht kennt:
+# ImageCrop, DateTimePicker, LabeledStaticText, LabeledFluid, Fluid, Html und
+# PasswordGenerator.
 # Die zugehoerigen Fluid-Partials liegen seit jeher unter
 # Resources/Private/Form-Frontend/Partials/ — was fehlte, war diese Registrierung.
 #
@@ -69,7 +70,20 @@ prototypes:
         properties:
           content: ''
 
-      # Roher HTML-Block (Trennlinien, Passwort-Generator-Knopf)
+      # Knopf "Zufallspasswort erzeugen". Eigener Typ statt HTML-Schnipsel im
+      # content-Property: Fluid wuerde die geschweiften Klammern des JavaScripts
+      # als Ausdruecke deuten. Die Logik liegt in
+      # Resources/Public/JavaScript/passwordGenerator.js.
+      PasswordGenerator:
+        implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
+        renderingOptions:
+          templateName: PasswordGenerator
+        properties:
+          fieldId: ''
+          length: 12
+          containerClassAttribute: input
+
+      # Roher HTML-Block (Trennlinien)
       Html:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:

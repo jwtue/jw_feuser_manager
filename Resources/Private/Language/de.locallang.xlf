@@ -20,6 +20,14 @@
 				<source>Confirm %s</source>
 				<target>%s bestätigen</target>
 			</trans-unit>	
+			<trans-unit id="edituser.randomPassword" xml:space="preserve">
+				<source>Random password:</source>
+				<target>Zufallspasswort:</target>
+			</trans-unit>
+			<trans-unit id="edituser.generatePassword" xml:space="preserve">
+				<source>Generate</source>
+				<target>Erzeugen</target>
+			</trans-unit>
         </body>
     </file>
 </xliff>

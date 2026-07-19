@@ -263,10 +263,12 @@ Beim Testen zu beachten: Die Standardkonfiguration von `image_autoresize` hat ei
   Model `EditorField` mappt weder `parent_ce` noch `sorting` als Eigenschaft, eine reguläre
   Extbase-Query kann darauf also weder filtern noch sortieren. Eine Umstellung setzt voraus,
   dass beide Felder zuvor im Model ergänzt werden.
-- **Der Passwort-Generator-Knopf hängt an `lib.parseFunc_RTE`.** Das `Html`-Element rendert
-  seinen Inhalt über `f:format.html()`. Ist parseFunc knapp konfiguriert, wird
-  `<button onclick="…">` dabei entfernt. In einer nackten Installation fehlt der Knopf
-  deshalb; mit der parseFunc-Konfiguration eines vollständigen Sitepackages erscheint er.
+- **Kein HTML mit geschweiften Klammern in `content`-Eigenschaften.** Die Partials
+  `Fluid` und `LabeledFluid` rendern ihren Inhalt über `v:render.inline`, also **als
+  Fluid-Quelltext**. Eingebettetes JavaScript wird dadurch zerlegt: `{` beginnt für Fluid
+  einen Ausdruck. Genau daran scheiterte früher der Passwort-Generator. Wer solche
+  Bausteine braucht, legt einen eigenen Elementtyp mit Partial an (Vorbild:
+  `PasswordGenerator`) und lagert das JavaScript in eine Datei aus.
 - **Die Property-Namen der Zusatzfelder sind heikel.** `txJwfeusermanager*` (großes J) muss
   so bleiben: Der Setter-Aufruf im Speicher-Finisher, die Feldnamen-Vergleiche im
   `ShowFeUserController` und die `<f:case>`-Werte in `List.html` leiten sich alle über

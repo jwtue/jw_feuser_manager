@@ -167,6 +167,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$cssFile = "EXT:jw_feuser_manager/Resources/Public/Css/cropper.min.css";
 		$pageRender->addJsFooterFile($jsFile, 'text/javascript', true, false, '', true);
 		$pageRender->addCssFile($cssFile);
+		$pageRender->addJsFooterFile(
+			"EXT:jw_feuser_manager/Resources/Public/JavaScript/passwordGenerator.js",
+			'text/javascript', true, false, '', true
+		);
 					
 		$this->view = $view;
      }
@@ -356,9 +360,20 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					if ($col->getPasswordGenerator()) {
-						$el = $page1->createElement("editorfield_".$col->getUid()."_randompw", 'LabeledFluid');
-						$el->setLabel("Zufallspasswort:");
-						$el->setProperty("content", "<button onclick=\"var pw = '';var possible = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnopqrstuvwxyz123456789';for (var i = 0; i < 8; i++) {pw += possible.charAt(Math.floor(Math.random() * possible.length)); }document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').value=pw;document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').value=pw;document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."').type='text';document.getElementById('jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()."-confirmation').type='text';return false;\">Erzeugen</button>");
+						// Eigener Elementtyp statt eines HTML-Schnipsels im content-Property:
+						// LabeledFluid rendert seinen Inhalt ueber v:render.inline, also als
+						// Fluid-Quelltext. Die geschweiften Klammern des frueher hier
+						// eingebetteten JavaScripts wurden dabei als Fluid-Ausdruecke gedeutet,
+						// wodurch der Knopf gar nicht erst im Markup landete.
+						// Die Logik steht jetzt in Resources/Public/JavaScript/passwordGenerator.js.
+						$el = $page1->createElement("editorfield_".$col->getUid()."_randompw", 'PasswordGenerator');
+						$el->setLabel($this->languageService->sL(
+							"LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.randomPassword"
+						) ?: "Zufallspasswort:");
+						$el->setProperty(
+							"fieldId",
+							"jwfeusermanager-edituser-".$this->contentObj->data['uid']."-editorfield_".$col->getUid()
+						);
 					}
 					break;
 				case EditorField::TYPE_IMAGE:
