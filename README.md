@@ -11,9 +11,21 @@ Nachfolger der Extension `jw_frontendusermanager` (TYPO3 v8–v11), die ihrersei
 | Extension-Key | `jw_feuser_manager` |
 | Composer-Paket | `jwtue/jw_feuser_manager` |
 | PHP-Namespace | `JwTue\FeUserManager\` |
-| TYPO3 | 12.4 |
-| PHP | ≥ 8.0 |
+| TYPO3 | 12.4 — **nicht** mit v11 lauffähig, siehe unten |
+| PHP | ≥ 8.1 |
 | Lizenz | MIT |
+
+> **Diese Fassung läuft ausschließlich unter TYPO3 v12.** Sie ist die Portierung von
+> `jw_frontendusermanager`, das weiterhin die v11-Fassung ist. Für eine v11-Installation
+> ist also die Vorgänger-Extension zu verwenden, nicht diese.
+>
+> Der Code nutzt an mehreren Stellen APIs, die es in v11 nicht gibt — insbesondere den
+> PSR-7-basierten Extbase-Request (`$this->request->getQueryParams()`,
+> `->getAttribute('currentContentObject')`) und `getRenderingContext()->setControllerName()`
+> an der StandaloneView. Die v11-Fassung verwendete dafür `GeneralUtility::_GET()`,
+> `ConfigurationManager::getContentObject()` und `Extbase\Mvc\View\ViewInterface` — letzteres
+> existiert in v12 nicht mehr. Eine Extension, die beides bedient, wäre nur mit
+> Versionsweichen möglich; das ist bewusst nicht gemacht.
 
 ## Installation
 
