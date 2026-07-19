@@ -19,8 +19,8 @@ use JwTue\FeUserManager\Domain\Repository\FrontendUserGroupRepository;
 use JwTue\FeUserManager\Domain\Repository\EditorFieldRepository;
 use JwTue\FeUserManager\Domain\Model\EditorField;
 use JwTue\FeUserManager\Utility\Helper;
+use JwTue\FeUserManager\Validation\Validator\UniqueUsernameValidator;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \TYPO3\CMS\Extbase\Object\ObjectManager;
 use \TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use \TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
 use \TYPO3\CMS\Extbase\Validation\Validator\EmailAddressValidator;
@@ -30,6 +30,10 @@ use \TYPO3\CMS\Form\Domain\Configuration\ConfigurationService;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
  * File controller.
@@ -87,9 +91,21 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     protected $editorFieldRepository;
 	
 
-	public function __construct(private readonly LanguagServiceFactory $languageServiceFactory) {}
-	 
-	
+	/**
+	 * Content-Object des Plugins. In TYPO3 v12 deklariert der ActionController diese
+	 * Eigenschaft nicht mehr selbst — sie wird in initializeView() aus dem
+	 * ConfigurationManager gesetzt und muss deshalb hier deklariert sein (ab PHP 8.2
+	 * sind dynamische Eigenschaften deprecated).
+	 */
+	protected ?ContentObjectRenderer $contentObj = null;
+
+	public function __construct(
+		private readonly LanguageServiceFactory $languageServiceFactory,
+		private readonly ResourceFactory $resourceFactory,
+		private readonly PersistenceManager $persistenceManager,
+	) {}
+
+
     /**
      * @param EditorFieldRepository $editorFieldRepository
      *
@@ -116,66 +132,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 		
 	
-	private function getTyposcriptConfiguration() {
-        $conf = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT, $this->extensionName);
-		$svc = new \TYPO3\CMS\Core\TypoScript\TypoScriptService();
-		$conf = $svc->convertTypoScriptArrayToPlainArray($conf);
-		$conf = $conf['plugin']['tx_'.strtolower($this->extensionName)];
-		return $conf;
-	}
-	
-	private function getFullTyposcriptConfiguration() {
-        $conf = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT, $this->extensionName);
-		$svc = new \TYPO3\CMS\Core\TypoScript\TypoScriptService();
-		$conf = $svc->convertTypoScriptArrayToPlainArray($conf);
-		return $conf;
-	}
-		
-	/**
-	 * Allows the widget template root path to be overridden via the framework configuration,
-	 * e.g. plugin.tx_extension.view.templateRootPaths
-	 *
-	 * @param $view
-	 * @return void
-	 */
-	protected function setViewConfiguration($view)
-	{
-		// Template Path Override
-		$extbaseFrameworkConfiguration = $this->getTyposcriptConfiguration();
-
-		// set TemplateRootPaths
-		$viewFunctionName = 'setTemplateRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'templateRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-
-		// set LayoutRootPaths
-		$viewFunctionName = 'setLayoutRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'layoutRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-
-		// set PartialRootPaths
-		$viewFunctionName = 'setPartialRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'partialRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-	}
+	use ViewConfigurationTrait;
 
     /**
      * Initializes the view before invoking an action method.
@@ -186,14 +143,14 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
      protected function initializeView($view)
      {
-		$view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		
 		if (method_exists($this->configurationManager, "initializeObject")) {
 			$this->configurationManager->initializeObject();
 		}
 		$this->contentObj = $this->configurationManager->getContentObjectRenderer();
 		
-		$view->getRequest()->setControllerExtensionName($this->extensionName);
+		$view->getRequest()->setControllerExtensionName($this->request->getControllerExtensionName());
 		$view->getRequest()->setPluginName("EditUser");
 		$view->getRequest()->setControllerName("EditUser");
 		$view->setFormat('html');
@@ -208,7 +165,6 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$view->assign("contentObject", $this->configurationManager->getContentObjectRenderer());
 	    $view->assign("settings", $this->settings);
-		$this->contentObj->data['uid'] = $this->settings['uid'];
 					
 		$pageRender = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
 		$jsFile = "EXT:jw_feuser_manager/Resources/Public/JavaScript/cropper.min.js";
@@ -271,7 +227,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$this->languageService = $this->getLanguageService($this->request);
 				
         $prototypeName = 'standard';
-        $configurationService = $this->objectManager->get(ConfigurationService::class);
+        $configurationService = GeneralUtility::makeInstance(ConfigurationService::class);
         $prototypeConfiguration = $configurationService->getPrototypeConfiguration($prototypeName);
 						
 		$prototypeConfiguration["formElementsDefinition"]["Html"] = $prototypeConfiguration["formElementsDefinition"]["Text"];
@@ -282,7 +238,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				
 		$conf = $this->getFullTyposcriptConfiguration();
 		
-		$form = $this->objectManager->get(FormDefinition::class, 'jwfeusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
+		$form = GeneralUtility::makeInstance(FormDefinition::class, 'jwfeusermanager-edituser-'.$this->contentObj->data['uid'], $prototypeConfiguration);
         $form->setRenderingOption('controllerAction', 'edit');
         if ($user != null) $form->setRenderingOption('additionalParams', array("user" => $user->getUid()));
 		$form->setRenderingOption('templateRootPaths ', $form->getRenderingOptions()['templateRootPaths']+
@@ -318,7 +274,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					} else if ($col->getDbMode() == EditorField::MODE_DB_EMAIL) {
 						$el = $page1->createElement("editorfield_".$col->getUid(), 'Text');
 						if ($user != null) $el->setDefaultValue($user->getFields()[$col->getUsableDbField()]);
-						$el->addValidator($this->objectManager->get(EmailAddressValidator::class));
+						$el->addValidator(GeneralUtility::makeInstance(EmailAddressValidator::class));
                         if (substr($title, -1) != ":") $title .= ":";
 					} else if ($col->getDbMode() == EditorField::MODE_DB_BOOLEAN) {
 						$el = $page1->createElement("editorfield_".$col->getUid(), 'Checkbox');
@@ -380,27 +336,12 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                         $el->setDefaultValue($selected);
                     }
 					if ($user == null && $col->getDbField() == "username") {
-						$el->addValidator(new class($this->userRepository) extends \TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator {
-							private $userRepository;
-							public function __construct($userRepository) {
-								$this->userRepository = $userRepository;
-							}
-							public function isValid($value)
-							{
-								$existingUsers = $this->userRepository->findForUsername($value);
-								if ($existingUsers && count($existingUsers->toArray()) > 0) {
-									$this->addError(
-										"Benutzer mit diesem Namen existiert bereits",
-										1544001549 
-									);
-								}
-							}
-						});
+						$el->addValidator(new UniqueUsernameValidator($this->userRepository));
                         if (substr($title, -1) != ":") $title .= ":";
 					}
 					$el->setLabel($title);
 					if ($col->getRequired()) {
-						$el->addValidator($this->objectManager->get(NotEmptyValidator::class));
+						$el->addValidator(GeneralUtility::makeInstance(NotEmptyValidator::class));
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					break;
@@ -411,7 +352,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$el->setLabel($title.":");
 					$el->setProperty("confirmationLabel", str_replace("%s", $col->getTitle(), $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.confirm")).":");
 					if ($col->getRequired()) {
-						$el->addValidator($this->objectManager->get(NotEmptyValidator::class));
+						$el->addValidator(GeneralUtility::makeInstance(NotEmptyValidator::class));
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					if ($col->getPasswordGenerator()) {
@@ -531,18 +472,16 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						
 						$el = $page1->createElement("editorfield_".$col->getUid()."_bcc", "Text");
 						$el->setLabel("\u{00A0}");
-						$el->addValidator($this->objectManager->get(EmailAddressValidator::class));
+						$el->addValidator(GeneralUtility::makeInstance(EmailAddressValidator::class));
 					}
 					break;
 			}
-			//$el->addValidator($this->objectManager->get(\TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator::class));
+			//$el->addValidator(GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator::class));
 		}
 		
 		$form->setRenderingOption("submitButtonLabel", $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.save"));
 		
-		$userRepository = &$this->userRepository;
-		
-		$closureFinisher = $this->objectManager->get(\TYPO3\CMS\Form\Domain\Finishers\ClosureFinisher::class);
+		$closureFinisher = GeneralUtility::makeInstance(\TYPO3\CMS\Form\Domain\Finishers\ClosureFinisher::class);
 		$closureFinisher->setOption('closure', function($finisherContext) use (&$user, &$colsById) {
 			$formRuntime = $finisherContext->getFormRuntime();
 			
@@ -594,7 +533,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					}
 				} else if ($colsById[$key]->getType() == EditorField::TYPE_EMAIL) {
 					if ($value) {						
-						$mail = $this->objectManager->get(\TYPO3\CMS\Core\Mail\MailMessage::class);
+						$mail = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Mail\MailMessage::class);
 
 						$content = $colsById[$key]->getEmailContent();
 						$content = str_replace("%firstname%", $user->getFirstName(), $content);
@@ -631,7 +570,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 						// Den Vorschlaghammer instanzieren / aus der Kiste kramen
 						// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
-						$persistenceManager = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
+						$persistenceManager = $this->persistenceManager;
 						$persistenceManager->persistAll();
 						
 						$this->cacheService->clearPageCache($colsById[$key]->getRedirectPage());
@@ -674,13 +613,13 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 								$refIndex->updateRefIndexTable("fe_users", $user->getUid());
 								$refIndex->updateRefIndexTable("sys_file_reference", $imgRes[$i]->getUid());
 							}
-							$emptyStor = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\ObjectStorage');
+							$emptyStor = GeneralUtility::makeInstance(ObjectStorage::class);
 							$user->setImage($emptyStor);
 						} else {	
 							$queryBuilder->update('sys_file_reference')
 							->where(
 								$queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($imgRes[0]->getUid()))
-							)->set("crop", $crop)->execute();
+							)->set("crop", $crop)->executeStatement();
 							
 							$refIndex->updateRefIndexTable("sys_file", $imgFile[0]->getUid());
 							$refIndex->updateRefIndexTable("fe_users", $user->getUid());
@@ -694,16 +633,22 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						if ($newfile instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
 							$newfile = $newfile->getOriginalResource();
 						}
-						if (class_exists("\Causal\ImageAutoresize\Hooks\FileUploadHook")) {
+						// EXT:image_autoresize hat die Signal/Slot-API mit TYPO3 v12 abgelegt.
+						// Die frühere Fassung prüfte auf Hooks\FileUploadHook, instanziierte aber
+						// Slots\FileUpload — existierte die eine Klasse ohne die andere, war das ein
+						// Fatal Error. Deshalb hier auf genau die Klasse prüfen, die auch benutzt wird.
+						if (class_exists(\Causal\ImageAutoresize\Slots\FileUpload::class)) {
 							$slot = GeneralUtility::makeInstance(\Causal\ImageAutoresize\Slots\FileUpload::class);
 							$slot->postFileReplace($newfile->getOriginalFile(), null);
 						}
-						
+
 						$folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($colsById[$key]->getImagePathProcessed());
-						//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($folder);
-						
+
 						$filename = $colsById[$key]->getImageFilename() == 1 ? $user->getUsername() : $user->getUid();
-						$oldfilename = array_pop(explode("/", $newfile->getForLocalProcessing(false)));
+						// array_pop() erwartet eine Referenz — der frühere Aufruf
+						// array_pop(explode(...)) ist unter PHP 8 ein Fatal Error.
+						$pathSegments = explode("/", $newfile->getForLocalProcessing(false));
+						$oldfilename = array_pop($pathSegments);
 						$parts = explode(".", $oldfilename);
 						$ext = "";
 						if (count($parts) > 1) {
@@ -711,8 +656,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						}
 						$finalFile = $folder->getStorage()->moveFile($newfile->getOriginalFile(), $folder, $filename.$ext);
 						
-						$imgStor = $this->objectManager->get('TYPO3\CMS\Extbase\Persistence\ObjectStorage');
-						$imgRef = $this->objectManager->get('TYPO3\CMS\Extbase\Domain\Model\FileReference');
+						$imgStor = GeneralUtility::makeInstance(ObjectStorage::class);
+						$imgRef = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Domain\Model\FileReference::class);
 						$imgRefRef = new \TYPO3\CMS\Core\Resource\FileReference(array(
 							"pid" => $user->getPid(),
 							"tstamp" => time(),
@@ -723,7 +668,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 							"fieldname" => "image",
 							"sorting_foreign" => 1,
 							"table_local" => "sys_file",
-							"crop" => EditUserController::DEFAULT_CROP
+							"crop" => self::DEFAULT_CROP
 						));
 						$imgRef->setOriginalResource($imgRefRef);
 						$imgStor->attach($imgRef);
@@ -780,7 +725,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			// Den Vorschlaghammer instanzieren / aus der Kiste kramen
 			// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
-			$persistenceManager = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
+			$persistenceManager = $this->persistenceManager;
 			$persistenceManager->persistAll();
 			
 			$clearPages = array_filter(explode(",", $this->settings['clearCachePages']));
@@ -791,7 +736,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			// Den Vorschlaghammer instanzieren / aus der Kiste kramen
 			// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
-			/*$persistenceManager = $this->objectManager->get(\TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager::class);
+			/*$persistenceManager = $this->persistenceManager;
 			$persistenceManager->persistAll();*/
 			 
 			
@@ -807,7 +752,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			die("2");*/
 		});
 		$form->addFinisher($closureFinisher);
-		/*$confirmationFinisher = $this->objectManager->get(\TYPO3\CMS\Form\Domain\Finishers\ConfirmationFinisher::class);
+		/*$confirmationFinisher = GeneralUtility::makeInstance(\TYPO3\CMS\Form\Domain\Finishers\ConfirmationFinisher::class);
 		$confirmationFinisher->setOptions([
 			'message' => 'saved',
 		]);
@@ -829,7 +774,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			}
 		}*/
 		
-		$fr = $form->bind($this->request, $this->response);
+		$fr = $form->bind($this->request);
 				
 		//$this->view->assign("form", $form);
 

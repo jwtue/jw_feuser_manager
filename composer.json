@@ -6,19 +6,19 @@
   "license": "MIT",
   "keywords": [
     "TYPO3 CMS",
-    "watermark",
-    "viewhelper"
+    "frontend user",
+    "membership"
   ],
   "support": {
     "issues": "https://github.com/jwtue/jw_feuser_manager/issues"
   },
   "require": {
+    "php": ">=8.0.0",
     "typo3/cms-core": "^12.4",
-		"typo3/cms-felogin": "^12.4.0",
-		"fluidtypo3/vhs": "^7.0",
-		"tecnickcom/tcpdf": "^6.6",
-    "jeroendesloovere/vcard": "^1.7",
-    "php": ">=8.0.0"
+    "typo3/cms-felogin": "^12.4.0",
+    "fluidtypo3/vhs": "^7.0",
+    "tecnickcom/tcpdf": "^6.6",
+    "jeroendesloovere/vcard": "^1.7"
   },
   "autoload": {
     "psr-4": {

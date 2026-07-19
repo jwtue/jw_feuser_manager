@@ -83,20 +83,6 @@
 							</config>
 						</TCEforms>
 					</settings.clearCachePages>
-					<settings.uid>
-						<TCEforms>
-							<label>LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang_be.xlf:edituser_flexform.settings.uid</label>
-							<config>
-								<type>select</type>
-								<renderType>selectSingle</renderType>
-								<multiple>0</multiple>
-								<size>1</size>
-								<autoSizeMax>1</autoSizeMax>
-								<foreign_table>tt_content</foreign_table>
-								<foreign_table_where>tt_content.uid = ###THIS_UID###</foreign_table_where>
-							</config>
-						</TCEforms>
-					</settings.uid>
 				</el>
 			</ROOT>
 		</sDEF>

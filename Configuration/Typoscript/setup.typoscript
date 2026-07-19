@@ -18,7 +18,6 @@ plugin.tx_jwfeusermanager {
 	settings {
 		orderBy = lastName,firstName
 		fields = last_name,first_name,email
-		uid = {field:uid}
 	}
 }
 
@@ -38,27 +37,7 @@ tt_content.list.20 {
 # ==============================================
 # Persistence object mapping configuration
 # ==============================================
-config.tx_extbase.persistence.classes {
-	JwTue\FeUserManager\Domain\Model\FrontendUser {
-		mapping {
-			tableName = fe_users
-		}
-	}
-	JwTue\FeUserManager\Domain\Model\FrontendUserGroup {
-		mapping {
-			tableName = fe_groups
-		}
-	}
-	JwTue\FeUserManager\Domain\Model\EditorField {
-		mapping {
-			tableName = tx_jwfeusermanager_editorfield
-			recordType = \JwTue\FeUserManager\Domain\Model\EditorField
-		}
-	}
-}
-#plugin.tx_jwfeusermanager {
-#	persistence {
-#		classes {
-#		}
-#	}
-#}
+# Das Mapping steht in Configuration/Extbase/Persistence/Classes.php.
+# Die frühere Doppelung über config.tx_extbase.persistence.classes ist entfernt:
+# Diese TypoScript-Variante ist seit TYPO3 v10 abgelöst und wurde hier parallel
+# gepflegt, was bei Änderungen zwangsläufig auseinanderläuft.

@@ -23,6 +23,7 @@ use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * File controller.
@@ -70,70 +71,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     }
 		
 	
-	private function getTyposcriptConfiguration() {
-        $conf = $this->configurationManager->getConfiguration(
-			\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-			$this->request->getControllerExtensionName());
-		$svc = new \TYPO3\CMS\Core\TypoScript\TypoScriptService();
-		$conf = $svc->convertTypoScriptArrayToPlainArray($conf);
-		$conf = $conf['plugin']['tx_'.strtolower($this->request->getControllerExtensionName())];
-		return $conf;
-	}
-	
-	private function getFullTyposcriptConfiguration() {
-        $conf = $this->configurationManager->getConfiguration(
-			\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT,
-			$this->request->getControllerExtensionName());
-		$svc = new \TYPO3\CMS\Core\TypoScript\TypoScriptService();
-		$conf = $svc->convertTypoScriptArrayToPlainArray($conf);
-		return $conf;
-	}
-		
-	/**
-	 * Allows the widget template root path to be overridden via the framework configuration,
-	 * e.g. plugin.tx_extension.view.templateRootPaths
-	 *
-	 * @param $view
-	 * @return void
-	 */
-	protected function setViewConfiguration($view)
-	{
-		// Template Path Override
-		$extbaseFrameworkConfiguration = $this->getTyposcriptConfiguration();
-
-		// set TemplateRootPaths
-		$viewFunctionName = 'setTemplateRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'templateRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-
-		// set LayoutRootPaths
-		$viewFunctionName = 'setLayoutRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'layoutRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-
-		// set PartialRootPaths
-		$viewFunctionName = 'setPartialRootPaths';
-		if (method_exists($view, $viewFunctionName)) {
-		   $setting = 'partialRootPaths';
-		   $parameter = $this->getViewProperty($extbaseFrameworkConfiguration, $setting);
-		   // no need to bother if there is nothing to set
-		   if ($parameter) {
-			   $view->$viewFunctionName($parameter);
-		   }
-		}
-	}
+	use ViewConfigurationTrait;
 
     /**
      * Initializes the view before invoking an action method.
@@ -144,7 +82,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
      protected function initializeView($view)
      {
-		$view = $this->objectManager->get(\TYPO3\CMS\Fluid\View\StandaloneView::class);
+		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		$view->getRequest()->setControllerExtensionName($this->request->getControllerExtensionName());
 		$view->getRequest()->setPluginName("ListOfUsers");
 		$view->getRequest()->setControllerName("ShowFeUser");
@@ -404,7 +342,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						} else if ($c == "dateOfBirth") {
 							$value = substr(date("c", $value), 0, 10);
 						} else if ($c == "mobilephone" || $c == "phone" || $c == "phoneBusiness") {
-							$value = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($value, true);
+							$value = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($value, true);
 						} else if (substr($c, 0, strlen("txjwfeusermanagerAdditionalBitfield")) == "txjwfeusermanagerAdditionalBitfield") {
                             $number = substr($c, strlen("txjwfeusermanagerAdditionalBitfield"));
                             $entrynames = explode("\n", $this->settings['additional_bitfield'.$number.'_entries']);
@@ -533,7 +471,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				foreach ($pdfColumns as $k => $c) {
 					if (in_array($c, $skip)) continue;
 					if ($c == "telephone" || $c == "mobilephone" || $c == "phoneBusiness" ) {
-						$u[$c] = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($u[$c]);
+						$u[$c] = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($u[$c]);
 						$extendedUsers[$i] = $u;
 					}
 					$value = $u[$c];
@@ -712,7 +650,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$getter = "get".ucfirst($getter);
 					$data[$mapping[$col]] = $usr->$getter();
 					if ($col == "telephone" || $col == "phone_business" || $col == "mobilephone" || $col == "fax") {
-						$data[$mapping[$col]] = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($data[$mapping[$col]], true);
+						$data[$mapping[$col]] = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($data[$mapping[$col]], true);
 					}
 				}
 			}

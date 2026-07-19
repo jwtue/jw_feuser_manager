@@ -33,9 +33,9 @@ class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBased
     public function render()
     {		
 		if (!empty($this->arguments["defaultInternationalPrefix"])) {
-			$number = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($this->arguments['tel'], true, $this->arguments["defaultInternationalPrefix"]);
+			$number = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($this->arguments['tel'], true, $this->arguments["defaultInternationalPrefix"]);
 		} else {
-			$number = \JwTue\FeUserManager\ViewHelper\Format\PhoneViewHelper::formatPhoneNumber($this->arguments['tel'], true);
+			$number = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($this->arguments['tel'], true);
 		}
 		if (!empty($number)) {
 			$this->tag->addAttribute('href', "tel:".$number);
