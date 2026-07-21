@@ -19,7 +19,8 @@
 	display: block;
 }
 .tx-jwfeusermanager-edituser .input.checkbox label,
-.tx-jwfeusermanager-edituser .input .radio label {
+.tx-jwfeusermanager-edituser .input .radio label,
+.tx-jwfeusermanager-edituser .form-check-label {
 	float: none;
 	width: auto;
 }
