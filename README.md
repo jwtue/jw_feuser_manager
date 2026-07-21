@@ -1,314 +1,282 @@
 # jw_feuser_manager
 
-TYPO3 extension for managing **frontend users in the frontend**: member list,
-detail view, self-service editing of one's own data, plus export as PDF, CSV and vCard.
+Manage **frontend users from the frontend** in TYPO3: a member list with group
+filter and detail view, self-service editing of one's own profile, an editor for
+administrators, and exports as PDF, CSV and vCard.
 
-Successor to the `jw_frontendusermanager` extension (TYPO3 v8–v11), which itself
-replaced `datamints_feuser`.
+Successor to `jw_frontendusermanager` (TYPO3 v8–v11), which itself replaced
+`datamints_feuser`. If you are coming from one of those, see
+[Migrating from the predecessor](#migrating-from-the-predecessor).
 
 | | |
 |---|---|
 | Extension key | `jw_feuser_manager` |
 | Composer package | `jwtue/jw_feuser_manager` |
-| PHP namespace | `JwTue\FeUserManager\` |
-| TYPO3 | 12.4 — **not** compatible with v11, see below |
+| TYPO3 | 12.4 and 13.4 |
 | PHP | ≥ 8.1 |
 | License | MIT |
 
-> **This edition runs exclusively under TYPO3 v12.** It is the port of
-> `jw_frontendusermanager`, which remains the v11 edition. For a v11 installation,
-> use the predecessor extension, not this one.
->
-> In several places the code uses APIs that do not exist in v11 — in particular the
-> PSR-7-based Extbase request (`$this->request->getQueryParams()`,
-> `->getAttribute('currentContentObject')`) and `getRenderingContext()->setControllerName()`
-> on the StandaloneView. The v11 edition used `GeneralUtility::_GET()`,
-> `ConfigurationManager::getContentObject()` and `Extbase\Mvc\View\ViewInterface` for this — the
-> latter no longer exists in v12. An extension serving both would only be possible with
-> version switches; this was deliberately not done.
+> **TYPO3 v11 and older:** use the predecessor `jw_frontendusermanager`. This
+> edition uses APIs that do not exist in v11 (the PSR-7 Extbase request, the
+> ViewFactory, …). A v14 edition is planned once its dependencies are ready.
+
+## What you get
+
+- **Member list** — lists frontend users of one or more groups, with optional
+  group filter, group headings and group logos.
+- **Detail view** — a single member's data on its own page.
+- **Edit form** — users edit their own profile, or an administrator edits any
+  user, or new users are created. Which fields the form contains is fully
+  configurable per page.
+- **Password change with confirmation of the current password** — see
+  [The password field](#the-password-field).
+- **Exports** — the member list as PDF or CSV, a single member as a vCard
+  contact card.
+- **Extra member fields** — up to 15 project-specific fields (text, yes/no,
+  multiple-choice) without touching the extension's code.
 
 ## Installation
 
+### With Composer (recommended)
+
 ```bash
-composer require jwtue/jw_feuser_manager:dev-main
+composer require jwtue/jw_feuser_manager
 ```
 
-The package is not on Packagist. The consuming TYPO3 installation therefore needs
-a VCS entry in its `composer.json`:
+Then, in the TYPO3 backend, open **Admin Tools → Maintenance → Analyze
+Database Structure** and apply the suggested changes. The extension adds columns
+to `fe_users` and `fe_groups` and creates one table (see [Database](#database)).
 
-```json
-"repositories": [
-    { "type": "vcs", "url": "https://github.com/jwtue/jw_feuser_manager.git" }
-]
-```
+### From the TYPO3 Extension Repository (TER)
 
-After installation, run the database comparison in the Install Tool — the extension
-extends existing tables (see [Database](#database)).
+Install **JW Frontend User Manager** (`jw_feuser_manager`) via **Admin Tools →
+Extensions**, then run the database analysis as above.
 
-### Prerequisites in the site configuration
+## Setting it up
 
-Three points, without which the plugins will not render (or render empty):
+The extension ships no ready-made pages. A working setup takes six steps.
 
-1. **Include the extension's static template**
-   (`EXT:jw_feuser_manager/Configuration/TypoScript/`). Without it,
-   `tt_content.list.20.jwfeusermanager_*` is missing and TYPO3 reports
-   *"No Content Object definition found at TypoScript object path …"*.
+### 1. Create a storage folder for the users
 
-2. **Include the static template of EXT:form**
-   (`EXT:form/Configuration/TypoScript/`). The edit plugin builds its form via
-   the Form Framework; without its TypoScript it fails with
-   *"The Prototype 'standard' …"* (`PrototypeNotFoundException`).
+Create a **folder** (a page of type *Folder*) that will hold your `fe_users`
+and `fe_groups` records, and note its page ID. All members live here.
 
-3. **Set the storage PID** — the extension ships no default:
+### 2. Load the extension's TypoScript and point it at the storage folder
+
+On your root page's template (or a dedicated site set / TypoScript include),
+add **three** static includes and one setting:
+
+1. **Include static template “JW Frontend User Manager”**
+   (`EXT:jw_feuser_manager/Configuration/TypoScript/`). Without it the plugins
+   render nothing and TYPO3 reports *“No Content Object definition found …”*.
+2. **Include static template “Fluid Content (…) / Form Framework”**
+   (`EXT:form/Configuration/TypoScript/`). The edit form is built with the Form
+   Framework; without its TypoScript it fails with *“The Prototype 'standard' …”*.
+3. **Set the storage folder** from step 1:
 
    ```typoscript
-   plugin.tx_jwfeusermanager.persistence.storagePid = <UID of the folder holding the fe_users>
+   plugin.tx_jwfeusermanager.persistence.storagePid = <UID of your storage folder>
    ```
 
-   If it is missing, Extbase searches on the plugin's page and the list stays **empty, with no
-   error message**.
+   If this is missing, the list stays **empty with no error message** — the most
+   common setup mistake.
 
-## Plugins
+### 3. Create the pages
 
-The extension provides two plugins:
+Create the pages you need, typically:
 
-| Plugin | Controller | Actions | Purpose |
-|---|---|---|---|
-| **List of users** (`ListOfUsers`) | `ShowFeUserController` | `list`, `detail` | Member list with group filter, detail view, exports |
-| **Edit user** (`EditUser`) | `EditFeUserController` | `edit` | Creating and editing users via a configurable form |
+- a **member list** page (e.g. `/members`),
+- an **edit** page (e.g. `/edit-profile`),
+- optionally a **detail** page — the detail view is shown by the *List of users*
+  plugin itself, so a separate page is usually not required.
 
-**Plugin namespace for route enhancers and TypoScript: `tx_jwfeusermanager`**
-(no underscore between "fe" and "user"). The namespace still originates from
-`jw_frontendusermanager` and was deliberately kept during the rename so that
-existing URLs and configurations remain valid.
+### 4. Add the plugins
 
-Plugin signatures: `jwfeusermanager_listofusers`, `jwfeusermanager_edituser`.
+The extension provides two plugins. Add them as content elements
+(**Insert Plugin**):
 
-## Configuration
+| Plugin | Put it on | Purpose |
+|---|---|---|
+| **List of users** | the member list page | member list, detail view, exports |
+| **Edit user** | the edit page | create / edit users via a configurable form |
 
-### TypoScript
+### 5. Configure the “List of users” plugin
 
-Include the static template. Defaults in `Configuration/TypoScript/setup.typoscript`:
+In the plugin's **Plugin** tab:
 
-```typoscript
-plugin.tx_jwfeusermanager {
-    view {
-        templateRootPaths.1 = {$plugin.tx_jwfeusermanager.view.templateRootPath}
-        partialRootPaths.1  = {$plugin.tx_jwfeusermanager.view.partialRootPath}
-        layoutRootPaths.1   = {$plugin.tx_jwfeusermanager.view.layoutRootPath}
-    }
-    settings {
-        orderBy = lastName,firstName
-        fields  = last_name,first_name,email
-    }
-}
-```
-
-For different templates, set the constants `plugin.tx_jwfeusermanager.view.*RootPath`.
-
-### FlexForm — "List of users" plugin
-
-| Field | Purpose |
+| Setting | What it does |
 |---|---|
-| `groups`, `groupFiltering`, `groupFilteringSelect`, `groupConjunction` | Which user groups are shown, whether and how filtering is applied |
-| `fields` | Displayed fields (comma-separated) |
-| `editPage` | Page containing the edit plugin |
-| `useGroupTitle`, `useGroupLogo` | Group heading and group logo in the list |
-| `pdfDownload`, `pdfFields`, `pdfTitle`, `pdfLogo`, `pdfOrientation`, `pdfFontSize` | PDF export |
-| `csvDownload`, `csvFields` | CSV export |
-| `downloadFilename` | File name of the exports |
+| Groups | Which user group(s) are listed |
+| Group filtering / filter selection / conjunction | Whether visitors can filter by group, and how multiple groups are combined |
+| Fields | Which columns are shown, comma-separated (e.g. `last_name,first_name,email`) |
+| Edit page | The page that holds the *Edit user* plugin (used for the “edit” links) |
+| Group title / group logo | Show a heading and logo per group |
+| PDF download + PDF fields, title, logo, orientation, font size | Enable and shape the PDF export |
+| CSV download + CSV fields | Enable the CSV export |
+| Download file name | Base file name for the exports |
 
-### FlexForm — "Edit user" plugin
+### 6. Configure the “Edit user” plugin and its form fields
 
-| Field | Purpose |
+In the plugin's **Plugin** tab, the key setting is the **mode**:
+
+| Mode | Meaning |
 |---|---|
-| `mode` | `0` = edit own user, `1` = create new user, `2` = edit user from URL parameter `user` |
-| `fields` | Displayed fields |
-| `setLastupdated` | Update timestamp on save |
-| `clearCachePages` | Pages whose cache is cleared after saving |
+| `0` | Edit the **currently logged-in** user (self-service) |
+| `1` | **Create a new** user |
+| `2` | Edit the user given in the URL parameter `user` (e.g. an admin editing from the list) |
 
-> A former field "This element (ignore)" (`settings.uid`) has been removed. It only served
-> to pass the UID of the content element through to the code — which is available via the
-> content object anyway. For existing content elements the value remains in the FlexForm XML
-> unused; no migration step is required.
+Which fields the form contains is **not** set here — it is defined by
+**“editor field” records** placed on the edit page. Create one record per form
+field (record type *Editor field*, table `tx_jwfeusermanager_editorfield`). Each
+record has a label, a type and — for database fields — the target `fe_users`
+column and an input mode:
 
-### Custom form element types
-
-The edit plugin builds its form programmatically and uses six
-element types that EXT:form does not ship:
-
-| Type | Purpose |
+| Field type | Use for |
 |---|---|
-| `ImageCrop` | Image preview with cropping (cropper.js) |
-| `DateTimePicker` | Date field |
-| `LabeledStaticText` | static text with label |
-| `LabeledFluid` / `Fluid` | free Fluid with or without label |
-| `Html` | raw HTML block (separators, password generator) |
+| Database field | A normal `fe_users` column (name, e-mail, phone, …) |
+| Password | A password field — see below |
+| Image | Profile photo with cropping |
+| User groups | Let the user pick group membership |
+| E-mail (notification) | Send an e-mail on save (e.g. a welcome mail) |
+| Separator / static text / free Fluid | Layout and instructions inside the form |
+| Delete user | A “delete my account” action |
 
-They are registered in `Configuration/Yaml/FormSetup.yaml`; the Fluid partials live
-under `Resources/Private/Form-Frontend/Partials/`. The YAML is included via
-`plugin.tx_form.settings.yamlConfigurations` in the extension's static TypoScript.
-
-> **Why this matters:** In the standard prototype of EXT:form,
-> `skipUnknownElements: true` applies. If the registration is missing, TYPO3 throws **no error** —
-> the elements are replaced by an empty element and simply render nothing. This is exactly
-> how the image preview, cropping and date picker disappeared after the v12 port, without
-> anything being logged anywhere. Whoever forgets to include the static TypoScript
-> gets the same picture.
-
-### Form fields ("Edit user" plugin)
-
-Which fields the edit form contains is **not** maintained in the FlexForm, but
-via records of type *editor field* (table `tx_jwfeusermanager_editorfield`) on
-the same page. Each record describes one form field. Supported types:
-
-`TYPE_DB_FIELD`, `TYPE_DB_FIELD_READONLY`, `TYPE_PASSWORD`, `TYPE_IMAGE`,
-`TYPE_ADDITIONAL_RICHTEXT`, `TYPE_ADDITIONAL_ENTRIES`, `TYPE_SEPARATOR`,
-`TYPE_DELETE_USER`, `TYPE_USERGROUPS`, `TYPE_EMAIL`
-
-For database fields, the modes Text, Multiline, Email, Boolean, Date, Time,
-Date+Time, Multiple selection and Options are available. Multiple selection and options
+Database fields support the input modes *text, multiline, e-mail, yes/no, date,
+time, date + time, multiple choice* and *single choice*. Multiple/single choice
 are stored as a bitfield.
 
-## Database
+#### The password field
 
-The extension **extends existing tables**. On removal, this data is lost.
+When you add a **Password** editor field, the form renders:
 
-- **`fe_users`** — 23 additional columns: `mobilephone`, `phone_business`, `date_of_birth`,
-  `tx_jwfeusermanager_newsletter_subscribed`, `tx_jwfeusermanager_lastupdated`, plus five each of
-  `tx_jwfeusermanager_additional_text_1..5`, `_additional_boolean_1..5` and
-  `_additional_bitfield_1..5`
-- **`fe_groups`** — additional column `image`
-- **`tx_jwfeusermanager_editorfield`** — new table for the form field definitions
+- **Creating a new user** (mode `1`): *new password* + *repeat password*.
+- **Editing an existing user** (mode `0` or `2`): *current password* + *new
+  password* + *repeat password*.
 
-The `_additional_*` fields are the generic mechanism for project-specific
-member fields without modifying the extension. Their labels are maintained via the
-editor field records.
+For an existing user, the password is only changed when the **current password
+is entered correctly**. A wrong or empty current password blocks the change and
+shows an error — while leaving all three password fields empty simply keeps the
+existing password and saves the rest of the form as usual.
 
-## ViewHelpers
+## Clean URLs (routing)
 
-Namespace `JwTue\FeUserManager\ViewHelpers\` — directory **`ViewHelpers`** (plural).
+Out of the box the extension's own links work — the detail, edit and download
+links it renders carry the required `cHash`, so nothing else is needed for a
+functioning site. They just look like `…/members?user=5&cHash=…`.
 
-| ViewHelper | Purpose |
-|---|---|
-| `Form\DateTimePickerViewHelper` | Date field in the edit form |
-| `Format\PhoneViewHelper` | Format phone number |
-| `Link\PhoneViewHelper` | Phone number as a `tel:` link |
-| `Uri\PhoneViewHelper` | Phone number as a `tel:` URI |
+For **readable URLs** such as `/members/member/5`, add a route enhancer to your
+site configuration (`config/sites/<identifier>/config.yaml`). The detail view,
+the edit form and the vCard link all use the `user` parameter, so a single
+enhancer covers them:
 
-`Format\PhoneViewHelper::formatPhoneNumber()` is static and is also used from the controllers
-for the exports.
+```yaml
+routeEnhancers:
+  FeUserDetail:
+    type: Simple
+    routePath: '/member/{user}'
+    requirements:
+      user: '[0-9]+'
+```
+
+With this in place the extension automatically generates
+`/members/member/5` and `/edit-profile/member/5`. The enhancer is not restricted
+to a page, so it applies wherever the `user` parameter appears. To scope it to
+specific pages, add `limitToPages: [<uid>, …]`.
+
+If you want the export links as file-like URLs too (e.g. `…/members.csv`), add a
+`PageType` enhancer for the `download` parameter — this is optional; the default
+query-string links work without it.
+
+> **Manually typed short URLs 404.** A hand-written `…/members?user=5` without a
+> `cHash` is rejected by TYPO3 — that is expected. Use the links the extension
+> generates, or a route enhancer as above.
 
 ## Exports
 
-| Format | Implementation |
+| Format | Contents |
 |---|---|
-| **PDF** | TCPDF (`tecnickcom/tcpdf`), columns from `settings.pdfFields` |
-| **CSV** | direct output, UTF-8, columns from `settings.csvFields`; bitfield values are resolved |
-| **vCard** | bundled library under `Resources/Private/Library/vcard/`, single person from the detail view |
+| **PDF** | the member list, columns from *PDF fields* |
+| **CSV** | the member list, UTF-8, columns from *CSV fields* |
+| **vCard** | a single member as a contact card, from the detail view |
 
-Controlled via the parameter `download` (`pdf`, `csv`, `vcf`) on the `list` or
-`detail` action.
+PDF and CSV are offered on the list once enabled in the plugin; the vCard link
+appears per member. Technically the exports are triggered by a `download`
+parameter (`pdf`, `csv`, `vcf`) that the rendered links already carry.
+
+## Migrating from the predecessor
+
+If this installation previously ran `jw_frontendusermanager`, run the **upgrade
+wizards** after installing and updating the database (**Admin Tools → Upgrade →
+Upgrade Wizard**, or `vendor/bin/typo3 upgrade:run`):
+
+- **Import legacy data** — copies your member data and editor-field definitions
+  from the old `tx_jwfrontendusermanager_*` columns/table into the current
+  `tx_jwfeusermanager_*` structure, and rewrites the editor fields' target
+  columns to the new names. Without this, the extra member fields would display
+  but silently fail to save. The wizard is non-destructive (old columns are
+  kept) and can be run repeatedly.
+- **Migrate plugins** — updates the old content-element plugin signatures to the
+  current ones.
+
+Both wizards only act where legacy data is actually present, so they are safe to
+run on a fresh install too.
+
+## Extra member fields
+
+Beyond the standard `fe_users` columns the extension provides 15 generic fields
+for project-specific data — five each of **text**, **yes/no** and
+**multiple-choice** (`tx_jwfeusermanager_additional_text_1..5`,
+`_additional_boolean_1..5`, `_additional_bitfield_1..5`). Give them a meaningful
+label via an editor field record and use them like any other field. This lets
+you add member attributes (rank, driving licences, availability, …) without
+modifying the extension.
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+|---|---|
+| List is **empty, no error** | `storagePid` not set, or points to the wrong folder (step 2) |
+| *“No Content Object definition found …”* | static template of this extension not included (step 2.1) |
+| *“The Prototype 'standard' …”* | static template of **EXT:form** not included (step 2.2) |
+| Image preview / cropping / date picker **missing** | static template of this extension not included — the custom form elements are registered there |
+| Extra fields **display but don't save** (after a move from the predecessor) | run the *Import legacy data* upgrade wizard (see [Migrating](#migrating-from-the-predecessor)) |
+| `…?user=5` gives a **404** | hand-written URL without `cHash` — use the generated links or a route enhancer |
+
+## Database
+
+The extension **extends existing tables** — this data is lost if the extension
+is removed.
+
+- **`fe_users`** — additional columns: `mobilephone`, `phone_business`,
+  `date_of_birth`, a newsletter flag, a “last updated” timestamp, plus the 15
+  `tx_jwfeusermanager_additional_*` fields.
+- **`fe_groups`** — additional column `image` (group logo).
+- **`tx_jwfeusermanager_editorfield`** — new table holding the form-field
+  definitions.
 
 ## Development
 
-### Static verification against TYPO3 v12
+Internals, the porting history, the static verification harness and the
+repository conventions are documented in **[AGENTS.md](AGENTS.md)**. In short:
 
-`Tests/verify-v12.php` checks, without a running web server, whether all referenced classes and
-the used method signatures exist in a real TYPO3 v12 installation. This
-catches porting errors that neither `php -l` nor an IDE without `vendor/` detects.
+- Templates and the programmatically built form live under
+  `Resources/Private/`; the custom form elements are registered in
+  `Configuration/Yaml/FormSetup.yaml`.
+- `Tests/verify-v12.php` statically checks class and signature existence against
+  a real TYPO3 installation — a preliminary check, not a substitute for testing
+  in a running site.
 
-```bash
-TYPO3_ROOT=/pfad/zu/typo3-installation php Tests/verify-v12.php
-```
+When changing the extension, at least verify: the member list renders; CSV, PDF
+and vCard export; the edit form renders every configured field type; creating a
+user hashes the password; the current-password check blocks a password change;
+the duplicate-username check blocks a taken name (even a disabled one); image
+upload and user deletion work.
 
-A Composer-based TYPO3 12.4 installation with a complete `vendor/` is expected.
-Exit code 0 = no errors, 1 = errors found, 2 = `TYPO3_ROOT` missing or invalid.
+## Notes on AI assistance
 
-Checked are: existence of all referenced TYPO3 classes, absence of the APIs removed in v12,
-the signatures the code relies on, loadability and inheritance of the
-own classes, resolvability of the constructor dependencies, plus a scan of all
-fully qualified class references throughout the entire `Classes/` tree.
-
-> **The test is no substitute for trying it out in a running installation.** It checks that
-> classes and signatures *exist* — not configuration, DI registration or
-> runtime behavior. During the v12 port it reported "no errors" while the extension still
-> broke in a dozen places (missing `Services.yaml`, wrong plugin signature,
-> overridden EXTBASEPLUGIN, missing model properties). So take a green result
-> as a preliminary check, not as a release approval.
-
-### Manual test path
-
-When changing the extension, at least run through:
-
-1. Member list renders with data
-2. CSV, PDF and vCard export
-3. Edit form renders all configured editor field types
-4. Create user — password ends up hashed in the DB
-5. Additional field (`tx_jwfeusermanager_additional_*`) is saved
-6. `tx_jwfeusermanager_lastupdated` is set when `settings.setLastupdated` is active
-7. Duplicate check blocks an already taken username — **even if the
-   existing user is disabled**
-8. Image upload: file ends up in the configured folder, `sys_file_reference` is created
-9. Delete user: record set to `deleted=1`, reference and file removed, redirect
-   to the configured page
-
-### Interaction with `causal/image_autoresize`
-
-If the extension is installed, it downsizes uploaded images **automatically via
-FAL events** — the extension has to do nothing for this. The former manual call to
-`Slots\FileUpload` is moot: this signal/slot API no longer exists since v12,
-the call is defensively wrapped and skipped.
-
-To keep in mind when testing: the default configuration of `image_autoresize` has a
-**threshold of 400 KB** and limits of 1920 × 1080. Smaller images stay unchanged
-— this is not a bug. A 4000 × 3000 image of 12 MB was correctly reduced in the test to
-1440 × 1080 and 353 KB.
-
-### Known open issues
-
-- **`jeroendesloovere/vcard` is declared as a dependency but is not used.**
-  The vCard export instead uses the bundled library under
-  `Resources/Private/Library/vcard/`. Either switch to the Composer package (then
-  the bundled file can be dropped) or remove the dependency.
-- **`EditorFieldRepository::findForElement()`** still uses `Query::statement()`. The
-  `EditorField` model maps neither `parent_ce` nor `sorting` as a property, so a regular
-  Extbase query can neither filter nor sort on them. A switchover requires
-  that both fields first be added to the model.
-- **No HTML with curly braces in `content` properties.** The partials
-  `Fluid` and `LabeledFluid` render their content via `v:render.inline`, that is **as
-  Fluid source code**. Embedded JavaScript is thereby torn apart: `{` starts a Fluid
-  expression. This is exactly what the password generator failed on previously. Whoever needs
-  such building blocks creates a custom element type with a partial (model:
-  `PasswordGenerator`) and moves the JavaScript out into a file.
-- **The property names of the additional fields are delicate.** `txJwfeusermanager*` (capital J) must
-  stay that way: the setter call in the save finisher, the field name comparisons in the
-  `ShowFeUserController` and the `<f:case>` values in `List.html` are all derived via
-  `underscoredToLowerCamelCase()` from the column names. For the 15 numbered
-  fields this is not enough — their columns are listed explicitly in
-  `Configuration/Extbase/Persistence/Classes.php`. Whoever adds fields there must maintain the
-  entry too, otherwise they are silently not saved.
-- **Image upload** optionally calls `Causal\ImageAutoresize\Slots\FileUpload`. This
-  signal/slot API no longer exists in current versions of `causal/image_autoresize`;
-  the call is defensively wrapped and is then skipped. If automatic
-  downsizing on upload is needed, it must be ported to the current API.
-- The extension ships an `ext_emconf.php` (version `12.0.0`, TYPO3 12.4, PHP 8.1) alongside
-  `composer.json`, so it is described for both the classic Extension Manager and Composer.
-
-## History
-
-The extension originated as a port of `jw_frontendusermanager` (TYPO3 v11) to TYPO3 v12.
-On completing the port, the following were replaced among others: `Extbase\Object\ObjectManager`
-(removed in v12), `ActionController::getViewProperty()` (removed), the base classes
-`Extbase\Domain\Repository\FrontendUser[Group]Repository` (removed) as well as
-`ActionController::$extensionName` and `$contentObj` (no longer present).
-
-## Development notes
-
-The predecessor `jw_frontendusermanager` was written by hand. The TYPO3 v12 port and the
-subsequent work — making the extension runnable again, the migration upgrade wizards, the
-`ext_emconf.php`, and the English translation of comments and this README — were carried out
-with [Claude Code](https://www.claude.com/product/claude-code). All changes were verified
-against a running TYPO3 12.4 installation (rendering the member list, the edit form and the
-exports) before release. See [AGENTS.md](AGENTS.md) for how the repository is set up for that
-work.
+The predecessor `jw_frontendusermanager` was written by hand. The port to TYPO3
+v12, the v13 compatibility work, the current-password confirmation, the upgrade
+wizards, and this documentation were carried out with
+[Claude Code](https://www.claude.com/product/claude-code) and verified against
+running TYPO3 12.4 and 13.4 installations before release. See
+[AGENTS.md](AGENTS.md) for how the repository is set up for that work.
