@@ -386,11 +386,12 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$colsById["editorfield_".$col->getUid()] = $col;
 					if ($col->getPasswordGenerator()) {
 						// A dedicated element type instead of an HTML snippet in the content
-						// property: LabeledFluid renders its content via v:render.inline, i.e.
-						// as Fluid source. The curly braces of the JavaScript embedded here
-						// previously were interpreted as Fluid expressions, so the button never
-						// made it into the markup at all.
-						// The logic now lives in Resources/Public/JavaScript/passwordGenerator.js.
+						// property: the Fluid/LabeledFluid partials historically rendered their
+						// content as Fluid source (via VHS' v:render.inline), so the curly braces
+						// of any embedded JavaScript were interpreted as Fluid expressions and the
+						// button never made it into the markup. (Those partials now output raw HTML
+						// via f:format.raw, but the dedicated element remains the clean approach.)
+						// The logic lives in Resources/Public/JavaScript/passwordGenerator.js.
 						$el = $page1->createElement("editorfield_".$col->getUid()."_randompw", 'PasswordGenerator');
 						$el->setLabel($this->languageService->sL(
 							"LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.randomPassword"

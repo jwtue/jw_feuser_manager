@@ -3,10 +3,11 @@
  *
  * Frueher steckte diese Logik als inline-onclick im content-Property eines
  * LabeledFluid-Elements. Das konnte nicht zuverlaessig funktionieren: Das Partial
- * rendert seinen Inhalt ueber v:render.inline, also als Fluid-Quelltext — die
+ * rendert seinen Inhalt damals ueber v:render.inline, also als Fluid-Quelltext — die
  * geschweiften Klammern im JavaScript wurden dabei als Fluid-Ausdruecke gedeutet
  * und der Knopf verschwand. Deshalb liegt der Code jetzt hier, und das Markup
- * kommt aus einem eigenen Partial (PasswordGenerator.html).
+ * kommt aus einem eigenen Partial (PasswordGenerator.html). (Die Fluid-Partials
+ * geben ihren Inhalt inzwischen als rohes HTML via f:format.raw aus.)
  */
 (function () {
 	'use strict';
