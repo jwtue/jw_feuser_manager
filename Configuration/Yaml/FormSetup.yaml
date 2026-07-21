@@ -1,31 +1,31 @@
-# Registrierung der eigenen Formular-Elementtypen dieser Extension.
+# Registration of this extension's own form element types.
 #
-# Der EditFeUserController erzeugt Elementtypen, die EXT:form nicht kennt:
-# ImageCrop, DateTimePicker, LabeledStaticText, LabeledFluid, Fluid, Html und
+# The EditFeUserController creates element types that EXT:form does not know:
+# ImageCrop, DateTimePicker, LabeledStaticText, LabeledFluid, Fluid, Html and
 # PasswordGenerator.
-# Die zugehoerigen Fluid-Partials liegen seit jeher unter
-# Resources/Private/Form-Frontend/Partials/ — was fehlte, war diese Registrierung.
+# The corresponding Fluid partials have always been located under
+# Resources/Private/Form-Frontend/Partials/ — what was missing was this registration.
 #
-# Ohne sie greift im Standard-Prototyp "skipUnknownElements: true": Die Elemente
-# werden stillschweigend durch ein leeres UnknownFormElement ersetzt und rendern
-# nichts — ohne Fehlermeldung. Sichtbar war das als fehlende Bildvorschau samt
-# Zuschnitt, fehlender Datumswaehler und fehlende Trennlinien.
+# Without it, "skipUnknownElements: true" applies in the standard prototype: the elements
+# are silently replaced by an empty UnknownFormElement and render nothing — without any
+# error message. This was visible as a missing image preview including cropping, a missing
+# date picker and missing separator lines.
 #
-# Eingebunden wird die Datei ueber plugin.tx_form.settings.yamlConfigurations
+# The file is included via plugin.tx_form.settings.yamlConfigurations
 # in Configuration/Typoscript/setup.typoscript.
 
 prototypes:
   standard:
     formElementsDefinition:
 
-      # Basis-Rendering: eigenes Partial-Verzeichnis zusaetzlich zu dem von EXT:form
+      # Base rendering: own partial directory in addition to the one from EXT:form
       Form:
         renderingOptions:
           partialRootPaths:
             100: 'EXT:jw_feuser_manager/Resources/Private/Form-Frontend/Partials/'
 
-      # Bildvorschau mit Zuschnitt (cropper.js). Erwartet die Eigenschaften
-      # imageUid, ceUid und colUid, die der Controller setzt.
+      # Image preview with cropping (cropper.js). Expects the properties
+      # imageUid, ceUid and colUid, which the controller sets.
       ImageCrop:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:
@@ -36,7 +36,7 @@ prototypes:
           colUid: ''
           containerClassAttribute: 'input imagecrop'
 
-      # Datumsfeld
+      # Date field
       DateTimePicker:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:
@@ -44,7 +44,7 @@ prototypes:
         properties:
           containerClassAttribute: input
 
-      # Statischer Text mit Label
+      # Static text with label
       LabeledStaticText:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:
@@ -53,7 +53,7 @@ prototypes:
           text: ''
           containerClassAttribute: input
 
-      # Freies Fluid mit Label
+      # Free Fluid with label
       LabeledFluid:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:
@@ -62,7 +62,7 @@ prototypes:
           content: ''
           containerClassAttribute: input
 
-      # Freies Fluid ohne Label
+      # Free Fluid without label
       Fluid:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:
@@ -70,9 +70,9 @@ prototypes:
         properties:
           content: ''
 
-      # Knopf "Zufallspasswort erzeugen". Eigener Typ statt HTML-Schnipsel im
-      # content-Property: Fluid wuerde die geschweiften Klammern des JavaScripts
-      # als Ausdruecke deuten. Die Logik liegt in
+      # "Generate random password" button. A dedicated type instead of an HTML snippet in
+      # the content property: Fluid would interpret the curly braces of the JavaScript
+      # as expressions. The logic is located in
       # Resources/Public/JavaScript/passwordGenerator.js.
       PasswordGenerator:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
@@ -83,7 +83,7 @@ prototypes:
           length: 12
           containerClassAttribute: input
 
-      # Roher HTML-Block (Trennlinien)
+      # Raw HTML block (separator lines)
       Html:
         implementationClassName: TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement
         renderingOptions:

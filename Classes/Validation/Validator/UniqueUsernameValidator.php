@@ -8,12 +8,12 @@ use JwTue\FeUserManager\Domain\Repository\FrontendUserRepository;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
- * Prüft beim Anlegen eines neuen Benutzers, ob der Benutzername bereits vergeben ist.
+ * Checks when creating a new user whether the username is already taken.
  *
- * Ersetzt die zuvor inline im EditFeUserController deklarierte anonyme Validator-Klasse:
- * deren `isValid()` hatte die Signatur `public function isValid($value)` und war damit
- * nicht mit TYPO3 v12 kompatibel — dort ist sie als
- * `abstract protected function isValid(mixed $value): void` deklariert.
+ * Replaces the anonymous validator class previously declared inline in the
+ * EditFeUserController: its `isValid()` had the signature `public function isValid($value)`
+ * and was therefore not compatible with TYPO3 v12 — there it is declared as
+ * `abstract protected function isValid(mixed $value): void`.
  */
 class UniqueUsernameValidator extends AbstractValidator
 {

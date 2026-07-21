@@ -7,15 +7,15 @@ namespace JwTue\FeUserManager\Domain\Repository;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
- * Repository für Frontend-Benutzergruppen.
+ * Repository for frontend user groups.
  *
- * Existiert nur, damit das Persistence-Mapping in
- * Configuration/Extbase/Persistence/Classes.php auf das eigene Model
- * JwTue\FeUserManager\Domain\Model\FrontendUserGroup greift.
+ * Only exists so that the persistence mapping in
+ * Configuration/Extbase/Persistence/Classes.php resolves to the own model
+ * JwTue\FeUserManager\Domain\Model\FrontendUserGroup.
  *
- * Erbt direkt von Extbase\Persistence\Repository — die zuvor als Basis genutzte Klasse
- * TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository ist in TYPO3 v12
- * entfernt und war ebenfalls nur eine leere Ableitung von Repository.
+ * Inherits directly from Extbase\Persistence\Repository — the class previously used as
+ * a base, TYPO3\CMS\Extbase\Domain\Repository\FrontendUserGroupRepository, is removed in
+ * TYPO3 v12 and was likewise only an empty subclass of Repository.
  */
 class FrontendUserGroupRepository extends Repository
 {

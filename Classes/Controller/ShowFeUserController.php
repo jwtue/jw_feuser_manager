@@ -70,9 +70,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
     }
 
 	/**
-	 * getLanguageService() greift auf die LanguageServiceFactory zu. Sie wurde bisher
-	 * nirgends injiziert — in EditFeUserController gibt es den Konstruktor dafuer, in
-	 * diesem Controller fehlte er.
+	 * getLanguageService() accesses the LanguageServiceFactory. It was not injected
+	 * anywhere so far — EditFeUserController has a constructor for it, but this
+	 * controller was missing one.
 	 */
 	public function __construct(
 		private readonly LanguageServiceFactory $languageServiceFactory,
@@ -89,11 +89,11 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      */
      protected function initializeView($view)
      {
-		// In TYPO3 v12 hat die StandaloneView keinen Extbase-Request mehr:
-		// setRequest() erwartet einen PSR-7-ServerRequest, und getRequest() liefert
-		// vor dem Setzen null. Controller- und Action-Name werden deshalb direkt am
-		// RenderingContext gesetzt — davon haengt die Aufloesung von setTemplate()
-		// auf Resources/Private/Templates/ShowFeUser/<Name>.html ab.
+		// In TYPO3 v12 the StandaloneView no longer has an Extbase request:
+		// setRequest() expects a PSR-7 ServerRequest, and getRequest() returns null
+		// before it is set. Controller and action name are therefore set directly on
+		// the RenderingContext — the resolution of setTemplate() to
+		// Resources/Private/Templates/ShowFeUser/<Name>.html depends on this.
 		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		$view->setRequest($this->request);
 		$view->getRenderingContext()->setControllerName("ShowFeUser");
@@ -590,9 +590,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		if ($download == "vcf") {
 			
-			// Extension-Key hier bewusst als Literal: Er laesst sich nicht aus dem
-			// Extension-Namen ableiten. camelCaseToLowerCaseUnderscored('JwFeUserManager')
-			// ergibt "jw_fe_user_manager", der tatsaechliche Key ist "jw_feuser_manager".
+			// Extension key deliberately used as a literal here: it cannot be derived
+			// from the extension name. camelCaseToLowerCaseUnderscored('JwFeUserManager')
+			// yields "jw_fe_user_manager", the actual key is "jw_feuser_manager".
 			$vcf_folder = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('jw_feuser_manager')
 				. 'Resources/Private/Library/vcard/';
 			require_once($vcf_folder.'vCard.class.php');

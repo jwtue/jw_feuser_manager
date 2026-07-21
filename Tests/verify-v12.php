@@ -1,8 +1,8 @@
 <?php
 /**
- * Statische Verifikation von jw_feuser_manager gegen eine echte TYPO3-v12-Installation.
- * Lädt den TYPO3-Autoloader, registriert die Extension per PSR-4 und prüft per Reflection,
- * ob alle referenzierten Klassen und die von uns benutzten Signaturen wirklich existieren.
+ * Static verification of jw_feuser_manager against a real TYPO3 v12 installation.
+ * Loads the TYPO3 autoloader, registers the extension via PSR-4 and checks via reflection
+ * whether all referenced classes and the signatures we use actually exist.
  */
 
 $typo3Root = getenv('TYPO3_ROOT') ?: '';
@@ -155,11 +155,11 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($extRoot .
 }
 $missing = [];
 foreach ($sources as $path => $code) {
-    // Kommentare entfernen: Klassennamen in Doc-Blocks sind Prosa, keine Aufrufe
+    // Remove comments: class names in doc blocks are prose, not calls
     $code = preg_replace('#/\*.*?\*/#s', '', $code);
     $code = preg_replace('#//[^\n]*#', '', $code);
 
-    // vollqualifizierte Klassenreferenzen der Form \Foo\Bar\Baz::
+    // fully qualified class references of the form \Foo\Bar\Baz::
     preg_match_all('/\\\\((?:[A-Z][A-Za-z0-9_]*\\\\)+[A-Z][A-Za-z0-9_]*)::/', $code, $m);
     foreach (array_unique($m[1]) as $cls) {
         if (!class_exists($cls) && !interface_exists($cls)) {
@@ -171,7 +171,7 @@ if ($missing === []) {
     ok('Alle vollqualifiziert referenzierten Klassen sind auflösbar');
 } else {
     foreach ($missing as $cls => $files) {
-        // Klassen aus optionalen Fremd-Extensions sind hier erwartbar
+        // classes from optional third-party extensions are to be expected here
         str_starts_with($cls, 'Causal\\')
             ? note("$cls fehlt (optionale Fremd-Extension, defensiv geprüft) — " . implode(', ', array_unique($files)))
             : bad("$cls nicht auflösbar — " . implode(', ', array_unique($files)));

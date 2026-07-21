@@ -1,31 +1,31 @@
 # jw_feuser_manager
 
-TYPO3-Extension zur Verwaltung von **Frontend-Benutzern im Frontend**: Mitgliederliste,
-Detailansicht, Selbstpflege der eigenen Daten sowie Export als PDF, CSV und vCard.
+TYPO3 extension for managing **frontend users in the frontend**: member list,
+detail view, self-service editing of one's own data, plus export as PDF, CSV and vCard.
 
-Nachfolger der Extension `jw_frontendusermanager` (TYPO3 v8–v11), die ihrerseits
-`datamints_feuser` abgelöst hat.
+Successor to the `jw_frontendusermanager` extension (TYPO3 v8–v11), which itself
+replaced `datamints_feuser`.
 
 | | |
 |---|---|
-| Extension-Key | `jw_feuser_manager` |
-| Composer-Paket | `jwtue/jw_feuser_manager` |
-| PHP-Namespace | `JwTue\FeUserManager\` |
-| TYPO3 | 12.4 — **nicht** mit v11 lauffähig, siehe unten |
+| Extension key | `jw_feuser_manager` |
+| Composer package | `jwtue/jw_feuser_manager` |
+| PHP namespace | `JwTue\FeUserManager\` |
+| TYPO3 | 12.4 — **not** compatible with v11, see below |
 | PHP | ≥ 8.1 |
-| Lizenz | MIT |
+| License | MIT |
 
-> **Diese Fassung läuft ausschließlich unter TYPO3 v12.** Sie ist die Portierung von
-> `jw_frontendusermanager`, das weiterhin die v11-Fassung ist. Für eine v11-Installation
-> ist also die Vorgänger-Extension zu verwenden, nicht diese.
+> **This edition runs exclusively under TYPO3 v12.** It is the port of
+> `jw_frontendusermanager`, which remains the v11 edition. For a v11 installation,
+> use the predecessor extension, not this one.
 >
-> Der Code nutzt an mehreren Stellen APIs, die es in v11 nicht gibt — insbesondere den
-> PSR-7-basierten Extbase-Request (`$this->request->getQueryParams()`,
-> `->getAttribute('currentContentObject')`) und `getRenderingContext()->setControllerName()`
-> an der StandaloneView. Die v11-Fassung verwendete dafür `GeneralUtility::_GET()`,
-> `ConfigurationManager::getContentObject()` und `Extbase\Mvc\View\ViewInterface` — letzteres
-> existiert in v12 nicht mehr. Eine Extension, die beides bedient, wäre nur mit
-> Versionsweichen möglich; das ist bewusst nicht gemacht.
+> In several places the code uses APIs that do not exist in v11 — in particular the
+> PSR-7-based Extbase request (`$this->request->getQueryParams()`,
+> `->getAttribute('currentContentObject')`) and `getRenderingContext()->setControllerName()`
+> on the StandaloneView. The v11 edition used `GeneralUtility::_GET()`,
+> `ConfigurationManager::getContentObject()` and `Extbase\Mvc\View\ViewInterface` for this — the
+> latter no longer exists in v12. An extension serving both would only be possible with
+> version switches; this was deliberately not done.
 
 ## Installation
 
@@ -33,8 +33,8 @@ Nachfolger der Extension `jw_frontendusermanager` (TYPO3 v8–v11), die ihrersei
 composer require jwtue/jw_feuser_manager:dev-main
 ```
 
-Das Paket liegt nicht auf Packagist. Die einbindende TYPO3-Installation braucht deshalb
-einen VCS-Eintrag in ihrer `composer.json`:
+The package is not on Packagist. The consuming TYPO3 installation therefore needs
+a VCS entry in its `composer.json`:
 
 ```json
 "repositories": [
@@ -42,53 +42,53 @@ einen VCS-Eintrag in ihrer `composer.json`:
 ]
 ```
 
-Nach der Installation im Install-Tool den Datenbank-Abgleich ausführen — die Extension
-erweitert bestehende Tabellen (siehe [Datenbank](#datenbank)).
+After installation, run the database comparison in the Install Tool — the extension
+extends existing tables (see [Database](#database)).
 
-### Voraussetzungen in der Site-Konfiguration
+### Prerequisites in the site configuration
 
-Drei Punkte, ohne die die Plugins nicht (oder leer) rendern:
+Three points, without which the plugins will not render (or render empty):
 
-1. **Statisches Template der Extension einbinden**
-   (`EXT:jw_feuser_manager/Configuration/Typoscript/`). Ohne das fehlt
-   `tt_content.list.20.jwfeusermanager_*` und TYPO3 meldet
-   *„No Content Object definition found at TypoScript object path …"*.
+1. **Include the extension's static template**
+   (`EXT:jw_feuser_manager/Configuration/TypoScript/`). Without it,
+   `tt_content.list.20.jwfeusermanager_*` is missing and TYPO3 reports
+   *"No Content Object definition found at TypoScript object path …"*.
 
-2. **Statisches Template von EXT:form einbinden**
-   (`EXT:form/Configuration/TypoScript/`). Das Bearbeiten-Plugin baut sein Formular über
-   das Form-Framework; ohne dessen TypoScript scheitert es mit
-   *„The Prototype 'standard' …"* (`PrototypeNotFoundException`).
+2. **Include the static template of EXT:form**
+   (`EXT:form/Configuration/TypoScript/`). The edit plugin builds its form via
+   the Form Framework; without its TypoScript it fails with
+   *"The Prototype 'standard' …"* (`PrototypeNotFoundException`).
 
-3. **Storage-PID setzen** — die Extension bringt keine Vorgabe mit:
+3. **Set the storage PID** — the extension ships no default:
 
    ```typoscript
-   plugin.tx_jwfeusermanager.persistence.storagePid = <UID des Ordners mit den fe_users>
+   plugin.tx_jwfeusermanager.persistence.storagePid = <UID of the folder holding the fe_users>
    ```
 
-   Fehlt sie, sucht Extbase auf der Seite des Plugins und die Liste bleibt **leer, ohne
-   Fehlermeldung**.
+   If it is missing, Extbase searches on the plugin's page and the list stays **empty, with no
+   error message**.
 
 ## Plugins
 
-Die Extension stellt zwei Plugins bereit:
+The extension provides two plugins:
 
-| Plugin | Controller | Actions | Zweck |
+| Plugin | Controller | Actions | Purpose |
 |---|---|---|---|
-| **Liste von Benutzern** (`ListOfUsers`) | `ShowFeUserController` | `list`, `detail` | Mitgliederliste mit Gruppenfilter, Detailansicht, Exporte |
-| **Benutzer bearbeiten** (`EditUser`) | `EditFeUserController` | `edit` | Anlegen und Bearbeiten von Benutzern über ein konfigurierbares Formular |
+| **List of users** (`ListOfUsers`) | `ShowFeUserController` | `list`, `detail` | Member list with group filter, detail view, exports |
+| **Edit user** (`EditUser`) | `EditFeUserController` | `edit` | Creating and editing users via a configurable form |
 
-**Plugin-Namespace für Route-Enhancer und TypoScript: `tx_jwfeusermanager`**
-(ohne Unterstrich zwischen „fe" und „user"). Der Namespace stammt noch von
-`jw_frontendusermanager` und wurde bei der Umbenennung bewusst beibehalten, damit
-bestehende URLs und Konfigurationen gültig bleiben.
+**Plugin namespace for route enhancers and TypoScript: `tx_jwfeusermanager`**
+(no underscore between "fe" and "user"). The namespace still originates from
+`jw_frontendusermanager` and was deliberately kept during the rename so that
+existing URLs and configurations remain valid.
 
-Plugin-Signaturen: `jwfeusermanager_listofusers`, `jwfeusermanager_edituser`.
+Plugin signatures: `jwfeusermanager_listofusers`, `jwfeusermanager_edituser`.
 
-## Konfiguration
+## Configuration
 
 ### TypoScript
 
-Statisches Template einbinden. Voreinstellungen in `Configuration/Typoscript/setup.typoscript`:
+Include the static template. Defaults in `Configuration/TypoScript/setup.typoscript`:
 
 ```typoscript
 plugin.tx_jwfeusermanager {
@@ -104,201 +104,211 @@ plugin.tx_jwfeusermanager {
 }
 ```
 
-Für abweichende Templates die Konstanten `plugin.tx_jwfeusermanager.view.*RootPath` setzen.
+For different templates, set the constants `plugin.tx_jwfeusermanager.view.*RootPath`.
 
-### FlexForm — Plugin „Liste von Benutzern"
+### FlexForm — "List of users" plugin
 
-| Feld | Zweck |
+| Field | Purpose |
 |---|---|
-| `groups`, `groupFiltering`, `groupFilteringSelect`, `groupConjunction` | Welche Benutzergruppen werden angezeigt, ob und wie gefiltert wird |
-| `fields` | Angezeigte Felder (kommasepariert) |
-| `editPage` | Seite mit dem Bearbeiten-Plugin |
-| `useGroupTitle`, `useGroupLogo` | Gruppenüberschrift bzw. -logo in der Liste |
-| `pdfDownload`, `pdfFields`, `pdfTitle`, `pdfLogo`, `pdfOrientation`, `pdfFontSize` | PDF-Export |
-| `csvDownload`, `csvFields` | CSV-Export |
-| `downloadFilename` | Dateiname der Exporte |
+| `groups`, `groupFiltering`, `groupFilteringSelect`, `groupConjunction` | Which user groups are shown, whether and how filtering is applied |
+| `fields` | Displayed fields (comma-separated) |
+| `editPage` | Page containing the edit plugin |
+| `useGroupTitle`, `useGroupLogo` | Group heading and group logo in the list |
+| `pdfDownload`, `pdfFields`, `pdfTitle`, `pdfLogo`, `pdfOrientation`, `pdfFontSize` | PDF export |
+| `csvDownload`, `csvFields` | CSV export |
+| `downloadFilename` | File name of the exports |
 
-### FlexForm — Plugin „Benutzer bearbeiten"
+### FlexForm — "Edit user" plugin
 
-| Feld | Zweck |
+| Field | Purpose |
 |---|---|
-| `mode` | `0` = eigenen Benutzer bearbeiten, `1` = neuen Benutzer anlegen, `2` = Benutzer aus URL-Parameter `user` bearbeiten |
-| `fields` | Angezeigte Felder |
-| `setLastupdated` | Zeitstempel beim Speichern aktualisieren |
-| `clearCachePages` | Seiten, deren Cache nach dem Speichern geleert wird |
+| `mode` | `0` = edit own user, `1` = create new user, `2` = edit user from URL parameter `user` |
+| `fields` | Displayed fields |
+| `setLastupdated` | Update timestamp on save |
+| `clearCachePages` | Pages whose cache is cleared after saving |
 
-> Ein früheres Feld „Dieses Element (ignorieren)" (`settings.uid`) ist entfallen. Es diente
-> nur dazu, dem Code die UID des Inhaltselements durchzureichen — die ist über das
-> Content-Object ohnehin verfügbar. Bei bestehenden Inhaltselementen bleibt der Wert
-> ungenutzt im FlexForm-XML stehen; ein Migrationsschritt ist nicht nötig.
+> A former field "This element (ignore)" (`settings.uid`) has been removed. It only served
+> to pass the UID of the content element through to the code — which is available via the
+> content object anyway. For existing content elements the value remains in the FlexForm XML
+> unused; no migration step is required.
 
-### Eigene Formular-Elementtypen
+### Custom form element types
 
-Das Bearbeiten-Plugin baut sein Formular programmatisch auf und nutzt dabei sechs
-Elementtypen, die EXT:form nicht mitbringt:
+The edit plugin builds its form programmatically and uses six
+element types that EXT:form does not ship:
 
-| Typ | Zweck |
+| Type | Purpose |
 |---|---|
-| `ImageCrop` | Bildvorschau mit Zuschnitt (cropper.js) |
-| `DateTimePicker` | Datumsfeld |
-| `LabeledStaticText` | statischer Text mit Label |
-| `LabeledFluid` / `Fluid` | freies Fluid mit bzw. ohne Label |
-| `Html` | roher HTML-Block (Trennlinien, Passwort-Generator) |
+| `ImageCrop` | Image preview with cropping (cropper.js) |
+| `DateTimePicker` | Date field |
+| `LabeledStaticText` | static text with label |
+| `LabeledFluid` / `Fluid` | free Fluid with or without label |
+| `Html` | raw HTML block (separators, password generator) |
 
-Registriert werden sie in `Configuration/Yaml/FormSetup.yaml`; die Fluid-Partials liegen
-unter `Resources/Private/Form-Frontend/Partials/`. Eingebunden wird die YAML über
-`plugin.tx_form.settings.yamlConfigurations` im statischen TypoScript der Extension.
+They are registered in `Configuration/Yaml/FormSetup.yaml`; the Fluid partials live
+under `Resources/Private/Form-Frontend/Partials/`. The YAML is included via
+`plugin.tx_form.settings.yamlConfigurations` in the extension's static TypoScript.
 
-> **Warum das wichtig ist:** Im Standard-Prototyp von EXT:form gilt
-> `skipUnknownElements: true`. Fehlt die Registrierung, wirft TYPO3 **keinen Fehler** —
-> die Elemente werden durch ein leeres Element ersetzt und rendern schlicht nichts. Genau
-> so verschwanden nach dem v12-Port Bildvorschau, Zuschnitt und Datumswähler, ohne dass
-> irgendwo etwas protokolliert wurde. Wer die statische TypoScript-Einbindung vergisst,
-> bekommt dasselbe Bild.
+> **Why this matters:** In the standard prototype of EXT:form,
+> `skipUnknownElements: true` applies. If the registration is missing, TYPO3 throws **no error** —
+> the elements are replaced by an empty element and simply render nothing. This is exactly
+> how the image preview, cropping and date picker disappeared after the v12 port, without
+> anything being logged anywhere. Whoever forgets to include the static TypoScript
+> gets the same picture.
 
-### Formularfelder (Plugin „Benutzer bearbeiten")
+### Form fields ("Edit user" plugin)
 
-Welche Felder das Bearbeiten-Formular enthält, wird **nicht** im FlexForm gepflegt, sondern
-über Datensätze vom Typ *Editor-Feld* (Tabelle `tx_jwfeusermanager_editorfield`) auf
-derselben Seite. Jeder Datensatz beschreibt ein Formularfeld. Unterstützte Typen:
+Which fields the edit form contains is **not** maintained in the FlexForm, but
+via records of type *editor field* (table `tx_jwfeusermanager_editorfield`) on
+the same page. Each record describes one form field. Supported types:
 
 `TYPE_DB_FIELD`, `TYPE_DB_FIELD_READONLY`, `TYPE_PASSWORD`, `TYPE_IMAGE`,
 `TYPE_ADDITIONAL_RICHTEXT`, `TYPE_ADDITIONAL_ENTRIES`, `TYPE_SEPARATOR`,
 `TYPE_DELETE_USER`, `TYPE_USERGROUPS`, `TYPE_EMAIL`
 
-Für Datenbankfelder stehen die Modi Text, Mehrzeilig, E-Mail, Boolean, Datum, Zeit,
-Datum+Zeit, Mehrfachauswahl und Optionen zur Verfügung. Mehrfachauswahl und Optionen
-werden als Bitfeld gespeichert.
+For database fields, the modes Text, Multiline, Email, Boolean, Date, Time,
+Date+Time, Multiple selection and Options are available. Multiple selection and options
+are stored as a bitfield.
 
-## Datenbank
+## Database
 
-Die Extension **erweitert bestehende Tabellen**. Bei einem Rückbau gehen diese Daten verloren.
+The extension **extends existing tables**. On removal, this data is lost.
 
-- **`fe_users`** — 23 zusätzliche Spalten: `mobilephone`, `phone_business`, `date_of_birth`,
-  `tx_jwfeusermanager_newsletter_subscribed`, `tx_jwfeusermanager_lastupdated`, sowie je
-  fünf `tx_jwfeusermanager_additional_text_1..5`, `_additional_boolean_1..5` und
+- **`fe_users`** — 23 additional columns: `mobilephone`, `phone_business`, `date_of_birth`,
+  `tx_jwfeusermanager_newsletter_subscribed`, `tx_jwfeusermanager_lastupdated`, plus five each of
+  `tx_jwfeusermanager_additional_text_1..5`, `_additional_boolean_1..5` and
   `_additional_bitfield_1..5`
-- **`fe_groups`** — zusätzliche Spalte `image`
-- **`tx_jwfeusermanager_editorfield`** — neue Tabelle für die Formularfeld-Definitionen
+- **`fe_groups`** — additional column `image`
+- **`tx_jwfeusermanager_editorfield`** — new table for the form field definitions
 
-Die `_additional_*`-Felder sind der generische Mechanismus für projektspezifische
-Mitgliederfelder, ohne die Extension anzupassen. Ihre Beschriftung wird über die
-Editor-Feld-Datensätze gepflegt.
+The `_additional_*` fields are the generic mechanism for project-specific
+member fields without modifying the extension. Their labels are maintained via the
+editor field records.
 
-## ViewHelper
+## ViewHelpers
 
-Namespace `JwTue\FeUserManager\ViewHelpers\` — Verzeichnis **`ViewHelpers`** (Plural).
+Namespace `JwTue\FeUserManager\ViewHelpers\` — directory **`ViewHelpers`** (plural).
 
-| ViewHelper | Zweck |
+| ViewHelper | Purpose |
 |---|---|
-| `Form\DateTimePickerViewHelper` | Datumsfeld im Bearbeitungsformular |
-| `Format\PhoneViewHelper` | Telefonnummer formatieren |
-| `Link\PhoneViewHelper` | Telefonnummer als `tel:`-Link |
-| `Uri\PhoneViewHelper` | Telefonnummer als `tel:`-URI |
+| `Form\DateTimePickerViewHelper` | Date field in the edit form |
+| `Format\PhoneViewHelper` | Format phone number |
+| `Link\PhoneViewHelper` | Phone number as a `tel:` link |
+| `Uri\PhoneViewHelper` | Phone number as a `tel:` URI |
 
-`Format\PhoneViewHelper::formatPhoneNumber()` ist statisch und wird auch aus den Controllern
-für die Exporte verwendet.
+`Format\PhoneViewHelper::formatPhoneNumber()` is static and is also used from the controllers
+for the exports.
 
-## Exporte
+## Exports
 
-| Format | Umsetzung |
+| Format | Implementation |
 |---|---|
-| **PDF** | TCPDF (`tecnickcom/tcpdf`), Spalten aus `settings.pdfFields` |
-| **CSV** | direkte Ausgabe, UTF-8, Spalten aus `settings.csvFields`; Bitfeld-Werte werden aufgelöst |
-| **vCard** | mitgelieferte Bibliothek unter `Resources/Private/Library/vcard/`, Einzelperson aus der Detailansicht |
+| **PDF** | TCPDF (`tecnickcom/tcpdf`), columns from `settings.pdfFields` |
+| **CSV** | direct output, UTF-8, columns from `settings.csvFields`; bitfield values are resolved |
+| **vCard** | bundled library under `Resources/Private/Library/vcard/`, single person from the detail view |
 
-Gesteuert über den Parameter `download` (`pdf`, `csv`, `vcf`) an der `list`- bzw.
-`detail`-Action.
+Controlled via the parameter `download` (`pdf`, `csv`, `vcf`) on the `list` or
+`detail` action.
 
-## Entwicklung
+## Development
 
-### Statische Verifikation gegen TYPO3 v12
+### Static verification against TYPO3 v12
 
-`Tests/verify-v12.php` prüft ohne laufenden Webserver, ob alle referenzierten Klassen und
-die benutzten Methodensignaturen in einer echten TYPO3-v12-Installation existieren. Das
-findet Portierungsfehler, die weder `php -l` noch eine IDE ohne `vendor/` erkennen.
+`Tests/verify-v12.php` checks, without a running web server, whether all referenced classes and
+the used method signatures exist in a real TYPO3 v12 installation. This
+catches porting errors that neither `php -l` nor an IDE without `vendor/` detects.
 
 ```bash
 TYPO3_ROOT=/pfad/zu/typo3-installation php Tests/verify-v12.php
 ```
 
-Erwartet wird eine Composer-basierte TYPO3-12.4-Installation mit vollständigem `vendor/`.
-Exit-Code 0 = keine Fehler, 1 = Fehler gefunden, 2 = `TYPO3_ROOT` fehlt oder ist ungültig.
+A Composer-based TYPO3 12.4 installation with a complete `vendor/` is expected.
+Exit code 0 = no errors, 1 = errors found, 2 = `TYPO3_ROOT` missing or invalid.
 
-Geprüft werden: Existenz aller referenzierten TYPO3-Klassen, Abwesenheit der in v12
-entfernten APIs, die Signaturen, auf die sich der Code stützt, Ladbarkeit und Vererbung der
-eigenen Klassen, Auflösbarkeit der Konstruktor-Abhängigkeiten sowie ein Scan aller
-vollqualifizierten Klassenreferenzen im gesamten `Classes/`-Baum.
+Checked are: existence of all referenced TYPO3 classes, absence of the APIs removed in v12,
+the signatures the code relies on, loadability and inheritance of the
+own classes, resolvability of the constructor dependencies, plus a scan of all
+fully qualified class references throughout the entire `Classes/` tree.
 
-> **Der Test ersetzt kein Ausprobieren in einer laufenden Installation.** Er prüft, dass
-> Klassen und Signaturen *existieren* — nicht Konfiguration, DI-Registrierung oder
-> Laufzeitverhalten. Beim v12-Port meldete er „keine Fehler", während die Extension noch
-> an einem Dutzend Stellen brach (fehlendes `Services.yaml`, falsche Plugin-Signatur,
-> überschriebenes EXTBASEPLUGIN, fehlende Model-Eigenschaften). Nimm ein grünes Ergebnis
-> also als Vorprüfung, nicht als Freigabe.
+> **The test is no substitute for trying it out in a running installation.** It checks that
+> classes and signatures *exist* — not configuration, DI registration or
+> runtime behavior. During the v12 port it reported "no errors" while the extension still
+> broke in a dozen places (missing `Services.yaml`, wrong plugin signature,
+> overridden EXTBASEPLUGIN, missing model properties). So take a green result
+> as a preliminary check, not as a release approval.
 
-### Manueller Testpfad
+### Manual test path
 
-Beim Ändern der Extension mindestens durchspielen:
+When changing the extension, at least run through:
 
-1. Mitgliederliste rendert mit Daten
-2. CSV-, PDF- und vCard-Export
-3. Bearbeiten-Formular rendert alle konfigurierten Editor-Feldtypen
-4. Benutzer anlegen — Passwort landet gehasht in der DB
-5. Zusatzfeld (`tx_jwfeusermanager_additional_*`) wird gespeichert
-6. `tx_jwfeusermanager_lastupdated` wird gesetzt, wenn `settings.setLastupdated` aktiv ist
-7. Dublettenprüfung blockiert einen bereits vergebenen Benutzernamen — **auch wenn der
-   bestehende Benutzer deaktiviert ist**
-8. Bildupload: Datei landet im konfigurierten Ordner, `sys_file_reference` wird angelegt
-9. Benutzer löschen: Datensatz auf `deleted=1`, Referenz und Datei entfernt, Weiterleitung
-   auf die konfigurierte Seite
+1. Member list renders with data
+2. CSV, PDF and vCard export
+3. Edit form renders all configured editor field types
+4. Create user — password ends up hashed in the DB
+5. Additional field (`tx_jwfeusermanager_additional_*`) is saved
+6. `tx_jwfeusermanager_lastupdated` is set when `settings.setLastupdated` is active
+7. Duplicate check blocks an already taken username — **even if the
+   existing user is disabled**
+8. Image upload: file ends up in the configured folder, `sys_file_reference` is created
+9. Delete user: record set to `deleted=1`, reference and file removed, redirect
+   to the configured page
 
-### Zusammenspiel mit `causal/image_autoresize`
+### Interaction with `causal/image_autoresize`
 
-Ist die Extension installiert, verkleinert sie hochgeladene Bilder **automatisch über
-FAL-Events** — die Extension muss dafür nichts tun. Der frühere manuelle Aufruf von
-`Slots\FileUpload` ist gegenstandslos: Diese Signal/Slot-API existiert seit v12 nicht mehr,
-der Aufruf ist defensiv gekapselt und wird übersprungen.
+If the extension is installed, it downsizes uploaded images **automatically via
+FAL events** — the extension has to do nothing for this. The former manual call to
+`Slots\FileUpload` is moot: this signal/slot API no longer exists since v12,
+the call is defensively wrapped and skipped.
 
-Beim Testen zu beachten: Die Standardkonfiguration von `image_autoresize` hat einen
-**Schwellwert von 400 KB** und Grenzen von 1920 × 1080. Kleinere Bilder bleiben unverändert
-— das ist kein Fehler. Ein 4000 × 3000 großes Bild mit 12 MB wurde im Test korrekt auf
-1440 × 1080 und 353 KB reduziert.
+To keep in mind when testing: the default configuration of `image_autoresize` has a
+**threshold of 400 KB** and limits of 1920 × 1080. Smaller images stay unchanged
+— this is not a bug. A 4000 × 3000 image of 12 MB was correctly reduced in the test to
+1440 × 1080 and 353 KB.
 
-### Bekannte offene Punkte
+### Known open issues
 
-- **`jeroendesloovere/vcard` ist als Abhängigkeit deklariert, wird aber nicht verwendet.**
-  Der vCard-Export nutzt stattdessen die mitgelieferte Bibliothek unter
-  `Resources/Private/Library/vcard/`. Entweder auf das Composer-Paket umstellen (dann kann
-  die mitgelieferte Datei entfallen) oder die Abhängigkeit entfernen.
-- **`EditorFieldRepository::findForElement()`** nutzt weiterhin `Query::statement()`. Das
-  Model `EditorField` mappt weder `parent_ce` noch `sorting` als Eigenschaft, eine reguläre
-  Extbase-Query kann darauf also weder filtern noch sortieren. Eine Umstellung setzt voraus,
-  dass beide Felder zuvor im Model ergänzt werden.
-- **Kein HTML mit geschweiften Klammern in `content`-Eigenschaften.** Die Partials
-  `Fluid` und `LabeledFluid` rendern ihren Inhalt über `v:render.inline`, also **als
-  Fluid-Quelltext**. Eingebettetes JavaScript wird dadurch zerlegt: `{` beginnt für Fluid
-  einen Ausdruck. Genau daran scheiterte früher der Passwort-Generator. Wer solche
-  Bausteine braucht, legt einen eigenen Elementtyp mit Partial an (Vorbild:
-  `PasswordGenerator`) und lagert das JavaScript in eine Datei aus.
-- **Die Property-Namen der Zusatzfelder sind heikel.** `txJwfeusermanager*` (großes J) muss
-  so bleiben: Der Setter-Aufruf im Speicher-Finisher, die Feldnamen-Vergleiche im
-  `ShowFeUserController` und die `<f:case>`-Werte in `List.html` leiten sich alle über
-  `underscoredToLowerCamelCase()` aus den Spaltennamen ab. Für die 15 durchnummerierten
-  Felder reicht das nicht — deren Spalten stehen explizit in
-  `Configuration/Extbase/Persistence/Classes.php`. Wer dort Felder ergänzt, muss den
-  Eintrag mitpflegen, sonst werden sie stillschweigend nicht gespeichert.
-- **Bildupload** ruft optional `Causal\ImageAutoresize\Slots\FileUpload` auf. Diese
-  Signal/Slot-API existiert in aktuellen Versionen von `causal/image_autoresize` nicht mehr;
-  der Aufruf ist defensiv gekapselt und wird dann übersprungen. Wenn die automatische
-  Verkleinerung beim Upload gebraucht wird, muss auf die aktuelle API portiert werden.
-- Es gibt **keine `ext_emconf.php`** — die Extension ist reine Composer-Extension und trägt
-  keine Versionsnummer. Versioniert wird über Git.
+- **`jeroendesloovere/vcard` is declared as a dependency but is not used.**
+  The vCard export instead uses the bundled library under
+  `Resources/Private/Library/vcard/`. Either switch to the Composer package (then
+  the bundled file can be dropped) or remove the dependency.
+- **`EditorFieldRepository::findForElement()`** still uses `Query::statement()`. The
+  `EditorField` model maps neither `parent_ce` nor `sorting` as a property, so a regular
+  Extbase query can neither filter nor sort on them. A switchover requires
+  that both fields first be added to the model.
+- **No HTML with curly braces in `content` properties.** The partials
+  `Fluid` and `LabeledFluid` render their content via `v:render.inline`, that is **as
+  Fluid source code**. Embedded JavaScript is thereby torn apart: `{` starts a Fluid
+  expression. This is exactly what the password generator failed on previously. Whoever needs
+  such building blocks creates a custom element type with a partial (model:
+  `PasswordGenerator`) and moves the JavaScript out into a file.
+- **The property names of the additional fields are delicate.** `txJwfeusermanager*` (capital J) must
+  stay that way: the setter call in the save finisher, the field name comparisons in the
+  `ShowFeUserController` and the `<f:case>` values in `List.html` are all derived via
+  `underscoredToLowerCamelCase()` from the column names. For the 15 numbered
+  fields this is not enough — their columns are listed explicitly in
+  `Configuration/Extbase/Persistence/Classes.php`. Whoever adds fields there must maintain the
+  entry too, otherwise they are silently not saved.
+- **Image upload** optionally calls `Causal\ImageAutoresize\Slots\FileUpload`. This
+  signal/slot API no longer exists in current versions of `causal/image_autoresize`;
+  the call is defensively wrapped and is then skipped. If automatic
+  downsizing on upload is needed, it must be ported to the current API.
+- The extension ships an `ext_emconf.php` (version `12.0.0`, TYPO3 12.4, PHP 8.1) alongside
+  `composer.json`, so it is described for both the classic Extension Manager and Composer.
 
-## Historie
+## History
 
-Die Extension entstand als Portierung von `jw_frontendusermanager` (TYPO3 v11) auf TYPO3 v12.
-Beim Abschluss der Portierung wurden unter anderem ersetzt: `Extbase\Object\ObjectManager`
-(in v12 entfernt), `ActionController::getViewProperty()` (entfernt), die Basisklassen
-`Extbase\Domain\Repository\FrontendUser[Group]Repository` (entfernt) sowie
-`ActionController::$extensionName` und `$contentObj` (nicht mehr vorhanden).
+The extension originated as a port of `jw_frontendusermanager` (TYPO3 v11) to TYPO3 v12.
+On completing the port, the following were replaced among others: `Extbase\Object\ObjectManager`
+(removed in v12), `ActionController::getViewProperty()` (removed), the base classes
+`Extbase\Domain\Repository\FrontendUser[Group]Repository` (removed) as well as
+`ActionController::$extensionName` and `$contentObj` (no longer present).
+
+## Development notes
+
+The predecessor `jw_frontendusermanager` was written by hand. The TYPO3 v12 port and the
+subsequent work — making the extension runnable again, the migration upgrade wizards, the
+`ext_emconf.php`, and the English translation of comments and this README — were carried out
+with [Claude Code](https://www.claude.com/product/claude-code). All changes were verified
+against a running TYPO3 12.4 installation (rendering the member list, the edit form and the
+exports) before release. See [AGENTS.md](AGENTS.md) for how the repository is set up for that
+work.

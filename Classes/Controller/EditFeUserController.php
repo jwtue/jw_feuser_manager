@@ -89,10 +89,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	
 
 	/**
-	 * Content-Object des Plugins. In TYPO3 v12 deklariert der ActionController diese
-	 * Eigenschaft nicht mehr selbst — sie wird in initializeView() aus dem
-	 * ConfigurationManager gesetzt und muss deshalb hier deklariert sein (ab PHP 8.2
-	 * sind dynamische Eigenschaften deprecated).
+	 * Content object of the plugin. In TYPO3 v12 the ActionController no longer declares
+	 * this property itself — it is set in initializeView() from the ConfigurationManager
+	 * and therefore has to be declared here (dynamic properties are deprecated as of
+	 * PHP 8.2).
 	 */
 	protected ?ContentObjectRenderer $contentObj = null;
 
@@ -142,9 +142,9 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      {
 		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
 		
-		// ConfigurationManager::getContentObjectRenderer() gibt es in TYPO3 v12 nicht mehr;
-		// getContentObject() ist ab 12.4 deprecated. Der aktuelle ContentObjectRenderer
-		// kommt jetzt aus dem Request-Attribut "currentContentObject".
+		// ConfigurationManager::getContentObjectRenderer() no longer exists in TYPO3 v12;
+		// getContentObject() is deprecated as of 12.4. The current ContentObjectRenderer
+		// now comes from the request attribute "currentContentObject".
 		$this->contentObj = $this->request->getAttribute("currentContentObject");
 		
 		$view->setRequest($this->request);
@@ -210,9 +210,9 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				}
 			case 0:
 			default:
-				// Ohne angemeldeten Frontend-Benutzer ist ->user null. Ungeprueft ergab das
-				// eine PHP-Warnung ("array offset on value of type null"), die je nach
-				// errorHandlerErrors-Einstellung als Exception hochschlaegt.
+				// Without a logged-in frontend user, ->user is null. Left unchecked this
+				// produced a PHP warning ("array offset on value of type null") that, depending
+				// on the errorHandlerErrors setting, escalates to an exception.
 				$currentUserUid = $GLOBALS['TSFE']->fe_user->user['uid'] ?? 0;
 				$user = $currentUserUid ? $this->userRepository->findByUid($currentUserUid) : null;
 		}
@@ -360,12 +360,12 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					}
 					$colsById["editorfield_".$col->getUid()] = $col;
 					if ($col->getPasswordGenerator()) {
-						// Eigener Elementtyp statt eines HTML-Schnipsels im content-Property:
-						// LabeledFluid rendert seinen Inhalt ueber v:render.inline, also als
-						// Fluid-Quelltext. Die geschweiften Klammern des frueher hier
-						// eingebetteten JavaScripts wurden dabei als Fluid-Ausdruecke gedeutet,
-						// wodurch der Knopf gar nicht erst im Markup landete.
-						// Die Logik steht jetzt in Resources/Public/JavaScript/passwordGenerator.js.
+						// A dedicated element type instead of an HTML snippet in the content
+						// property: LabeledFluid renders its content via v:render.inline, i.e.
+						// as Fluid source. The curly braces of the JavaScript embedded here
+						// previously were interpreted as Fluid expressions, so the button never
+						// made it into the markup at all.
+						// The logic now lives in Resources/Public/JavaScript/passwordGenerator.js.
 						$el = $page1->createElement("editorfield_".$col->getUid()."_randompw", 'PasswordGenerator');
 						$el->setLabel($this->languageService->sL(
 							"LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.randomPassword"
@@ -583,11 +583,11 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						}
 						$this->userRepository->remove($user);
 
-						// Den Vorschlaghammer instanzieren / aus der Kiste kramen
-						// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
+						// Grab the sledgehammer / dig it out of the box
+						// Drive it into the database with the sledgehammer / do the job properly
 						$persistenceManager = $this->persistenceManager;
 						$persistenceManager->persistAll();
-						
+
 						$this->cacheService->clearPageCache($colsById[$key]->getRedirectPage());
 						
 						$finisherContext->cancel();
@@ -648,10 +648,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						if ($newfile instanceof \TYPO3\CMS\Extbase\Domain\Model\FileReference) {
 							$newfile = $newfile->getOriginalResource();
 						}
-						// EXT:image_autoresize hat die Signal/Slot-API mit TYPO3 v12 abgelegt.
-						// Die frühere Fassung prüfte auf Hooks\FileUploadHook, instanziierte aber
-						// Slots\FileUpload — existierte die eine Klasse ohne die andere, war das ein
-						// Fatal Error. Deshalb hier auf genau die Klasse prüfen, die auch benutzt wird.
+						// EXT:image_autoresize dropped the signal/slot API with TYPO3 v12.
+						// The earlier version checked for Hooks\FileUploadHook but instantiated
+						// Slots\FileUpload — if one class existed without the other, that was a
+						// fatal error. So check for exactly the class that is actually used.
 						if (class_exists(\Causal\ImageAutoresize\Slots\FileUpload::class)) {
 							$slot = GeneralUtility::makeInstance(\Causal\ImageAutoresize\Slots\FileUpload::class);
 							$slot->postFileReplace($newfile->getOriginalFile(), null);
@@ -660,8 +660,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						$folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($colsById[$key]->getImagePathProcessed());
 
 						$filename = $colsById[$key]->getImageFilename() == 1 ? $user->getUsername() : $user->getUid();
-						// array_pop() erwartet eine Referenz — der frühere Aufruf
-						// array_pop(explode(...)) ist unter PHP 8 ein Fatal Error.
+						// array_pop() expects a reference — the earlier call
+						// array_pop(explode(...)) is a fatal error under PHP 8.
 						$pathSegments = explode("/", $newfile->getForLocalProcessing(false));
 						$oldfilename = array_pop($pathSegments);
 						$parts = explode(".", $oldfilename);
@@ -721,9 +721,9 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						
 						$refIndex->updateRefIndexTable("sys_file", $finalFile->getUid());
 						$refIndex->updateRefIndexTable("fe_users", $user->getUid());
-						// Der Reference-Index der sys_file_reference-Zeile wird erst nach
-						// persistAll() aktualisiert (siehe unten): Die Zeile existiert hier
-						// noch nicht, $imgRef->getUid() liefe in ein "Undefined array key uid".
+						// The reference index of the sys_file_reference row is only updated
+						// after persistAll() (see below): the row does not exist yet here,
+						// $imgRef->getUid() would run into an "Undefined array key uid".
 						
 						//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($queryBuilder->getSQL());
                         
@@ -740,14 +740,14 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$this->userRepository->update($user);
 			}
 			
-			// Den Vorschlaghammer instanzieren / aus der Kiste kramen
-			// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
+			// Grab the sledgehammer / dig it out of the box
+			// Drive it into the database with the sledgehammer / do the job properly
 			$persistenceManager = $this->persistenceManager;
 			$persistenceManager->persistAll();
 
-			// Reference-Index der Bild-Verknuepfungen nachziehen. Das geht erst jetzt:
-			// Extbase legt die sys_file_reference-Zeilen beim Persistieren an, vorher
-			// gibt es keine UID. Die UIDs werden deshalb aus der Datenbank gelesen.
+			// Update the reference index of the image relations. This is only possible now:
+			// Extbase creates the sys_file_reference rows when persisting, before that
+			// there is no UID. The UIDs are therefore read from the database.
 			if ($user !== null && $user->getUid()) {
 				$refConn = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
 					->getConnectionForTable('sys_file_reference');
@@ -773,8 +773,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$this->cacheService->clearPageCache($page);
 			}
 			
-			// Den Vorschlaghammer instanzieren / aus der Kiste kramen
-			// Mit dem Vorschlaghammer in die Datenbank speichern / Nägel mit Köpfen machen
+			// Grab the sledgehammer / dig it out of the box
+			// Drive it into the database with the sledgehammer / do the job properly
 			/*$persistenceManager = $this->persistenceManager;
 			$persistenceManager->persistAll();*/
 			 
@@ -807,16 +807,16 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			]);
 		}
 
-		// Das Formular wird hier programmatisch zusammengebaut, nicht ueber die
-		// ArrayFormFactory. Deren triggerFormBuildingFinished() laeuft dadurch nicht — und
-		// damit auch nicht der afterBuildingFinished-Hook von EXT:form.
+		// The form is assembled programmatically here, not via the ArrayFormFactory. Its
+		// triggerFormBuildingFinished() therefore does not run — and neither does the
+		// afterBuildingFinished hook of EXT:form.
 		//
-		// Genau dieser Hook haengt an Datei-Upload-Feldern den
-		// UploadedFileReferenceConverter ein. Ohne ihn erreicht der rohe $_FILES-Array den
-		// PropertyMapper und der Upload scheitert mit
+		// It is exactly this hook that attaches the UploadedFileReferenceConverter to
+		// file upload fields. Without it, the raw $_FILES array reaches the PropertyMapper
+		// and the upload fails with
 		// "It is not allowed to map property 'name'".
 		//
-		// Deshalb wird der Hook hier nachgezogen, analog zu
+		// The hook is therefore invoked here after the fact, analogous to
 		// AbstractFormFactory::triggerFormBuildingFinished().
 		$this->triggerFormBuildingFinished($form);
 
@@ -828,10 +828,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	}
 
 	/**
-	 * Ruft den afterBuildingFinished-Hook von EXT:form fuer alle Elemente des Formulars auf.
+	 * Calls the afterBuildingFinished hook of EXT:form for all elements of the form.
 	 *
-	 * Nachbau von TYPO3\CMS\Form\Domain\Factory\AbstractFormFactory::triggerFormBuildingFinished(),
-	 * die hier nicht greift, weil das Formular nicht ueber eine FormFactory entsteht.
+	 * Reimplementation of TYPO3\CMS\Form\Domain\Factory\AbstractFormFactory::triggerFormBuildingFinished(),
+	 * which does not apply here because the form is not created via a FormFactory.
 	 */
 	protected function triggerFormBuildingFinished(FormDefinition $form): void
 	{

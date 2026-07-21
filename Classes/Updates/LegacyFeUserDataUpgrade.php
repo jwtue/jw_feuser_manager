@@ -13,29 +13,29 @@ use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
- * Uebertraegt Bestandsdaten der Vorgaenger-Extension jw_frontendusermanager in die
- * jw_feuser_manager-Struktur.
+ * Transfers legacy data of the predecessor extension jw_frontendusermanager into the
+ * jw_feuser_manager structure.
  *
- * Beim Umbenennen der Extension aenderte sich der Datenbank-Praefix von
- * "jwfrontendusermanager" auf "jwfeusermanager" (Konvention: Extension-Key ohne
- * Unterstriche). Die Struktur-Aktualisierung (ext_tables.sql) legt die NEUEN Spalten und
- * die neue Tabelle an, laesst aber die alten mitsamt Daten unangetastet — die
- * Mitgliederfelder saessen sonst nach dem Umzug in verwaisten Alt-Spalten.
+ * When the extension was renamed, the database prefix changed from
+ * "jwfrontendusermanager" to "jwfeusermanager" (convention: extension key without
+ * underscores). The structure update (ext_tables.sql) creates the NEW columns and the
+ * new table, but leaves the old ones and their data untouched — otherwise the member
+ * fields would end up in orphaned legacy columns after the move.
  *
- * Vorgehen — bewusst nicht-destruktiv:
- *  - fe_users: fuer jede Alt-Spalte tx_jwfrontendusermanager_* wird der Wert in die
- *    gleichnamige tx_jwfeusermanager_*-Spalte kopiert, aber nur dort, wo die neue Spalte
- *    noch ihren Vorgabewert traegt. So werden weder Nachbearbeitungen ueberschrieben noch
- *    Daten geloescht.
- *  - tx_jwfrontendusermanager_editorfield: die Zeilen werden in die neue Tabelle kopiert,
- *    sofern diese noch leer ist.
- *  - Die Alt-Spalten und die Alt-Tabelle bleiben erhalten. Sie tauchen anschliessend im
- *    Datenbank-Analyzer als "nicht in der Definition" auf und koennen dort nach Sichtpruefung
- *    entfernt werden.
+ * Approach — deliberately non-destructive:
+ *  - fe_users: for each legacy column tx_jwfrontendusermanager_* the value is copied into
+ *    the identically named tx_jwfeusermanager_* column, but only where the new column
+ *    still carries its default value. This way neither later edits are overwritten nor
+ *    data is deleted.
+ *  - tx_jwfrontendusermanager_editorfield: the rows are copied into the new table,
+ *    provided it is still empty.
+ *  - The legacy columns and the legacy table are kept. They subsequently show up in the
+ *    database analyzer as "not in the definition" and can be removed there after a visual
+ *    review.
  *
- * Die neuen Namen werden mechanisch aus den alten abgeleitet
- * (jwfrontendusermanager -> jwfeusermanager); es wird nur verarbeitet, was tatsaechlich in
- * der Datenbank existiert. Der Wizard kommt damit ohne hartcodierte Spaltenliste aus.
+ * The new names are derived mechanically from the old ones
+ * (jwfrontendusermanager -> jwfeusermanager); only what actually exists in the database
+ * is processed. The wizard thus works without a hardcoded column list.
  */
 #[UpgradeWizard('jwFeUserManager_legacyData')]
 final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInterface, RepeatableInterface
@@ -59,21 +59,21 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
 
     public function getTitle(): string
     {
-        return 'jw_feuser_manager: Bestandsdaten der Vorgaenger-Extension uebernehmen';
+        return 'jw_feuser_manager: import legacy data from the predecessor extension';
     }
 
     public function getDescription(): string
     {
-        return 'Kopiert Mitgliederfelder (fe_users.tx_jwfrontendusermanager_*) und die '
-            . 'Editor-Feld-Datensaetze aus der Vorgaenger-Extension jw_frontendusermanager in '
-            . 'die aktuelle jw_feuser_manager-Struktur. Nicht-destruktiv: Alt-Spalten und '
-            . 'Alt-Tabelle bleiben erhalten und koennen anschliessend ueber den '
-            . 'Datenbank-Analyzer entfernt werden.';
+        return 'Copies member fields (fe_users.tx_jwfrontendusermanager_*) and the '
+            . 'editor field records from the predecessor extension jw_frontendusermanager into '
+            . 'the current jw_feuser_manager structure. Non-destructive: legacy columns and '
+            . 'legacy table are kept and can subsequently be removed via the '
+            . 'database analyzer.';
     }
 
     public function getPrerequisites(): array
     {
-        // Die NEUEN Spalten/Tabelle muessen existieren, bevor kopiert werden kann.
+        // The NEW columns/table must exist before anything can be copied.
         return [DatabaseUpdatedPrerequisite::class];
     }
 
@@ -89,10 +89,10 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
 
         $this->output->writeln('');
         $this->output->writeln(
-            'Fertig. Die Alt-Spalten (fe_users.tx_jwfrontendusermanager_*) und die Alt-Tabelle '
-            . self::OLD_EDITORFIELD_TABLE . ' wurden bewusst NICHT geloescht. Nach einer '
-            . 'Sichtpruefung der uebernommenen Daten koennen sie im Datenbank-Analyzer '
-            . '("Nicht in der Definition") entfernt werden.'
+            'Done. The legacy columns (fe_users.tx_jwfrontendusermanager_*) and the legacy table '
+            . self::OLD_EDITORFIELD_TABLE . ' were deliberately NOT deleted. After a '
+            . 'visual review of the imported data they can be removed in the database analyzer '
+            . '("Not in the definition").'
         );
 
         return true;
@@ -104,14 +104,14 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
     {
         $columns = $this->feUsersColumnMap();
         if ($columns === []) {
-            $this->output->writeln('fe_users: keine Alt-Spalten gefunden.');
+            $this->output->writeln('fe_users: no legacy columns found.');
             return;
         }
 
         $connection = $this->connectionPool->getConnectionForTable('fe_users');
         foreach ($columns as $old => [$new, $default]) {
-            // Nur dort kopieren, wo die neue Spalte noch ihren Vorgabewert traegt: schuetzt
-            // vor dem Ueberschreiben bereits gepflegter Werte und macht den Lauf wiederholbar.
+            // Only copy where the new column still carries its default value: this protects
+            // against overwriting already maintained values and makes the run repeatable.
             $sql = sprintf(
                 'UPDATE %s SET %s = %s WHERE %s <=> %s AND NOT (%s <=> %s)',
                 $connection->quoteIdentifier('fe_users'),
@@ -123,12 +123,12 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
                 $connection->quote((string)$default)
             );
             $affected = (int)$connection->executeStatement($sql);
-            $this->output->writeln(sprintf('  fe_users.%s -> %s: %d Datensatz/-saetze', $old, $new, $affected));
+            $this->output->writeln(sprintf('  fe_users.%s -> %s: %d record(s)', $old, $new, $affected));
         }
     }
 
     /**
-     * @return array<string, array{0: string, 1: string|null}> Alt-Spalte => [Neu-Spalte, Vorgabewert der Neu-Spalte]
+     * @return array<string, array{0: string, 1: string|null}> legacy column => [new column, default value of the new column]
      */
     private function feUsersColumnMap(): array
     {
@@ -145,7 +145,7 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
     }
 
     /**
-     * @return list<string> vorhandene fe_users-Spalten mit Alt-Praefix
+     * @return list<string> existing fe_users columns with the legacy prefix
      */
     private function legacyFeUsersColumns(): array
     {
@@ -160,7 +160,7 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
     }
 
     /**
-     * @return array<string, string|null> Spaltenname (lowercase) => Vorgabewert
+     * @return array<string, string|null> column name (lowercase) => default value
      */
     private function columnDefaults(string $table): array
     {
@@ -173,12 +173,12 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
         return $defaults;
     }
 
-    // ------------------------------------------------------ editorfield-Tabelle
+    // ------------------------------------------------------ editorfield table
 
     private function migrateEditorfieldTable(): void
     {
         if (!$this->legacyEditorfieldRowsPending()) {
-            $this->output->writeln(self::NEW_EDITORFIELD_TABLE . ': nichts zu uebernehmen.');
+            $this->output->writeln(self::NEW_EDITORFIELD_TABLE . ': nothing to import.');
             return;
         }
 
@@ -191,7 +191,7 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
         ));
         if ($sharedColumns === []) {
             $this->output->writeln('<warning>' . self::NEW_EDITORFIELD_TABLE
-                . ': keine gemeinsamen Spalten mit der Alt-Tabelle, uebersprungen.</warning>');
+                . ': no columns in common with the legacy table, skipped.</warning>');
             return;
         }
 
@@ -202,11 +202,11 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
             $sharedColumns
         ));
 
-        // Gleiche DB-Verbindung fuer beide Tabellen (Standardfall) -> ein INSERT ... SELECT.
+        // Same DB connection for both tables (the standard case) -> a single INSERT ... SELECT.
         $sql = sprintf('INSERT INTO %s (%s) SELECT %s FROM %s', $quotedNewTable, $quotedColumns, $quotedColumns, $quotedOldTable);
         $affected = (int)$newConnection->executeStatement($sql);
         $this->output->writeln(sprintf(
-            '  %s -> %s: %d Datensatz/-saetze (%d Spalten uebernommen)',
+            '  %s -> %s: %d record(s) (%d columns imported)',
             self::OLD_EDITORFIELD_TABLE,
             self::NEW_EDITORFIELD_TABLE,
             $affected,
@@ -215,8 +215,8 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
     }
 
     /**
-     * Wahr, wenn die Alt-Tabelle existiert und Zeilen enthaelt, waehrend die neue Tabelle
-     * noch leer ist.
+     * True if the legacy table exists and contains rows while the new table is still
+     * empty.
      */
     private function legacyEditorfieldRowsPending(): bool
     {

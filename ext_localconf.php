@@ -58,8 +58,8 @@ $boot = function () {
 $boot();
 unset($boot);
 
-// Die Upgrade-Wizards (Classes/Updates/) registrieren sich ueber das Attribut
-// #[UpgradeWizard('...')] und die Autoconfiguration in Configuration/Services.yaml.
-// Eine SC_OPTIONS-Registrierung ist ab TYPO3 v12.3 nicht mehr noetig — und wuerde die
-// Wizards per makeInstance() ohne Dependency-Injection instanziieren, was am
-// ConnectionPool-Konstruktorargument scheitert.
+// The upgrade wizards (Classes/Updates/) register themselves via the attribute
+// #[UpgradeWizard('...')] and the autoconfiguration in Configuration/Services.yaml.
+// An SC_OPTIONS registration is no longer needed as of TYPO3 v12.3 — and would
+// instantiate the wizards via makeInstance() without dependency injection, which fails
+// on the ConnectionPool constructor argument.

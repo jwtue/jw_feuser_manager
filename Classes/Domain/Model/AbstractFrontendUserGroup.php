@@ -8,15 +8,15 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Basis-Eigenschaften einer Frontend-Benutzergruppe (Tabelle fe_groups).
+ * Base properties of a frontend user group (table fe_groups).
  *
- * Gegenstueck zu AbstractFrontendUser: TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
- * war in v11 als deprecated markiert und ist in TYPO3 v12 entfernt. Beim Port wurde die
- * Vererbung auf AbstractEntity umgestellt, ohne die Eigenschaften mitzunehmen — dadurch
- * schlug u. a. $group->getTitle() im ShowFeUserController fehl.
+ * Counterpart to AbstractFrontendUser: TYPO3\CMS\Extbase\Domain\Model\FrontendUserGroup
+ * was marked as deprecated in v11 and is removed in TYPO3 v12. When porting, the
+ * inheritance was switched to AbstractEntity without carrying over the properties — which
+ * caused, among other things, $group->getTitle() to fail in the ShowFeUserController.
  *
- * Die Feldliste entspricht der TCA von fe_groups (title, description, subgroup).
- * Das extensionseigene Zusatzfeld "image" steht in FrontendUserGroup.
+ * The field list corresponds to the TCA of fe_groups (title, description, subgroup).
+ * The extension's own additional field "image" is located in FrontendUserGroup.
  */
 abstract class AbstractFrontendUserGroup extends AbstractEntity
 {
@@ -42,7 +42,7 @@ abstract class AbstractFrontendUserGroup extends AbstractEntity
     }
 
     /**
-     * Wird von Extbase nach dem Rekonstruieren aus der Datenbank aufgerufen.
+     * Called by Extbase after reconstructing the object from the database.
      */
     public function initializeObject(): void
     {

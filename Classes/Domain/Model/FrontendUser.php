@@ -12,8 +12,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class FrontendUser extends AbstractFrontendUser
 {
 
-    // Die Tabelle heisst "fe_users" (Plural). Beim Port stand hier "fe_user", was zur
-    // Laufzeit eine Doctrine-Exception ausgeloest haette; v11 nutzte den Literal "fe_users".
+    // The table is called "fe_users" (plural). During the port this said "fe_user", which
+    // would have triggered a Doctrine exception at runtime; v11 used the literal "fe_users".
     private $user_table = "fe_users";
     private $userid_column = "uid";
 

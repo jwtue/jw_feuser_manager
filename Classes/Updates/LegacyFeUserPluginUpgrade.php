@@ -14,19 +14,19 @@ use TYPO3\CMS\Install\Updates\RepeatableInterface;
 use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
 
 /**
- * Migriert tt_content-Plugins der Vorgaenger-Frontenduser-Verwaltung auf die
- * aktuellen jw_feuser_manager-Signaturen.
+ * Migrates tt_content plugins of the predecessor frontend user management to the
+ * current jw_feuser_manager signatures.
  *
- * Generisch (nicht mandantenspezifisch): der Signaturwechsel
- * jwfrontendusermanager_* -> jwfeusermanager_* betrifft jede Installation, die
- * von der alten Extension kommt.
+ * Generic (not client-specific): the signature change
+ * jwfrontendusermanager_* -> jwfeusermanager_* affects every installation that
+ * comes from the old extension.
  *
- * Idempotent: updateNecessary() prueft, ob noch Alt-Signaturen vorhanden sind;
- * mehrfaches Ausfuehren ist gefahrlos.
+ * Idempotent: updateNecessary() checks whether legacy signatures are still present;
+ * running it multiple times is harmless.
  *
- * datamints_feuser_pi1 (aeltere, fremde Extension) wird bewusst NICHT
- * automatisch migriert, sondern nur gemeldet – der passende Ziel-Plugin ist
- * nicht eindeutig und muss manuell entschieden werden.
+ * datamints_feuser_pi1 (an older, third-party extension) is deliberately NOT
+ * migrated automatically but only reported – the appropriate target plugin is
+ * not unambiguous and must be decided manually.
  */
 #[UpgradeWizard('jwFeUserManager_legacyPluginSignature')]
 final class LegacyFeUserPluginUpgrade implements UpgradeWizardInterface, ChattyInterface, RepeatableInterface
@@ -34,15 +34,15 @@ final class LegacyFeUserPluginUpgrade implements UpgradeWizardInterface, ChattyI
     private const TABLE = 'tt_content';
 
     /**
-     * Alte list_type-Signatur => aktuelle jw_feuser_manager-Signatur.
-     * Ziele aus Configuration/TCA/Overrides/tt_content.php (registerPlugin
-     * 'JwFeUserManager'/'ListOfUsers'|'EditUser'); Quellwerte am 2026-07-21
-     * gegen die Staging-DB feuerwzq_t3_12 verifiziert.
+     * Old list_type signature => current jw_feuser_manager signature.
+     * Targets from Configuration/TCA/Overrides/tt_content.php (registerPlugin
+     * 'JwFeUserManager'/'ListOfUsers'|'EditUser'); source values verified on 2026-07-21
+     * against the staging DB feuerwzq_t3_12.
      */
     private const LIST_TYPE_MAP = [
         'jwfrontendusermanager_listofusers' => 'jwfeusermanager_listofusers',
         'jwfrontendusermanager_edituser'    => 'jwfeusermanager_edituser',
-        // Dotted-Variante aus einem frueheren Registrierungsversuch (JwTue.FeUserManager):
+        // Dotted variant from an earlier registration attempt (JwTue.FeUserManager):
         'jwtue.feusermanager_listofusers'   => 'jwfeusermanager_listofusers',
     ];
 
@@ -59,15 +59,15 @@ final class LegacyFeUserPluginUpgrade implements UpgradeWizardInterface, ChattyI
 
     public function getTitle(): string
     {
-        return 'jw_feuser_manager: Alte Plugin-Signaturen migrieren';
+        return 'jw_feuser_manager: migrate old plugin signatures';
     }
 
     public function getDescription(): string
     {
-        return 'Schreibt tt_content.list_type der Vorgaenger-Signaturen '
-            . '(jwfrontendusermanager_listofusers/_edituser sowie die Dotted-Variante '
-            . 'jwtue.feusermanager_listofusers) auf die aktuellen jw_feuser_manager-Werte um. '
-            . 'datamints_feuser_pi1 wird nur gemeldet, nicht migriert.';
+        return 'Rewrites tt_content.list_type of the predecessor signatures '
+            . '(jwfrontendusermanager_listofusers/_edituser as well as the dotted variant '
+            . 'jwtue.feusermanager_listofusers) to the current jw_feuser_manager values. '
+            . 'datamints_feuser_pi1 is only reported, not migrated.';
     }
 
     public function getPrerequisites(): array
@@ -87,17 +87,17 @@ final class LegacyFeUserPluginUpgrade implements UpgradeWizardInterface, ChattyI
         foreach (self::LIST_TYPE_MAP as $old => $new) {
             $affected = $connection->update(self::TABLE, ['list_type' => $new], ['list_type' => $old]);
             if ($affected > 0) {
-                $this->output->writeln(sprintf('  %s -> %s: %d Element(e)', $old, $new, $affected));
+                $this->output->writeln(sprintf('  %s -> %s: %d element(s)', $old, $new, $affected));
             }
             $total += (int)$affected;
         }
-        $this->output->writeln(sprintf('Migriert: %d Element(e).', $total));
+        $this->output->writeln(sprintf('Migrated: %d element(s).', $total));
 
         $datamints = (int)$connection->count('uid', self::TABLE, ['list_type' => 'datamints_feuser_pi1']);
         if ($datamints > 0) {
             $this->output->writeln(sprintf(
-                '<warning>%d Element(e) mit list_type "datamints_feuser_pi1" gefunden – NICHT migriert. '
-                . 'Bitte manuell pruefen, ob diese durch jw_feuser_manager ersetzt werden.</warning>',
+                '<warning>%d element(s) with list_type "datamints_feuser_pi1" found – NOT migrated. '
+                . 'Please check manually whether these should be replaced by jw_feuser_manager.</warning>',
                 $datamints
             ));
         }

@@ -3,22 +3,22 @@
 declare(strict_types = 1);
 
 /**
- * Persistence-Mapping der Extension.
+ * Persistence mapping of the extension.
  *
- * Zu den expliziten Property-Zuordnungen unten:
+ * Regarding the explicit property mappings below:
  *
- * Extbase leitet den Spaltennamen sonst per camelCaseToLowerCaseUnderscored() aus dem
- * Property-Namen ab. Bei den durchnummerierten Zusatzfeldern schlaegt das fehl, weil die
- * Umwandlung vor einer Ziffer keinen Unterstrich setzt:
+ * Otherwise Extbase derives the column name from the property name via
+ * camelCaseToLowerCaseUnderscored(). For the numbered additional fields this fails,
+ * because the conversion does not insert an underscore before a digit:
  *
  *   txJwfeusermanagerAdditionalText1  ->  tx_jwfeusermanager_additional_text1
- *   tatsaechliche Spalte:                 tx_jwfeusermanager_additional_text_1
+ *   actual column:                        tx_jwfeusermanager_additional_text_1
  *
- * Ohne diese Zuordnung zeigen alle 15 nummerierten Felder auf nicht existierende Spalten
- * und werden schlicht nicht persistiert — ohne Fehlermeldung.
+ * Without this mapping all 15 numbered fields point to non-existent columns and are
+ * simply not persisted — without any error message.
  *
- * tx_jwfeusermanager_lastupdated und tx_jwfeusermanager_newsletter_subscribed bilden
- * korrekt ab und stehen hier nur der Vollstaendigkeit halber.
+ * tx_jwfeusermanager_lastupdated and tx_jwfeusermanager_newsletter_subscribed map
+ * correctly and are only listed here for completeness.
  */
 
 $feUserProperties = [

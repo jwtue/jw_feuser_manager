@@ -8,21 +8,21 @@ use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
- * Gemeinsame TypoScript- und View-Konfiguration beider Plugin-Controller.
+ * Shared TypoScript and view configuration for both plugin controllers.
  *
- * Hintergrund: Beide Controller rendern über eine selbst erzeugte StandaloneView statt
- * über die vom ActionController bereitgestellte View. Dadurch greifen die
- * templateRootPaths/layoutRootPaths/partialRootPaths aus dem TypoScript nicht
- * automatisch — sie müssen von Hand gesetzt werden.
+ * Background: both controllers render via a self-created StandaloneView instead of the
+ * view provided by the ActionController. As a result the
+ * templateRootPaths/layoutRootPaths/partialRootPaths from the TypoScript do not apply
+ * automatically — they have to be set by hand.
  *
- * Bis TYPO3 v11 wurde dafür die geschützte Methode ActionController::getViewProperty()
- * mitbenutzt. **Die gibt es in v12 nicht mehr** (sie war schon vorher als `@internal`
- * markiert). Sie ist hier deshalb nachgebildet.
+ * Up to TYPO3 v11 the protected method ActionController::getViewProperty() was used for
+ * this. **It no longer exists in v12** (it was already marked as `@internal` before).
+ * It is therefore reimplemented here.
  */
 trait ViewConfigurationTrait
 {
     /**
-     * Liefert `plugin.tx_jwfeusermanager` als einfaches Array.
+     * Returns `plugin.tx_jwfeusermanager` as a plain array.
      */
     protected function getTyposcriptConfiguration(): array
     {
@@ -33,7 +33,7 @@ trait ViewConfigurationTrait
     }
 
     /**
-     * Liefert das vollständige TypoScript der Seite als einfaches Array.
+     * Returns the complete TypoScript of the page as a plain array.
      */
     protected function getFullTyposcriptConfiguration(): array
     {
@@ -46,7 +46,7 @@ trait ViewConfigurationTrait
     }
 
     /**
-     * Überträgt die *RootPaths aus dem TypoScript auf die übergebene View.
+     * Transfers the *RootPaths from the TypoScript to the given view.
      */
     protected function setViewConfiguration($view): void
     {
@@ -66,7 +66,7 @@ trait ViewConfigurationTrait
     }
 
     /**
-     * Ersatz für die in TYPO3 v12 entfallene ActionController::getViewProperty().
+     * Replacement for ActionController::getViewProperty(), which was removed in TYPO3 v12.
      */
     protected function getViewProperty(array $configuration, string $setting): array
     {

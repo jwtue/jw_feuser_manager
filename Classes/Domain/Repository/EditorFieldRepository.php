@@ -9,14 +9,13 @@ use JwTue\FeUserManager\Domain\Model\EditorField;
 class EditorFieldRepository extends \TYPO3\CMS\Extbase\Persistence\Repository
 {
      /**
-      * Liefert die Editor-Felder eines Inhaltselements in Sortierreihenfolge.
+      * Returns the editor fields of a content element in sort order.
       *
-      * Hier wird bewusst weiterhin Query::statement() verwendet, obwohl die Methode
-      * deprecated und nicht mehr Teil von QueryInterface ist (in TYPO3 v12 aber
-      * weiterhin vorhanden): Das Model EditorField mappt weder `parent_ce` noch
-      * `sorting` als Eigenschaft, eine reguläre Extbase-Query kann darauf also weder
-      * filtern noch sortieren. Eine Umstellung setzt voraus, dass beide Felder zuvor
-      * im Model ergänzt werden.
+      * Query::statement() is deliberately still used here, even though the method is
+      * deprecated and no longer part of QueryInterface (but still present in TYPO3 v12):
+      * the EditorField model maps neither `parent_ce` nor `sorting` as a property, so a
+      * regular Extbase query can neither filter nor sort on them. Switching over requires
+      * both fields to be added to the model first.
       */
      public function findForElement($pid, $cid)
      {

@@ -13,12 +13,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class Helper
 {
 	/**
-	 * Liefert einen LanguageService.
+	 * Returns a LanguageService.
 	 *
-	 * Im TYPO3-Backend ist $GLOBALS['LANG'] gesetzt; im Frontend gibt es die Variable
-	 * seit v12 nicht mehr. Da getFieldNames() aus beiden Kontexten aufgerufen wird
-	 * (Backend: itemsProcFunc der FlexForms, Frontend: ShowFeUserController), wird der
-	 * Dienst hier bei Bedarf selbst erzeugt.
+	 * In the TYPO3 backend $GLOBALS['LANG'] is set; in the frontend the variable no longer
+	 * exists as of v12. Since getFieldNames() is called from both contexts
+	 * (backend: itemsProcFunc of the FlexForms, frontend: ShowFeUserController), the
+	 * service is created here on demand.
 	 */
 	protected function getLanguageService(): LanguageService
 	{

@@ -8,18 +8,18 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
- * Basis-Eigenschaften eines Frontend-Benutzers (Tabelle fe_users).
+ * Base properties of a frontend user (table fe_users).
  *
- * Uebernommen aus TYPO3\CMS\Extbase\Domain\Model\FrontendUser. Diese Klasse war in
- * TYPO3 v11 als deprecated markiert ("Do not use or extend this model") und ist in v12
- * **entfernt** — mitsamt allen Eigenschaften, die sie mitbrachte.
+ * Adopted from TYPO3\CMS\Extbase\Domain\Model\FrontendUser. That class was marked as
+ * deprecated in TYPO3 v11 ("Do not use or extend this model") and is **removed** in v12
+ * — together with all the properties it brought along.
  *
- * Beim Port auf v12 wurde die Vererbung auf AbstractEntity umgestellt, die Eigenschaften
- * wurden dabei aber nicht mituebernommen. Dadurch fehlten dem Model saemtliche
- * Standardfelder (username, firstName, lastName, email, address, ...), was erst zur
- * Laufzeit als "Undefined property" auffiel.
+ * When porting to v12 the inheritance was switched to AbstractEntity, but the properties
+ * were not carried over. As a result the model was missing all standard fields
+ * (username, firstName, lastName, email, address, ...), which only surfaced at runtime
+ * as "Undefined property".
  *
- * Die extensionseigenen Zusatzfelder stehen in FrontendUser.
+ * The extension's own additional fields are located in FrontendUser.
  */
 abstract class AbstractFrontendUser extends AbstractEntity
 {
@@ -109,10 +109,10 @@ abstract class AbstractFrontendUser extends AbstractEntity
     protected $company = '';
 
     /**
-     * Im Original stand hier ObjectStorage<FileReference>. Innerhalb des
-     * Extbase-Namespace loeste das auf TYPO3\CMS\Extbase\Domain\Model\FileReference auf,
-     * in unserem Namespace dagegen ins Leere ("Could not find class definition for name
-     * JwTue\FeUserManager\Domain\Model\FileReference"). Deshalb voll qualifiziert.
+     * The original had ObjectStorage<FileReference> here. Within the Extbase namespace
+     * that resolved to TYPO3\CMS\Extbase\Domain\Model\FileReference, but in our namespace
+     * it resolved to nothing ("Could not find class definition for name
+     * JwTue\FeUserManager\Domain\Model\FileReference"). Hence the fully qualified name.
      *
      * @var ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      */
