@@ -135,9 +135,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$this->view->getRenderingContext()->setControllerAction("list");
 		$this->view->setTemplate("List");
 
-		$columns = explode(",", $this->settings['fields']);
-		$csvColumns = explode(",", $this->settings['csvFields']);
-		$pdfColumns = explode(",", $this->settings['pdfFields']);
+		$columns = explode(",", ($this->settings['fields'] ?? ''));
+		$csvColumns = explode(",", ($this->settings['csvFields'] ?? ''));
+		$pdfColumns = explode(",", ($this->settings['pdfFields'] ?? ''));
 		$csvColumns = array_filter($csvColumns);
 		$pdfColumns = array_filter($pdfColumns);
 		$columnTitles = array();
@@ -193,8 +193,8 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$usersOrig = $this->userRepository->findAll()->toArray();
 					
 		$usersUnfiltered = array();
-		$showgroups = explode(",", $this->settings['groups']);
-		if (empty($this->settings['groups'])) {
+		$showgroups = explode(",", ($this->settings['groups'] ?? ''));
+		if (empty(($this->settings['groups'] ?? ''))) {
 			$showgroups = array();
 		}
 		
@@ -218,19 +218,19 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			   }
 		   }
 		   
-		   if ($this->settings['groupConjunction'] == "or") {
+		   if (($this->settings['groupConjunction'] ?? '') == "or") {
 				if ($or) {
 					$usersUnfiltered[] = $u;
 				}
-		   } else if ($this->settings['groupConjunction'] == "notor") {
+		   } else if (($this->settings['groupConjunction'] ?? '') == "notor") {
 				if (!$or) {
 					$usersUnfiltered[] = $u;
 				}				
-		   } else if ($this->settings['groupConjunction'] == "and") {
+		   } else if (($this->settings['groupConjunction'] ?? '') == "and") {
 				if ($and) {
 					$usersUnfiltered[] = $u;
 				}				
-		   } else if ($this->settings['groupConjunction'] == "notand") {
+		   } else if (($this->settings['groupConjunction'] ?? '') == "notand") {
 				if (!$and) {
 					$usersUnfiltered[] = $u;
 				}				
@@ -241,7 +241,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		asort($groups);
 		
-		$groupFiltersShow = array_filter(explode(",", $this->settings['groupFilteringSelect']));
+		$groupFiltersShow = array_filter(explode(",", $this->settings['groupFilteringSelect'] ?? ''));
 				
 		$groupsFilter = array();
 		foreach ($groupFiltersShow as $v) {
@@ -311,13 +311,13 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$this->view->assign("filter", $filter);
 		
-		$title = $this->settings['pdfTitle'];
+		$title = ($this->settings['pdfTitle'] ?? '');
 		$subtitle = null;
-		$filename = $this->settings['downloadFilename'];
+		$filename = ($this->settings['downloadFilename'] ?? '');
 		
 		if ($filter != 0) {
 			$filename .= " - ".$groups[$filter]." - ".date("Y-m-d");
-			if ($this->settings['useGroupTitle']) {
+			if (($this->settings['useGroupTitle'] ?? '')) {
 				$subtitle = $groups[$filter];
 			}
 		} else {
@@ -375,13 +375,13 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			$marginTop = 10;
 			$marginSide = 10;
-			if ($this->settings['pdfOrientation'] == "P") {
+			if (($this->settings['pdfOrientation'] ?? '') == "P") {
 				$marginTop *= 2;
 			} else {
 				$marginSide *= 2;
 			}
 			
-			$pdf = new \TCPDF($this->settings['pdfOrientation'],"mm","A4");
+			$pdf = new \TCPDF(($this->settings['pdfOrientation'] ?? ''),"mm","A4");
 			$pdf->setTitle($title);
 			if ($subtitle != null) {
 				$pdf->setTitle($title." ".json_decode('"\\u2013"')." ".$subtitle);
@@ -394,7 +394,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			$height = 0;
 			$ugroup = $this->userGroupRepository->findByUid($filter);
-			if ($this->settings['useGroupLogo'] && $ugroup != null && $ugroup->getImage() != null && $ugroup->getImage()->count()) {
+			if (($this->settings['useGroupLogo'] ?? '') && $ugroup != null && $ugroup->getImage() != null && $ugroup->getImage()->count()) {
 				$resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');        
                 $fileReference = $ugroup->getImage()->toArray()[0]->getOriginalResource();
 				
@@ -415,9 +415,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$pdf->Image($fileReference->getForLocalProcessing(false), $pdf->getPageWidth()-$marginSide-$width, $marginTop, $width, $height);
 				}
 				$height += 2;
-			} else if (!empty($this->settings['pdfLogo'])) {
+			} else if (!empty(($this->settings['pdfLogo'] ?? ''))) {
 				$resourceFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\ResourceFactory');        
-                $fileReference = $resourceFactory->getFileReferenceObject($this->settings['pdfLogo']);
+                $fileReference = $resourceFactory->getFileReferenceObject(($this->settings['pdfLogo'] ?? ''));
 				
 				$height = 20;
 				if ($fileReference->getMimeType() == "image/svg+xml") {
@@ -438,7 +438,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				$height += 2;
 			}
 			
-			$fontsize = $this->settings['pdfFontSize'];
+			$fontsize = ($this->settings['pdfFontSize'] ?? '');
 			
 			if ($subtitle != null) {
 				$pdf->SetFont("Helvetica","B",$fontsize*2);
@@ -611,7 +611,7 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$filename = str_replace(" ", "-", $usr->getFirstName()." ".$usr->getLastName());
 			
 			
-			$columns = explode(",", $this->settings['fields']);
+			$columns = explode(",", ($this->settings['fields'] ?? ''));
 						
 			$mapping = array(
 				"telephone" => "home_tel",
