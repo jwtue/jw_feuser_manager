@@ -121,7 +121,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 	//protected $cacheInstance;
 
 	private $cacheService;
-	public function initializeAction() {
+	public function initializeAction(): void {
 	   //$this->cacheInstance = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache("myExtKey");
 		$cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
 		$this->cacheService = new \TYPO3\CMS\Extbase\Service\CacheService($this->configurationManager, $cacheManager);
@@ -503,9 +503,16 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			$refIndex = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ReferenceIndex::class);
 			
 			if ($user == null) $user = GeneralUtility::makeInstance(\JwTue\FeUserManager\Domain\Model\FrontendUser::class);
-			
+
+			// TEMP DEBUG (Save-Analyse) -----------------------------------------
+			$dbgFile = \TYPO3\CMS\Core\Core\Environment::getVarPath().'/log/jwfeu_save.log';
+			$dbg = function($msg) use ($dbgFile) { @file_put_contents($dbgFile, '['.date('H:i:s').'] '.$msg."\n", FILE_APPEND); };
+			$dbg('==== SUBMIT ==== formValueKeys=['.implode(',', array_keys($formRuntime->getFormState()->getFormValues())).']');
+			$dbg('colsByIdKeys=['.implode(',', array_keys($colsById)).']');
+			// -------------------------------------------------------------------
+
 			foreach ($formRuntime->getFormState()->getFormValues() as $key => $value) {
-				if (!isset($colsById[$key])) continue;
+				if (!isset($colsById[$key])) { $dbg("SKIP no-col: key=$key value=".(is_array($value)?json_encode($value):$value)); continue; }
 				if ($colsById[$key]->getType() == EditorField::TYPE_DB_FIELD || $colsById[$key]->getType() == EditorField::TYPE_ADDITIONAL_ENTRIES) {
 					if ($colsById[$key]->getDbMode() == EditorField::MODE_DB_DATE) {
 						$value = strtotime($value)+12*60*60;
@@ -524,6 +531,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                     }
 					$kkey = $colsById[$key]->getUsableDbField();
 					$setFunctionName = 'set'.ucfirst($kkey);
+					$dbg("DB_FIELD: key=$key dbField=".$colsById[$key]->getDbField()." usable=$kkey setter=$setFunctionName exists=".(method_exists($user, $setFunctionName)?'YES':'NO')." dbMode=".$colsById[$key]->getDbMode()." value=".(is_array($value)?json_encode($value):$value));
 					if (method_exists($user, $setFunctionName)) {
 						$user->$setFunctionName($value);
 						//  print_r("\$user->$setFunctionName(".$value.")");die();
