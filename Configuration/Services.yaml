@@ -6,3 +6,8 @@ services:
 
   JwTue\FeUserManager\:
     resource: '../Classes/*'
+
+  # Upgrade-Wizards brauchen public (makeInstance → container.get für DI).
+  JwTue\FeUserManager\Updates\:
+    resource: '../Classes/Updates/*'
+    public: true
