@@ -1,21 +1,21 @@
 <html 
 xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" 
 xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
-xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
 data-namespace-typo3-fluid="true">
 <formvh:renderRenderable renderable="{element}">
 	<f:render partial="Field/Field" arguments="{element: element}" contentAs="elementContent">
 		<div class="input-inner">
-            <v:variable.set name="imageUid">{formvh:translateElementProperty(element: element, property: 'imageUid')}</v:variable.set>
-            <v:variable.set name="ceUid">{formvh:translateElementProperty(element: element, property: 'ceUid')}</v:variable.set>
-            <v:variable.set name="colUid">{formvh:translateElementProperty(element: element, property: 'colUid')}</v:variable.set>
-			<v:variable.set name="dimensions" value="{width: '600', height: '450'}" />
-            <v:variable.set name="width" value="{dimensions.width}c" />
-            <v:variable.set name="height" value="{dimensions.height}c" />
-            <v:variable.set name="dblWidth" value="{dimensions.width -> v:math.product(b: 2)}c" />
-            <v:variable.set name="dblHeight" value="{dimensions.height -> v:math.product(b: 2)}c" />
-            <v:variable.set name="imgSrc"><f:uri.image src="{imageUid}" width="{width}" /></v:variable.set>
-            <v:variable.set name="imgSrcDbl"><f:uri.image src="{imageUid}" width="{dblWidth}" /></v:variable.set>
+            <f:variable name="imageUid">{formvh:translateElementProperty(element: element, property: 'imageUid')}</f:variable>
+            <f:variable name="ceUid">{formvh:translateElementProperty(element: element, property: 'ceUid')}</f:variable>
+            <f:variable name="colUid">{formvh:translateElementProperty(element: element, property: 'colUid')}</f:variable>
+			<f:variable name="dimensions" value="{width: '600', height: '450'}" />
+            <f:variable name="width" value="{dimensions.width}c" />
+            <f:variable name="height" value="{dimensions.height}c" />
+            <f:comment>Retina (2x): fixed doubles of the dimensions above (600->1200, 450->900); core Fluid has no math ViewHelper.</f:comment>
+            <f:variable name="dblWidth" value="1200c" />
+            <f:variable name="dblHeight" value="900c" />
+            <f:variable name="imgSrc"><f:uri.image src="{imageUid}" width="{width}" /></f:variable>
+            <f:variable name="imgSrcDbl"><f:uri.image src="{imageUid}" width="{dblWidth}" /></f:variable>
             
             <img id="jwfeusermanager-edituser-{ceUid}-editorfield_{colUid}_image" src="{imgSrc}" srcset="{imgSrc} 1x,{imgSrcDbl} 2x" />
             

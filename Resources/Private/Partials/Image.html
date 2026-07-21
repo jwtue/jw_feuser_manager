@@ -1,14 +1,14 @@
 <html data-namespace-typo3-fluid="true"
-	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-    xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+	xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 	
-<v:variable.set name="dimensions" value="{width: '75', height: '100'}" />
+<f:variable name="dimensions" value="{width: '75', height: '100'}" />
 
-<v:variable.set name="width" value="{dimensions.width}c" />
-<v:variable.set name="height" value="{dimensions.height}c" />
+<f:variable name="width" value="{dimensions.width}c" />
+<f:variable name="height" value="{dimensions.height}c" />
 
-<v:variable.set name="dblWidth" value="{dimensions.width -> v:math.product(b: 2)}c" />
-<v:variable.set name="dblHeight" value="{dimensions.height -> v:math.product(b: 2)}c" />
+<f:comment>Retina (2x): fixed doubles of the dimensions above (75->150, 100->200); core Fluid has no math ViewHelper.</f:comment>
+<f:variable name="dblWidth" value="150c" />
+<f:variable name="dblHeight" value="200c" />
 
 <f:for each="{fullValue}" as="file" iteration="iterator">
 	<f:if condition="{iterator.isFirst}">

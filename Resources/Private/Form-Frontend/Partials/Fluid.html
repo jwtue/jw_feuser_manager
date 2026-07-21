@@ -1,9 +1,8 @@
 <html 
 xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" 
 xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers"
-xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
 data-namespace-typo3-fluid="true">
 <formvh:renderRenderable renderable="{element}">
-	<v:render.inline content="{formvh:translateElementProperty(element: element, property: 'content')}"></v:render.inline>
+	<f:format.raw>{formvh:translateElementProperty(element: element, property: 'content')}</f:format.raw>
 </formvh:renderRenderable>
 </html>

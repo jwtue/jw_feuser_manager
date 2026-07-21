@@ -1,6 +1,5 @@
 <html data-namespace-typo3-fluid="true"
-	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-      xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
 
 <div class="tx-jwfeusermanager-listofusers">
 	<f:if condition="{settings.groupFiltering}">
@@ -20,12 +19,12 @@
 		</div>
 	</f:if>
 	
-	<v:variable.set name="orderGroup">#</v:variable.set>
+	<f:variable name="orderGroup" value="#" />
 	
 	<ul class="tx-jwfeusermanager-listofusers-list-index">
 		<li>Schnellwahl:</li>
 	<f:for each="{users}" as="user" iteration="iterator">		
-		<v:variable.set name="newOrderGroup"><v:format.replace substring="Ä" replacement="A"><v:format.replace substring="Ö" replacement="O"><v:format.replace substring="Ü" replacement="U"><f:format.case mode="upper"><v:format.substring start="0" length="1"><v:variable.get name="fullUsers.{iterator.index}.{settings.orderBy.0}" /></v:format.substring></f:format.case></v:format.replace></v:format.replace></v:format.replace></v:variable.set>
+		<f:variable name="newOrderGroup"><f:replace search="Ä" replace="A"><f:replace search="Ö" replace="O"><f:replace search="Ü" replace="U"><f:format.case mode="upper"><f:format.crop maxCharacters="1" respectWordBoundaries="0" respectHtml="0" append="">{fullUsers.{iterator.index}.{settings.orderBy.0}}</f:format.crop></f:format.case></f:replace></f:replace></f:replace></f:variable>
 		
 		<f:if condition="{orderGroup} != {newOrderGroup}">
 			<f:if condition="{filter}">
@@ -36,7 +35,7 @@
 					<li><f:link.page section="{newOrderGroup}">{newOrderGroup}</f:link.page></li>
 				</f:else>
 			</f:if>
-			<v:variable.set name="orderGroup" value="{newOrderGroup}"/>
+			<f:variable name="orderGroup" value="{newOrderGroup}" />
 		</f:if>
 	</f:for>
 	</ul>	
@@ -128,19 +127,19 @@
 	</f:for>
 	</li>
 	
-	<v:variable.set name="orderGroup">#</v:variable.set>
+	<f:variable name="orderGroup" value="#" />
 	
 	<f:for each="{users}" as="user" iteration="iterator">
-		<v:variable.set name="image"><v:variable.get name="fullUsers.{iterator.index}.image" /></v:variable.set>
+		<f:variable name="image" value="{fullUsers.{iterator.index}.image}" />
 		
-		<v:variable.set name="newOrderGroup"><v:format.replace substring="Ä" replacement="A"><v:format.replace substring="Ö" replacement="O"><v:format.replace substring="Ü" replacement="U"><f:format.case mode="upper"><v:format.substring start="0" length="1"><v:variable.get name="fullUsers.{iterator.index}.{settings.orderBy.0}" /></v:format.substring></f:format.case></v:format.replace></v:format.replace></v:format.replace></v:variable.set>
+		<f:variable name="newOrderGroup"><f:replace search="Ä" replace="A"><f:replace search="Ö" replace="O"><f:replace search="Ü" replace="U"><f:format.case mode="upper"><f:format.crop maxCharacters="1" respectWordBoundaries="0" respectHtml="0" append="">{fullUsers.{iterator.index}.{settings.orderBy.0}}</f:format.crop></f:format.case></f:replace></f:replace></f:replace></f:variable>
 		
 		<f:if condition="{orderGroup} != {newOrderGroup}">
 			<li class="userClass"><a class="categoryAnchor" id="{newOrderGroup}" name="{newOrderGroup}"></a>{newOrderGroup}</li>
-			<v:variable.set name="orderGroup" value="{newOrderGroup}"/>
+			<f:variable name="orderGroup" value="{newOrderGroup}" />
 		</f:if>
 		
-		<v:variable.set name="uid"><v:variable.get name="fullUsers.{iterator.index}.uid" /></v:variable.set>
+		<f:variable name="uid" value="{fullUsers.{iterator.index}.uid}" />
 		<li class="user {f:if(condition: image, then: 'hasPhoto')}" data-uid="{uid}">
 			<div data-column="downloadVcf" title="Kontaktkarte herunterladen"><f:link.page title="Kontaktkarte herunterladen" additionalParams="{user: uid, download: 'vcf'}">Kontaktkarte herunterladen</f:link.page></div>
 			
@@ -148,15 +147,15 @@
 				<div data-column="editUser" title="Kontakt bearbeiten"><f:link.page pageUid="{settings.editPage}" title="Kontakt bearbeiten" additionalParams="{user: uid}">Kontakt bearbeiten</f:link.page></div>
 			</f:if>
 		<f:for each="{columns}" as="column" iteration="iteratorInner">
-			<v:variable.set name="value"><v:variable.get name="user.{column}" /></v:variable.set>
-			<v:variable.set name="fullValue"><v:variable.get name="fullUsers.{iterator.index}.{column}" /></v:variable.set>
-			<v:variable.set name="name"><v:variable.get name="fullUsers.{iterator.index}.firstnameLastname" /></v:variable.set>
-			<v:variable.set name="imageCrop"><v:variable.get name="fullUsers.{iterator.index}.imageCrop" /></v:variable.set>
-			
-			<v:variable.set name="title"><v:variable.get name="columnTitles.{iteratorInner.index}" /></v:variable.set>
+			<f:variable name="value" value="{user.{column}}" />
+			<f:variable name="fullValue" value="{fullUsers.{iterator.index}.{column}}" />
+			<f:variable name="name" value="{fullUsers.{iterator.index}.firstnameLastname}" />
+			<f:variable name="imageCrop" value="{fullUsers.{iterator.index}.imageCrop}" />
+
+			<f:variable name="title" value="{columnTitles.{iteratorInner.index}}" />
 			
 			<div title="{title}" data-column="{column}" <f:if condition="{value} || {fullValue}"><f:then /><f:else>data-empty</f:else></f:if>><f:spaceless>
-			<label><v:variable.get name="columnTitles.{iteratorInner.index}" />: </label>
+			<label>{columnTitles.{iteratorInner.index}}: </label>
 			<f:switch expression="{column}">
 				<f:case value="image">
 					<f:render partial="Image" arguments="{value: value, fullValue: fullValue, fluidSettings: fluidSettings, name: name}" />
