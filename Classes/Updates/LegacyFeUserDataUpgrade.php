@@ -29,6 +29,10 @@ use TYPO3\CMS\Install\Updates\UpgradeWizardInterface;
  *    data is deleted.
  *  - tx_jwfrontendusermanager_editorfield: the rows are copied into the new table,
  *    provided it is still empty.
+ *  - tx_jwfeusermanager_editorfield.db_field: values still carrying the predecessor
+ *    prefix are rewritten to the current one. Otherwise the save path derives a
+ *    non-existent model setter from the old name and silently drops the value — the
+ *    additional_* fields would display but never save.
  *  - The legacy columns and the legacy table are kept. They subsequently show up in the
  *    database analyzer as "not in the definition" and can be removed there after a visual
  *    review.
@@ -66,9 +70,10 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
     {
         return 'Copies member fields (fe_users.tx_jwfrontendusermanager_*) and the '
             . 'editor field records from the predecessor extension jw_frontendusermanager into '
-            . 'the current jw_feuser_manager structure. Non-destructive: legacy columns and '
-            . 'legacy table are kept and can subsequently be removed via the '
-            . 'database analyzer.';
+            . 'the current jw_feuser_manager structure, and rewrites editor field db_field '
+            . 'values that still use the predecessor prefix (so the additional_* fields save '
+            . 'again). Non-destructive: legacy columns and legacy table are kept and can '
+            . 'subsequently be removed via the database analyzer.';
     }
 
     public function getPrerequisites(): array
@@ -79,13 +84,16 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
 
     public function updateNecessary(): bool
     {
-        return $this->legacyFeUsersColumns() !== [] || $this->legacyEditorfieldRowsPending();
+        return $this->legacyFeUsersColumns() !== []
+            || $this->legacyEditorfieldRowsPending()
+            || $this->legacyEditorfieldDbFieldPending();
     }
 
     public function executeUpdate(): bool
     {
         $this->migrateFeUsersColumns();
         $this->migrateEditorfieldTable();
+        $this->migrateEditorfieldDbField();
 
         $this->output->writeln('');
         $this->output->writeln(
@@ -212,6 +220,67 @@ final class LegacyFeUserDataUpgrade implements UpgradeWizardInterface, ChattyInt
             $affected,
             count($sharedColumns)
         ));
+    }
+
+    /**
+     * Rewrites db_field values in the (new) editorfield table that still point at the
+     * predecessor column names.
+     *
+     * The editor field records store which fe_users column a form field writes to. When
+     * they originate from the predecessor extension — whether copied here by
+     * migrateEditorfieldTable() or already present from an earlier manual/partial move —
+     * db_field still reads e.g. "tx_jwfrontendusermanager_additional_text_1". The save
+     * path derives the model setter from that name (setTxJwfrontendusermanager…), which
+     * does not exist, so the value is silently dropped: the field displays but never
+     * saves. Rewriting the prefix to the current one restores both read and write.
+     */
+    private function migrateEditorfieldDbField(): void
+    {
+        if (!$this->legacyEditorfieldDbFieldPending()) {
+            $this->output->writeln(self::NEW_EDITORFIELD_TABLE . '.db_field: no legacy prefixes.');
+            return;
+        }
+
+        $connection = $this->connectionPool->getConnectionForTable(self::NEW_EDITORFIELD_TABLE);
+        $sql = sprintf(
+            'UPDATE %s SET %s = REPLACE(%s, %s, %s) WHERE %s LIKE %s',
+            $connection->quoteIdentifier(self::NEW_EDITORFIELD_TABLE),
+            $connection->quoteIdentifier('db_field'),
+            $connection->quoteIdentifier('db_field'),
+            $connection->quote('tx_' . self::OLD_PREFIX . '_'),
+            $connection->quote('tx_' . self::NEW_PREFIX . '_'),
+            $connection->quoteIdentifier('db_field'),
+            // OLD_PREFIX contains no "_"/"%", so it is a safe LIKE literal.
+            $connection->quote('%' . self::OLD_PREFIX . '%')
+        );
+        $affected = (int)$connection->executeStatement($sql);
+        $this->output->writeln(sprintf(
+            '  %s.db_field: %d record(s) rewritten to the current prefix.',
+            self::NEW_EDITORFIELD_TABLE,
+            $affected
+        ));
+    }
+
+    /**
+     * True if the new editorfield table exists and still holds db_field values with the
+     * predecessor prefix.
+     */
+    private function legacyEditorfieldDbFieldPending(): bool
+    {
+        if (!$this->tableExists(self::NEW_EDITORFIELD_TABLE)) {
+            return false;
+        }
+
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable(self::NEW_EDITORFIELD_TABLE);
+        $queryBuilder->getRestrictions()->removeAll();
+
+        return (int)$queryBuilder->count('uid')
+            ->from(self::NEW_EDITORFIELD_TABLE)
+            ->where($queryBuilder->expr()->like(
+                'db_field',
+                $queryBuilder->createNamedParameter('%' . self::OLD_PREFIX . '%')
+            ))
+            ->executeQuery()->fetchOne() > 0;
     }
 
     /**
