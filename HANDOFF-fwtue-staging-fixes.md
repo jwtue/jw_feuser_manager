@@ -270,3 +270,17 @@ Label direkt daneben, Gruppe bündig zu den übrigen Feld-Eingaben — wie in v1
 > Hinweis: aus DOM/Partials hergeleitet, nicht visuell auf Staging getestet (JFM-Repo wurde bewusst
 > nicht angefasst). Nach Umsetzung bitte einmal `/intern/benutzerprofil` prüfen (Hard-Reload, CSS ist
 > statisch/gecacht).
+
+---
+
+## Problem C (Nebenbefund, niedrige Prio) — Listen-Text-Spalten ohne Multiline-Formatierung
+
+In `Resources/Private/Templates/ShowFeUser/List.html` heißen die `<f:switch expression="{column}">`-Cases
+für die Text-Spalten `txJwfrontenduserAdditionalText1..5` (Z. ~203–217) — **ohne** „manager", im
+Gegensatz zu allen anderen Cases (`txJwfeusermanagerAdditional…`, `txJwfeusermanagerLastupdated` usw.).
+Der tatsächliche Runtime-`{column}`-Schlüssel ist `txJwfeusermanagerAdditionalText1` (camelCase der
+db_field-Spalte). Die Text-Cases matchen also **nie** → Text fällt in `<f:defaultCase>` (Default- statt
+`Multiline`-Partial → Zeilenumbrüche gehen in der Listenansicht verloren).
+
+**Fix:** in den fünf Cases `txJwfrontenduserAdditionalText` → `txJwfeusermanagerAdditionalText`.
+Vorbestehend (matchte auch vor der Spalten-Migration nicht), daher unabhängig von Problem A.
