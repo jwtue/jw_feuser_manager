@@ -20,6 +20,7 @@ use JwTue\FeUserManager\Domain\Repository\EditorFieldRepository;
 use JwTue\FeUserManager\Domain\Model\EditorField;
 use JwTue\FeUserManager\Utility\Helper;
 use JwTue\FeUserManager\Validation\Validator\UniqueUsernameValidator;
+use JwTue\FeUserManager\Validation\Validator\OldPasswordValidator;
 use \TYPO3\CMS\Core\Utility\GeneralUtility;
 use \TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use \TYPO3\CMS\Extbase\Validation\Validator\NotEmptyValidator;
@@ -122,9 +123,10 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 
 	private $cacheService;
 	public function initializeAction(): void {
-	   //$this->cacheInstance = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Cache\\CacheManager')->getCache("myExtKey");
-		$cacheManager = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Cache\CacheManager::class);
-		$this->cacheService = new \TYPO3\CMS\Extbase\Service\CacheService($this->configurationManager, $cacheManager);
+		// CacheService gets its dependencies from the DI container. Its constructor differs
+		// between TYPO3 v12 (2 args) and v13 (3 args: + ConnectionPool), so makeInstance()
+		// resolves it correctly on both instead of constructing it by hand.
+		$this->cacheService = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Service\CacheService::class);
 	}
 
 		
@@ -323,8 +325,12 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                         }
                         $el->setProperty("options", $options);
                         $el->setDefaultValue($selected);
-                    } else if ($col->getDbMode() == EditorField::MODE_DB_OPTIONS) {                        
+                    } else if ($col->getDbMode() == EditorField::MODE_DB_OPTIONS) {
                         $el = $page1->createElement("editorfield_".$col->getUid(), 'RadioButton');
+                        // EXT:form gives the RadioButton container only "input" (no ".radio"),
+                        // unlike MultiCheckbox which gets "input checkbox". Add the marker class
+                        // so the stylesheet can target the radio group (.input.radio).
+                        $el->setProperty("containerClassAttribute", "input radio");
                         if (substr($title, -1) != ":") $title .= ":";
                         $groups = array_map("trim", explode("\n", $col->getSelectoptionEntries()));
                         $options = array();
@@ -350,11 +356,30 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 					$colsById["editorfield_".$col->getUid()] = $col;
 					break;
 				case EditorField::TYPE_PASSWORD:
-					$el = $page1->createElement("editorfield_".$col->getUid(), 'AdvancedPassword');
 					$col->setDbField("password");
+					$oldPwId = "editorfield_".$col->getUid()."_oldpw";
+					// For an existing user, ask for the current password first. Placing this
+					// element before the new-password element keeps the natural order
+					// (current -> new -> repeat) in the rendered form.
+					if ($user != null) {
+						$oldEl = $page1->createElement($oldPwId, 'Password');
+						$oldEl->setLabel($this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.oldPassword") ?: "Aktuelles Passwort:");
+					}
+					$el = $page1->createElement("editorfield_".$col->getUid(), 'AdvancedPassword');
 					$title = $col->getTitle();
 					$el->setLabel($title.":");
 					$el->setProperty("confirmationLabel", str_replace("%s", $col->getTitle(), $this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.confirm")).":");
+					// A password change on an existing user must be authorised by the current
+					// password. The validator only fires when a new password was actually entered.
+					if ($user != null) {
+						$el->addValidator(GeneralUtility::makeInstance(
+							OldPasswordValidator::class,
+							$user,
+							$form->getIdentifier(),
+							$oldPwId,
+							$this->languageService->sL("LLL:EXT:jw_feuser_manager/Resources/Private/Language/locallang.xlf:edituser.oldPasswordWrong") ?: "Das aktuelle Passwort ist nicht korrekt."
+						));
+					}
 					if ($col->getRequired()) {
 						$el->addValidator(GeneralUtility::makeInstance(NotEmptyValidator::class));
 					}
@@ -504,15 +529,8 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			
 			if ($user == null) $user = GeneralUtility::makeInstance(\JwTue\FeUserManager\Domain\Model\FrontendUser::class);
 
-			// TEMP DEBUG (Save-Analyse) -----------------------------------------
-			$dbgFile = \TYPO3\CMS\Core\Core\Environment::getVarPath().'/log/jwfeu_save.log';
-			$dbg = function($msg) use ($dbgFile) { @file_put_contents($dbgFile, '['.date('H:i:s').'] '.$msg."\n", FILE_APPEND); };
-			$dbg('==== SUBMIT ==== formValueKeys=['.implode(',', array_keys($formRuntime->getFormState()->getFormValues())).']');
-			$dbg('colsByIdKeys=['.implode(',', array_keys($colsById)).']');
-			// -------------------------------------------------------------------
-
 			foreach ($formRuntime->getFormState()->getFormValues() as $key => $value) {
-				if (!isset($colsById[$key])) { $dbg("SKIP no-col: key=$key value=".(is_array($value)?json_encode($value):$value)); continue; }
+				if (!isset($colsById[$key])) { continue; }
 				if ($colsById[$key]->getType() == EditorField::TYPE_DB_FIELD || $colsById[$key]->getType() == EditorField::TYPE_ADDITIONAL_ENTRIES) {
 					if ($colsById[$key]->getDbMode() == EditorField::MODE_DB_DATE) {
 						$value = strtotime($value)+12*60*60;
@@ -531,12 +549,17 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
                     }
 					$kkey = $colsById[$key]->getUsableDbField();
 					$setFunctionName = 'set'.ucfirst($kkey);
-					$dbg("DB_FIELD: key=$key dbField=".$colsById[$key]->getDbField()." usable=$kkey setter=$setFunctionName exists=".(method_exists($user, $setFunctionName)?'YES':'NO')." dbMode=".$colsById[$key]->getDbMode()." value=".(is_array($value)?json_encode($value):$value));
 					if (method_exists($user, $setFunctionName)) {
 						$user->$setFunctionName($value);
 						//  print_r("\$user->$setFunctionName(".$value.")");die();
 					}
 				} else if ($colsById[$key]->getType() == EditorField::TYPE_PASSWORD) {
+					// An empty field means "keep the current password". Without this guard the
+					// empty string would be hashed and stored, wiping the existing password of
+					// anyone who edited other fields without touching the password.
+					if ($value === '' || $value === null) {
+						continue;
+					}
 					$user->passwordBuffer = $value;
 					$hashFactory = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Crypto\PasswordHashing\PasswordHashFactory::class);
 					$objSalt = $hashFactory->getDefaultHashInstance("FE");

@@ -28,6 +28,14 @@
 				<source>Generate</source>
 				<target>Erzeugen</target>
 			</trans-unit>
+			<trans-unit id="edituser.oldPassword" xml:space="preserve">
+				<source>Current password:</source>
+				<target>Aktuelles Passwort:</target>
+			</trans-unit>
+			<trans-unit id="edituser.oldPasswordWrong" xml:space="preserve">
+				<source>The current password is not correct.</source>
+				<target>Das aktuelle Passwort ist nicht korrekt.</target>
+			</trans-unit>
         </body>
     </file>
 </xliff>

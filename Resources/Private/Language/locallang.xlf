@@ -22,6 +22,12 @@
 			<trans-unit id="edituser.generatePassword" xml:space="preserve">
 				<source>Generate</source>
 			</trans-unit>
+			<trans-unit id="edituser.oldPassword" xml:space="preserve">
+				<source>Current password:</source>
+			</trans-unit>
+			<trans-unit id="edituser.oldPasswordWrong" xml:space="preserve">
+				<source>The current password is not correct.</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

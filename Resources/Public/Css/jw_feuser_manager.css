@@ -18,13 +18,21 @@
 	float: left;
 	display: block;
 }
-.tx-jwfeusermanager-edituser .input.checkbox label,
-.tx-jwfeusermanager-edituser .input .radio label {
+.tx-jwfeusermanager-edituser .input.checkbox label {
 	float: none;
 	width: auto;
 }
+/* Radio group (v12 EXT:form: container is only ".input", so the marker class
+   ".radio" is added in the controller). The items are .form-check with the
+   radio input and its label as siblings — the label needs display:inline to
+   stay next to the radio instead of dropping below it. */
+.tx-jwfeusermanager-edituser .input.radio .form-check-label {
+	float: none;
+	width: auto;
+	display: inline;
+}
 .tx-jwfeusermanager-edituser .input.checkbox,
-.tx-jwfeusermanager-edituser .input .radio,
+.tx-jwfeusermanager-edituser .input.radio,
 .tx-jwfeusermanager-edituser button[type=submit],
 .tx-jwfeusermanager-edituser .error.help-block {
 	width: auto;
@@ -70,6 +78,7 @@
 		clear: both;
 	}
 	.tx-jwfeusermanager-edituser .input.checkbox,
+	.tx-jwfeusermanager-edituser .input.radio,
 	.tx-jwfeusermanager-edituser button[type=submit],
 	.tx-jwfeusermanager-edituser .error.help-block {
 		width: auto;

@@ -6,6 +6,11 @@ services:
 
   JwTue\FeUserManager\:
     resource: '../Classes/*'
+    exclude:
+      # Instantiated explicitly via GeneralUtility::makeInstance() with scalar
+      # constructor arguments (form identifier, field name, message), which the
+      # DI container cannot autowire.
+      - '../Classes/Validation/Validator/OldPasswordValidator.php'
 
   # Upgrade wizards need to be public (makeInstance → container.get for DI).
   JwTue\FeUserManager\Updates\:
