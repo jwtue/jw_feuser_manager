@@ -12,13 +12,17 @@ Successor to `jw_frontendusermanager` (TYPO3 v8–v11), which itself replaced
 |---|---|
 | Extension key | `jw_feuser_manager` |
 | Composer package | `jwtue/jw_feuser_manager` |
-| TYPO3 | 12.4 and 13.4 |
+| TYPO3 | **12.4 + 13.4** (this branch/line) · v14 → the `main` line |
 | PHP | ≥ 8.1 |
 | License | MIT |
 
-> **TYPO3 v11 and older:** use the predecessor `jw_frontendusermanager`. This
-> edition uses APIs that do not exist in v11 (the PSR-7 Extbase request, the
-> ViewFactory, …). A v14 edition is planned once its dependencies are ready.
+> **Two release lines:** this is the **13.x** line (branch `13.x`) for TYPO3 v12.4
+> and v13.4. TYPO3 **v14** is served by the **14.x** line (branch `main`).
+> Composer and the TER pick the matching one automatically from your TYPO3
+> version. For **TYPO3 v11 and older**, use the predecessor `jw_frontendusermanager`.
+>
+> Releases are made in parallel to GitHub, Packagist and the TER via version tags
+> (`v13.x.y` on this branch, `v14.x.y` on `main`).
 
 ## What you get
 

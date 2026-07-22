@@ -6,7 +6,13 @@ Guidance for AI assistants and contributors working in this repository.
 
 A TYPO3 extension for managing frontend users **from the frontend**: a member list, a detail
 view, self-service editing, and export as PDF, CSV and vCard. It is the successor to
-`jw_frontendusermanager` (TYPO3 v8–v11) and targets **TYPO3 v12.4** only.
+`jw_frontendusermanager` (TYPO3 v8–v11).
+
+**Two release lines:** this file is on branch `13.x`, which targets **TYPO3 v12.4 + v13.4**.
+TYPO3 **v14** is on branch `main` (its own AGENTS.md describes the v14 specifics: CTypes instead
+of list_type, ViewFactory instead of StandaloneView, PSR-7 request attributes instead of
+`$GLOBALS['TSFE']`, a site set). Bug fixes are made here and forward-ported to `main`; releases
+go out in parallel as `v13.x.y` (here) and `v14.x.y` (`main`).
 
 Two plugins, registered in `ext_localconf.php` via `configurePlugin('JwFeUserManager', …)`:
 
