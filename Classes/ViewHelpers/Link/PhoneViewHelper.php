@@ -12,8 +12,9 @@ class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBased
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-		$this->registerUniversalTagAttributes();
-		
+        // TYPO3 v14 removed registerUniversalTagAttributes(); AbstractTagBasedViewHelper
+        // registers the universal tag attributes on its own now.
+
         $this->registerArgument('tel', 'string', 'phone number to format and link to', true);
         $this->registerArgument('defaultInternationalPrefix', 'string', 'phone number to format', false, "+49");
     }

@@ -13,9 +13,9 @@
     "issues": "https://github.com/jwtue/jw_feuser_manager/issues"
   },
   "require": {
-    "php": ">=8.1.0",
-    "typo3/cms-core": "^12.4 || ^13.4",
-    "typo3/cms-felogin": "^12.4 || ^13.4",
+    "php": ">=8.2.0",
+    "typo3/cms-core": "^14.4",
+    "typo3/cms-felogin": "^14.4",
     "tecnickcom/tcpdf": "^6.6",
     "jeroendesloovere/vcard": "^1.7"
   },
