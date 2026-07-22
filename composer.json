@@ -14,8 +14,8 @@
   },
   "require": {
     "php": ">=8.2.0",
-    "typo3/cms-core": "^14.4",
-    "typo3/cms-felogin": "^14.4",
+    "typo3/cms-core": "^14.3",
+    "typo3/cms-felogin": "^14.3",
     "tecnickcom/tcpdf": "^6.6",
     "jeroendesloovere/vcard": "^1.7"
   },

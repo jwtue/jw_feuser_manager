@@ -3,7 +3,6 @@
 defined('TYPO3') or die;
 
 $boot = function () {
-	$extKey = "jw_feuser_manager";
     /* ===========================================================================
         Extbase-based plugin
     =========================================================================== */
@@ -30,29 +29,13 @@ $boot = function () {
             \JwTue\FeUserManager\Controller\EditFeUserController::class => 'edit',
 		]
     );
-	
-    /**
-     * Page TypoScript for mod wizards
-     */
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-        '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:' . $extKey . '/Configuration/TsConfig/ModWizards.typoscript">'
-    );
-	
-	/**
-	 * Register icons
-	 */
-	$iconRegistry =
-		\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
-	$iconRegistry->registerIcon(
-		'extension-' . $extKey . '-listofusers',
-		\TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-		['source' => 'EXT:' . $extKey . '/Resources/Public/Icons/ContentElements/ListOfUsers.png']
-	);
-	$iconRegistry->registerIcon(
-		'extension-' . $extKey . '-edituser',
-		\TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-		['source' => 'EXT:' . $extKey . '/Resources/Public/Icons/ContentElements/ListOfUsers.png']
-	);
+
+	// v14 notes:
+	// - The new-content-element wizard entries are added by ExtensionUtility::registerPlugin()
+	//   in Configuration/TCA/Overrides/tt_content.php (group "plugins"). The former
+	//   ModWizards page TSConfig + addPageTSConfig() are obsolete (addPageTSConfig() was removed).
+	// - Icons are declared in Configuration/Icons.php; instantiating the IconRegistry here
+	//   is no longer allowed.
 };
 
 $boot();

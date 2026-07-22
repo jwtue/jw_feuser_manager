@@ -28,8 +28,8 @@ class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBased
      * @return string
      * @throws Exception
      */
-    public function render()
-    {		
+    public function render(): string
+    {
 		if (!empty($this->arguments["defaultInternationalPrefix"])) {
 			$number = \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($this->arguments['tel'], true, $this->arguments["defaultInternationalPrefix"]);
 		} else {

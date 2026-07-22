@@ -35,14 +35,16 @@ class DateTimePickerViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\Abstrac
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerTagAttribute('size', 'int', 'The size of the input field');
-        $this->registerTagAttribute('placeholder', 'string', 'Specifies a short hint that describes the expected value of an input element');
+        // TYPO3 v14 removed registerTagAttribute() and registerUniversalTagAttributes().
+        // size/placeholder are registered as normal arguments and applied to the tag in
+        // render(); the universal attributes are handled by AbstractTagBasedViewHelper.
+        $this->registerArgument('size', 'int', 'The size of the input field');
+        $this->registerArgument('placeholder', 'string', 'Specifies a short hint that describes the expected value of an input element');
         $this->registerArgument('errorClass', 'string', 'CSS class to set if there are errors for this view helper', false, 'f3-form-error');
         $this->registerArgument('initialDate', 'string', 'Initial date (@see http://www.php.net/manual/en/datetime.formats.php for supported formats)');
         $this->registerArgument('enableDatePicker', 'bool', 'Enable the Datepicker', false, true);
         $this->registerArgument('enableTimePicker', 'bool', 'Enable the Datepicker', false, true);
         $this->registerArgument('previewMode', 'bool', 'Preview mde flag', true, false);
-        $this->registerUniversalTagAttributes();
     }
 
     /**
@@ -51,8 +53,13 @@ class DateTimePickerViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\Abstrac
      * @return string
      * @api
      */
-    public function render()
+    public function render(): string
     {
+        foreach (['size', 'placeholder'] as $tagAttribute) {
+            if ($this->hasArgument($tagAttribute)) {
+                $this->tag->addAttribute($tagAttribute, $this->arguments[$tagAttribute]);
+            }
+        }
         $enableDatePicker = $this->arguments['enableDatePicker'];
         $enableTimePicker = $this->arguments['enableTimePicker'];
         $previewMode = (bool)$this->arguments['previewMode'];
