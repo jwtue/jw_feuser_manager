@@ -12,13 +12,15 @@ Successor to `jw_frontendusermanager` (TYPO3 v8–v11), which itself replaced
 |---|---|
 | Extension key | `jw_feuser_manager` |
 | Composer package | `jwtue/jw_feuser_manager` |
-| TYPO3 | 12.4 and 13.4 |
-| PHP | ≥ 8.1 |
+| TYPO3 | **14.x** (this branch/line) · 12.4 + 13.4 → the 13.x line |
+| PHP | ≥ 8.2 |
 | License | MIT |
 
-> **TYPO3 v11 and older:** use the predecessor `jw_frontendusermanager`. This
-> edition uses APIs that do not exist in v11 (the PSR-7 Extbase request, the
-> ViewFactory, …). A v14 edition is planned once its dependencies are ready.
+> **Two release lines** (see [Versions & releases](#versions--releases)): the
+> **14.x** line (branch `main`) supports TYPO3 v14; the **13.x** line (branch
+> `13.x`) supports v12.4 + v13.4. Composer/TER pick the matching one automatically
+> from your TYPO3 version. For **TYPO3 v11 and older**, use the predecessor
+> `jw_frontendusermanager`.
 
 ## What you get
 
@@ -61,25 +63,29 @@ The extension ships no ready-made pages. A working setup takes six steps.
 Create a **folder** (a page of type *Folder*) that will hold your `fe_users`
 and `fe_groups` records, and note its page ID. All members live here.
 
-### 2. Load the extension's TypoScript and point it at the storage folder
+### 2. Add the site set and point it at the storage folder
 
-On your root page's template (or a dedicated site set / TypoScript include),
-add **three** static includes and one setting:
+The extension ships a **site set** `jwtue/jw-feuser-manager` that carries all its
+TypoScript (plugin configuration, the custom form elements, the plugin content
+rendering) and depends on the Form Framework. Add it to your site configuration
+(`config/sites/<identifier>/config.yaml`):
 
-1. **Include static template “JW Frontend User Manager”**
-   (`EXT:jw_feuser_manager/Configuration/TypoScript/`). Without it the plugins
-   render nothing and TYPO3 reports *“No Content Object definition found …”*.
-2. **Include static template “Fluid Content (…) / Form Framework”**
-   (`EXT:form/Configuration/TypoScript/`). The edit form is built with the Form
-   Framework; without its TypoScript it fails with *“The Prototype 'standard' …”*.
-3. **Set the storage folder** from step 1:
+```yaml
+dependencies:
+  - typo3/fluid-styled-content
+  - jwtue/jw-feuser-manager
+```
 
-   ```typoscript
-   plugin.tx_jwfeusermanager.persistence.storagePid = <UID of your storage folder>
-   ```
+Then **set the storage folder** from step 1 (page TSConfig or a small
+`setup.typoscript` of your own site set):
 
-   If this is missing, the list stays **empty with no error message** — the most
-   common setup mistake.
+```typoscript
+plugin.tx_jwfeusermanager.persistence.storagePid = <UID of your storage folder>
+```
+
+If the set is missing, the plugins report *“Content Element … has no rendering
+definition”*; if the storage PID is missing, the list stays **empty with no
+error message** — the most common setup mistake.
 
 ### 3. Create the pages
 
@@ -215,11 +221,45 @@ Upgrade Wizard**, or `vendor/bin/typo3 upgrade:run`):
   columns to the new names. Without this, the extra member fields would display
   but silently fail to save. The wizard is non-destructive (old columns are
   kept) and can be run repeatedly.
-- **Migrate plugins** — updates the old content-element plugin signatures to the
-  current ones.
+- **Migrate list_type plugins to CType** — TYPO3 v14 replaced the `list_type`
+  mechanism with dedicated CTypes. This wizard rewrites existing content elements
+  (`CType=list`, `list_type=jwfeusermanager_*`, including the predecessor
+  signatures) to `CType=jwfeusermanager_listofusers` / `_edituser`. It reads the
+  `list_type` column directly — which is still physically present after a
+  v13 → v14 upgrade, because TYPO3 never drops columns automatically (that is a
+  separate, confirmed step in the database analyzer). Run the wizard **before**
+  removing the now-unused `list_type` column. On a fresh v14 install the column
+  does not exist and the wizard is a no-op.
 
 Both wizards only act where legacy data is actually present, so they are safe to
 run on a fresh install too.
+
+### Upgrading TYPO3 v13 → v14
+
+1. `composer require jwtue/jw_feuser_manager:^14` together with the TYPO3 v14
+   upgrade (Composer resolves the 14.x line automatically).
+2. Run the **database analyzer** (adds new fields; keeps `list_type`).
+3. Run the **upgrade wizards** — in particular *Migrate list_type plugins to
+   CType* above.
+4. Add the site set to your site configuration (see
+   [Setting it up, step 2](#2-add-the-site-set-and-point-it-at-the-storage-folder)).
+5. Optionally remove the unused `list_type` column in the database analyzer.
+
+## Versions & releases
+
+The extension is maintained in **two parallel lines**, released in parallel to
+GitHub, Packagist and the TER:
+
+| Line | Branch | TYPO3 | Release tags |
+|---|---|---|---|
+| **14.x** | `main` | v14 | `v14.x.y` |
+| **13.x** | `13.x` | v12.4 + v13.4 | `v13.x.y` |
+
+`composer require jwtue/jw_feuser_manager` (or the TER) always installs the
+version matching your TYPO3 — the 13.x line on v12/v13, the 14.x line on v14.
+Bug fixes are made on the oldest affected line and forward-ported. Pushing a
+version tag on either branch builds the archive and publishes that version (see
+`.github/workflows/release.yml`); the `ext_emconf.php` version must match the tag.
 
 ## Extra member fields
 
@@ -276,7 +316,8 @@ upload and user deletion work.
 
 The predecessor `jw_frontendusermanager` was written by hand. The port to TYPO3
 v12, the v13 compatibility work, the current-password confirmation, the upgrade
-wizards, and this documentation were carried out with
-[Claude Code](https://www.claude.com/product/claude-code) and verified against
-running TYPO3 12.4 and 13.4 installations before release. See
+wizards, the TYPO3 v14 port (ViewFactory, CTypes, site set, PSR-7 request
+attributes, list_type → CType migration) and this documentation were carried out
+with [Claude Code](https://www.claude.com/product/claude-code) and verified
+against running TYPO3 12.4, 13.4 and 14.x installations before release. See
 [AGENTS.md](AGENTS.md) for how the repository is set up for that work.

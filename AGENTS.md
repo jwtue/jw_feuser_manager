@@ -6,7 +6,11 @@ Guidance for AI assistants and contributors working in this repository.
 
 A TYPO3 extension for managing frontend users **from the frontend**: a member list, a detail
 view, self-service editing, and export as PDF, CSV and vCard. It is the successor to
-`jw_frontendusermanager` (TYPO3 v8–v11) and targets **TYPO3 v12.4** only.
+`jw_frontendusermanager` (TYPO3 v8–v11).
+
+**Two release lines** (see [Branches & releases](#branches--releases)): branch `main` targets
+**TYPO3 v14**, branch `13.x` targets **v12.4 + v13.4**. This file lives on `main` and describes
+the v14 line; where the two diverge it is called out.
 
 Two plugins, registered in `ext_localconf.php` via `configurePlugin('JwFeUserManager', …)`:
 
@@ -46,8 +50,42 @@ via `SC_OPTIONS`, which would instantiate them without dependency injection and 
 - **`FrontendUserRepository::findForUsername()`** must see disabled/expired users
   (`setIgnoreEnableFields(true)`, `setRespectStoragePage(false)`); it backs the duplicate check when
   creating users. Do not "simplify" that away.
-- **The edit form uses EXT:form.** Its static TypoScript must be included, and a `storagePid` must
-  be set, or the plugins render empty/broken. See the README's requirements.
+- **The edit form uses EXT:form.** The Form Framework TypoScript must be present (the site set
+  `jwtue/jw-feuser-manager` depends on `typo3/form`), and a `storagePid` must be set, or the
+  plugins render empty/broken. See the README's requirements.
+
+## v14 specifics (branch `main`)
+
+- **Plugins are dedicated CTypes**, not `list_type`. `Configuration/TCA/Overrides/tt_content.php`
+  registers them via `ExtensionUtility::registerPlugin()` with the icon + FlexForm arguments; the
+  CType names equal the former `list_type` values. Existing content is migrated by the
+  `jwFeUserManager_listTypeToCType` wizard, which reads the still-present `list_type` column
+  directly (guarded by a column-existence check).
+- **No StandaloneView.** v14 removed it. Both controllers use the view that the ActionController
+  builds via the `ViewFactory` (`$this->view`, with the extension's root paths and
+  controller/action already set); `initializeView()` only assigns extras. The edit form is
+  rendered through the EXT:form `FormRuntime`, not through the Fluid view.
+- **No `$GLOBALS['TSFE']`.** Use the PSR-7 request attributes: `frontend.user` (fe user),
+  `frontend.page.information->getId()` (page uid, via `currentPageUid()`), `currentContentObject`.
+- **Site set** `Configuration/Sets/JwFeUserManager/` carries the plugin TypoScript, the form
+  element YAML, the CSS and the CType content rendering. There is no static `Configuration/TypoScript/`
+  or `sys_template` registration on this line.
+- **ViewHelpers** use instance `render(): string` (v14 removed `renderStatic()` + the
+  `CompileWith…` trait, `registerTagAttribute()` and `registerUniversalTagAttributes()`).
+
+## Branches & releases
+
+Two parallel lines, released in parallel to GitHub, Packagist and the TER:
+
+| Line | Branch | TYPO3 | Tags |
+|---|---|---|---|
+| 14.x | `main` | v14 | `v14.x.y` |
+| 13.x | `13.x` | v12.4 + v13.4 | `v13.x.y` |
+
+Bug fixes are made on the oldest affected line and forward-ported (the business logic — password
+feature, exports, migrations — is identical; only the infrastructure differs). Pushing a `v*` tag
+on either branch triggers `.github/workflows/release.yml`, which builds the archive and publishes
+that version; **`ext_emconf.php` version must equal the tag** (the workflow enforces this).
 
 ## Testing
 
