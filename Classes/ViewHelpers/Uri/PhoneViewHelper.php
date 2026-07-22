@@ -2,43 +2,37 @@
 
 namespace JwTue\FeUserManager\ViewHelpers\Uri;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
-
 class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
-    use CompileWithContentArgumentAndRenderStatic;
     /**
      * Initialize arguments
      */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-		
+
         $this->registerArgument('tel', 'string', 'phone number to format');
         $this->registerArgument('defaultInternationalPrefix', 'string', 'phone number to format');
     }
 
     /**
-     * Resizes the image (if required) and returns its path. If the image was not resized, the path will be equal to $src
+     * Returns the phone number in machine format (for a tel: URI).
      *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     * @throws Exception
+     * Instance render() instead of the former renderStatic() +
+     * CompileWithContentArgumentAndRenderStatic trait, which TYPO3 v14 removed.
+     * formatPhoneNumber lives in the Format\PhoneViewHelper (self:: was wrong here).
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {		
-		if (!empty($arguments["tel"])) {
-			$tel = $arguments["tel"];
+    public function render(): string
+    {
+		if (!empty($this->arguments["tel"])) {
+			$tel = $this->arguments["tel"];
 		} else {
-			$tel = $renderChildrenClosure();
+			$tel = $this->renderChildren();
 		}
-		if (!empty($arguments["defaultInternationalPrefix"])) {
-			return self::formatPhoneNumber($tel, true, $arguments["defaultInternationalPrefix"]);
+		if (!empty($this->arguments["defaultInternationalPrefix"])) {
+			return \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($tel, true, $this->arguments["defaultInternationalPrefix"]);
 		} else {
-			return self::formatPhoneNumber($tel, true);
+			return \JwTue\FeUserManager\ViewHelpers\Format\PhoneViewHelper::formatPhoneNumber($tel, true);
 		}
     }
 }

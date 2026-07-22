@@ -2,9 +2,6 @@
 
 namespace JwTue\FeUserManager\ViewHelpers\Link;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
-
 class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper
 {
 	protected $tagName = 'a';

@@ -2,41 +2,35 @@
 
 namespace JwTue\FeUserManager\ViewHelpers\Format;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
-
 class PhoneViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper
 {
-    use CompileWithContentArgumentAndRenderStatic;
     /**
      * Initialize arguments
      */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-		
+
         $this->registerArgument('tel', 'string', 'phone number to format');
         $this->registerArgument('defaultInternationalPrefix', 'string', 'phone number to format');
     }
 
     /**
-     * Resizes the image (if required) and returns its path. If the image was not resized, the path will be equal to $src
+     * Formats the phone number from the "tel" argument (or the tag content).
      *
-     * @param array $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     * @return string
-     * @throws Exception
+     * Instance render() instead of the former renderStatic() +
+     * CompileWithContentArgumentAndRenderStatic trait, which TYPO3 v14 removed.
+     * render() behaves identically on v12/v13/v14.
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {		
-		if (!empty($arguments["tel"])) {
-			$tel = $arguments["tel"];
+    public function render(): string
+    {
+		if (!empty($this->arguments["tel"])) {
+			$tel = $this->arguments["tel"];
 		} else {
-			$tel = $renderChildrenClosure();
+			$tel = $this->renderChildren();
 		}
-		if (!empty($arguments["defaultInternationalPrefix"])) {
-			return self::formatPhoneNumber($tel, false, $arguments["defaultInternationalPrefix"]);
+		if (!empty($this->arguments["defaultInternationalPrefix"])) {
+			return self::formatPhoneNumber($tel, false, $this->arguments["defaultInternationalPrefix"]);
 		} else {
 			return self::formatPhoneNumber($tel, false);
 		}
