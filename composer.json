@@ -7,7 +7,15 @@
   "keywords": [
     "TYPO3 CMS",
     "frontend user",
-    "membership"
+    "fe_users",
+    "frontend user management",
+    "membership",
+    "member list",
+    "member directory",
+    "self service",
+    "vcard",
+    "csv export",
+    "pdf export"
   ],
   "support": {
     "issues": "https://github.com/jwtue/jw_feuser_manager/issues"
