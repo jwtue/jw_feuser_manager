@@ -140,30 +140,14 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      *
      * @param $view The view to be initialized
      */
-     protected function initializeView($view)
+     protected function initializeView($view): void
      {
-		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-		
-		// ConfigurationManager::getContentObjectRenderer() no longer exists in TYPO3 v12;
-		// getContentObject() is deprecated as of 12.4. The current ContentObjectRenderer
-		// now comes from the request attribute "currentContentObject".
+		// v14: the ActionController already created $this->view via the ViewFactory. The edit
+		// form itself is rendered through the EXT:form FormRuntime in editAction(), not through
+		// this view. Here we only keep the current ContentObjectRenderer (from the request
+		// attribute) and register the cropper / password-generator assets.
 		$this->contentObj = $this->request->getAttribute("currentContentObject");
-		
-		$view->setRequest($this->request);
-		$view->getRenderingContext()->setControllerName("EditUser");
-		$view->setFormat('html');
-		
-		$this->setViewConfiguration($view);
-		
-		$view->assign("TSFE", $GLOBALS['TSFE']);
-		$view->assign("page", $GLOBALS['TSFE']->page);
-		
-		$conf = $this->getFullTyposcriptConfiguration();
-		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
-		
-		$view->assign("contentObject", $this->contentObj);
-	    $view->assign("settings", $this->settings);
-					
+
 		$pageRender = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Page\PageRenderer::class);
 		$jsFile = "EXT:jw_feuser_manager/Resources/Public/JavaScript/cropper.min.js";
 		$cssFile = "EXT:jw_feuser_manager/Resources/Public/Css/cropper.min.css";
@@ -173,10 +157,17 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 			"EXT:jw_feuser_manager/Resources/Public/JavaScript/passwordGenerator.js",
 			'text/javascript', true, false, '', true
 		);
-					
-		$this->view = $view;
      }
-	
+
+	/**
+	 * Current page uid from the PSR-7 request — replaces $GLOBALS['TSFE']->page['uid'],
+	 * which is no longer available in TYPO3 v14.
+	 */
+	private function currentPageUid(): int
+	{
+		return $this->request->getAttribute('frontend.page.information')?->getId() ?? 0;
+	}
+
     /**
      * Listing of files.
      *
@@ -215,18 +206,18 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 				// Without a logged-in frontend user, ->user is null. Left unchecked this
 				// produced a PHP warning ("array offset on value of type null") that, depending
 				// on the errorHandlerErrors setting, escalates to an exception.
-				$currentUserUid = $GLOBALS['TSFE']->fe_user->user['uid'] ?? 0;
+				$currentUserUid = $this->request->getAttribute('frontend.user')?->user['uid'] ?? 0;
 				$user = $currentUserUid ? $this->userRepository->findByUid($currentUserUid) : null;
 		}
 		/*
 		if ($this->settings['mode'] == 1) {
 			$user = null;
 		}*/
-		
-		$this->view->getRenderingContext()->setControllerAction("edit");
-		$this->view->setTemplate("EditUserEdit");
-		
-		$columns = $this->editorFieldRepository->findForElement($GLOBALS['TSFE']->page['uid'], $this->contentObj->data['uid'])->toArray();
+
+		// v14: the edit form is rendered via the EXT:form FormRuntime (see below), not via
+		// $this->view, so no template/action needs to be set on the Fluid view here.
+
+		$columns = $this->editorFieldRepository->findForElement($this->currentPageUid(), $this->contentObj->data['uid'])->toArray();
 		
 		//\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($dump);
 				
@@ -627,7 +618,7 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 						$typolinkConfiguration = [
 							'parameter' => $colsById[$key]->getRedirectPage()
 						];
-						$redirectUri = $GLOBALS['TSFE']->cObj->typoLink_URL($typolinkConfiguration);
+						$redirectUri = $this->contentObj->typoLink_URL($typolinkConfiguration);
 						$redirectUri = \TYPO3\CMS\Core\Utility\GeneralUtility::locationHeaderUrl((string)$redirectUri);
 												
 						$response = new \TYPO3\CMS\Core\Http\RedirectResponse($redirectUri, 303);
@@ -830,12 +821,12 @@ class EditFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$form->addFinisher($confirmationFinisher);*/
 		if ($user != null) {
 			$form->createFinisher('Redirect', [
-				'pageUid' => $GLOBALS['TSFE']->page['uid'],
+				'pageUid' => $this->currentPageUid(),
 				'additionalParameters' => "user=".$user->getUid(),
 			]);
 		} else {
 			$form->createFinisher('Redirect', [
-				'pageUid' => $GLOBALS['TSFE']->page['uid'],
+				'pageUid' => $this->currentPageUid(),
 			]);
 		}
 

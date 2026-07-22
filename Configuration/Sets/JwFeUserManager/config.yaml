@@ -1,0 +1,5 @@
+name: jwtue/jw-feuser-manager
+label: JW Frontend User Manager
+dependencies:
+  # The edit plugin builds its form with the Form Framework; its TypoScript must be present.
+  - typo3/form

@@ -1,0 +1,6 @@
+plugin.tx_jwfeusermanager.view {
+    # Override these to ship your own templates/partials/layouts.
+    templateRootPath =
+    partialRootPath =
+    layoutRootPath =
+}

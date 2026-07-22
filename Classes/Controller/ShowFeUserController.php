@@ -87,30 +87,16 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      *
      * @param $view The view to be initialized
      */
-     protected function initializeView($view)
+     protected function initializeView($view): void
      {
-		// In TYPO3 v12 the StandaloneView no longer has an Extbase request:
-		// setRequest() expects a PSR-7 ServerRequest, and getRequest() returns null
-		// before it is set. Controller and action name are therefore set directly on
-		// the RenderingContext — the resolution of setTemplate() to
-		// Resources/Private/Templates/ShowFeUser/<Name>.html depends on this.
-		$view = GeneralUtility::makeInstance(\TYPO3\CMS\Fluid\View\StandaloneView::class);
-		$view->setRequest($this->request);
-		$view->getRenderingContext()->setControllerName("ShowFeUser");
-		$view->setFormat('html');
-		
-		$this->setViewConfiguration($view);
-		
-		$view->assign("TSFE", $GLOBALS['TSFE']);
-		$view->assign("page", $GLOBALS['TSFE']->page);
-		
+		// v14: $this->view is created by the ActionController via the ViewFactory — with the
+		// extension's template/partial/layout root paths and the controller/action already
+		// applied (so render() resolves Templates/ShowFeUser/<Action>.html on its own). No
+		// self-created StandaloneView is needed. Only fluidSettings is still assigned; it is
+		// forwarded to the Image/Phone partials for the media dimensions. The templates use
+		// neither the page record nor TSFE, so those assignments are dropped.
 		$conf = $this->getFullTyposcriptConfiguration();
-		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings']);
-		
-		$view->assign("contentObject", $this->request->getAttribute("currentContentObject"));
-	    $this->view->assign("settings", $this->settings);
-					
-		$this->view = $view;
+		$view->assign("fluidSettings", $conf['lib']['contentElement']['settings'] ?? []);
      }
 	
     /**
@@ -131,9 +117,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		
 		$filter = $this->request->getQueryParams()['filter'] ?? 0;
 		$download = $this->request->getQueryParams()['download'] ?? null;
-		
-		$this->view->getRenderingContext()->setControllerAction("list");
-		$this->view->setTemplate("List");
+
+		// v14: the view resolves Templates/ShowFeUser/List.html from controller+action
+		// (set by the ActionController), so no setTemplate()/setControllerAction() here.
 
 		$columns = explode(",", ($this->settings['fields'] ?? ''));
 		$csvColumns = explode(",", ($this->settings['csvFields'] ?? ''));
@@ -571,10 +557,9 @@ class ShowFeUserController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
 		$user = $this->request->getQueryParams()['user'] ?? 0;
 		
 		$download = $this->request->getQueryParams()['download'] ?? null;
-		
-		$this->view->getRenderingContext()->setControllerAction("detail");
-		$this->view->setTemplate("ShowFeUserDetail");
-		
+
+		// v14: resolves Templates/ShowFeUser/Detail.html from controller+action.
+
 		$usr = $this->userRepository->findByUid($user);
 		$usr->addArtificialFields();
 		
